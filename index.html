@@ -9,10 +9,33 @@
 			overflow:hidden;
 			position:relative;
 		}
-	</style>
+		
+		.rotate-north {
+			top: 65px;
+			left: .5em;
+		}
+		
+		.control_panel{
+			position:fixed;
+			height: 100%;
+			width: 100%;
+			left: -100%;
+			z-index: 10;
+			top:0px;
+			background-color: teal;
+			-webkit-transition: left 0.75s ease;
+			transition: left 0.75s ease;
+			opacity:0.8;
+		}
+		
+		.control_panel.show{
+			left: 0;
+		}
+		</style>
 
     <link rel="stylesheet" href="./static/ggmc/css/ol_314.css" type="text/css">
     <script src="./static/ggmc/js/ol_314.js"></script>
+	<script src="./static/ggmc/js/jquery.js"></script>
 	<script src="./static/ggmc/js/ggmc.js"></script>
 	<script src="./static/ggmc/js/config.js"></script>
 	<script type="text/javascript">
@@ -28,6 +51,7 @@
 
 	</head>
 	<body onload="initialize()">
+		<div id="control_div" class="control_panel"></div>
 		<div id="map_div"></div>
 	</body>
 </html>
