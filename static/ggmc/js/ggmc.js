@@ -1,16 +1,49 @@
-var GGMC = function (div_id){	
+var GGMC=function(div_id,control_div_id){	
 	
-		var me ={};
-		
-		me.div_id = div_id;
-		me.current = INSTALLED["keys"][0];
-		
-		var polygon_layers = [];
-		
+	var me={};
+	me.popup=document.createElement("div");
+	me.popup.id="popup";
+	me.popup.className="popup";
+	
+	me.div_id = div_id;
+	me.control_div_id=control_div_id;
+	me.tour=false;
+	me.last_timeout=null;
+	
+	me.current = INSTALLED["keys"][0];
+//	me.base_layer=new ol.layer.Tile({title:'Satellite',sphericalMercator: true,source:new ol.source.MapQuest({layer:'sat'})});
+	
+	me.polygon_layers=null;
+	me.point_layers=null;
+	me.line_layers=null;
+	me.boundary_source=null;
+	me.boundary_layer=null;
+	me.all_layers=[];
+	me.all_targets=[];
+	me.current_target_layer=null;
+	
+	me.debug=true;
+	me.featureOverlay=null;
+	me.HILIGHTS=[];
+	me.DELAY=500.;
+	me.RUNNING=false;
+	
+	me.resize=function(){
+		var W=window.innerWidth;
+		var H=window.innerHeight;
+		var res=compute_resolution(INSTALLED[me.current]['bbox'],false,W,H);
+		window.map.getView().setResolution(res);
+	}
+//	
+	me.prepare_layers=function(){
+		console.log("me.prepare_layers: "+me.current);
+		me.all_targets=[];
+		me.polygon_layers=[];
+		me.all_layers=[];
 		for(var pidx=0; pidx<INSTALLED[me.current]["polygon_features"].length;pidx++){
-		
+			var src_url=INSTALLED[me.current]["path"] + INSTALLED[me.current]["polygon_features"][pidx]["filename"];
 			var polygon_source=new ol.source.Vector({
-				url: INSTALLED[me.current]["path"] + INSTALLED[me.current]["polygon_features"][pidx]["filename"],
+				url: src_url,
 				format: new ol.format.GeoJSON()
 			});
 			
@@ -20,22 +53,73 @@ var GGMC = function (div_id){
 					stroke: new ol.style.Stroke({
 						color: INSTALLED[me.current]["polygon_features"][pidx]["color"],
 						width: INSTALLED[me.current]["polygon_features"][pidx]["width"]
-						
+					}),
+					fill: new ol.style.Fill({
+						color: INSTALLED[me.current]["polygon_features"][pidx]["fill"],
 					})
 				}),
 			});
+			polygon_layer.set("type","Polygon");
+			me.polygon_layers.push(polygon_layer);
+			me.all_targets.push(polygon_layer);
+		}
+
+		me.point_layers=[];
+		for(var pidx=0;pidx<INSTALLED[me.current]["point_features"].length;pidx++){
 			
-			polygon_layers.push(polygon_layer);
+			var src_url=INSTALLED[me.current]["path"] + INSTALLED[me.current]["point_features"][pidx]["filename"];
+			var point_source=new ol.source.Vector({
+				url: src_url,
+				format: new ol.format.GeoJSON()
+			});
+			var point_layer= new ol.layer.Vector({
+				source: point_source,
+				style:new ol.style.Style({
+					image:new ol.style.Circle({
+						radius:INSTALLED[me.current]["point_features"][pidx]["radius"],
+						stroke: new ol.style.Stroke({
+							color: INSTALLED[me.current]["point_features"][pidx]["color"],
+							width: INSTALLED[me.current]["point_features"][pidx]["width"]
+						}),				
+						fill: new ol.style.Fill({
+							color: INSTALLED[me.current]["point_features"][pidx]["fill"],
+						}),
+					})
+				}),
+			});
+			point_layer.set("type","Point");
+			me.point_layers.push(point_layer);
+			me.all_targets.push(point_layer);
+		}
+
+
+		me.line_layers=[];
+		for(var lidx=0;lidx<INSTALLED[me.current]["line_features"].length;lidx++){
+			var src_url=INSTALLED[me.current]["path"] + INSTALLED[me.current]["line_features"][lidx]["filename"];
+			var line_source=new ol.source.Vector({
+				url: src_url,
+				format: new ol.format.GeoJSON()
+			});
+			var line_layer= new ol.layer.Vector({
+				source: line_source,
+				style:new ol.style.Style({
+					stroke: new ol.style.Stroke({
+						color: INSTALLED[me.current]["line_features"][lidx]["color"],
+						width: INSTALLED[me.current]["line_features"][lidx]["width"]
+					}),					
+				})
+			});
+			line_layer.set("type","Line");
+			me.line_layers.push(line_layer);
+			me.all_targets.push(line_layer);
 		}
 		
-			
-		var boundary_source=new ol.source.Vector({
+		me.boundary_source=new ol.source.Vector({
 			url: INSTALLED [me.current]["path"] + 'boundary.geojson',
 			format: new ol.format.GeoJSON()
-		});
-		
-		var boundary_layer = new ol.layer.Vector({
-			source: boundary_source,
+		});	
+		me.boundary_layer = new ol.layer.Vector({
+			source: me.boundary_source,
 			style:new ol.style.Style({
 				stroke: new ol.style.Stroke({
 					color: INSTALLED[me.current]["color"],
@@ -47,60 +131,341 @@ var GGMC = function (div_id){
 			}),
 		});
 		
-		var all_layers = [];
 		
-		all_layers.push(boundary_layer);
-		
-		for(var pidx=0; pidx<polygon_layers.length; pidx++){
-			all_layers.push(polygon_layers[pidx]);
+//		me.all_layers.push(me.base_layer);
+		me.all_layers.push(me.boundary_layer);
+		for(var pidx=0; pidx<me.polygon_layers.length; pidx++){
+			me.all_layers.push(me.polygon_layers[pidx]);
 		}
+		for(var lidx=0; lidx<me.line_layers.length; lidx++){
+			me.all_layers.push(me.line_layers[lidx]);
+		}
+		for(var pidx=0; pidx<me.point_layers.length; pidx++){
+			me.all_layers.push(me.point_layers[pidx]);
+		}
+
+	}//END:me.prepare_layers
+	
+	
+	//MAP
+	me.playB = function(opt_options) {
 		
-		me.RotateNorthControl = function(opt_options) {
+		//http://openlayers.org/en/v3.14.0/examples/custom-controls.html
 		
-			var options = opt_options || {};
+		var options = opt_options || {};
+		var button = document.createElement('button');
+		button.id="playB";
+		button.innerHTML = '<img src="./static/ggmc/img/play.png"/>';
+		button.title="Start";
+		
+		var playCB = function() {
+			console.log("playCB");
+			//$(".control_panel").toggleClass("show");
 			
-			var button = document.createElement('button');
-			button.innerHTML = 'N';
-			var this_ = this;
-			var handleRotateNorth = function() {
-				$(".control_panel").toggleClass("show");
+			if(me.all_targets.length==0){
+				console.log("resetting game from playCB");
+				me.change_areaCB();
+				document.getElementById("playB").innerHTML='<img src="./static/ggmc/img/pause.png"/>';
+				me.RUNNING=true;
+				window.setTimeout(me.start_move,2*me.DELAY);//necessary!
 			}
-			
-			$(".control_panel").click(function(e){
-				$(".control_panel").toggleClass("show");
-			});
-			
-			button.addEventListener('click', handleRotateNorth, false);
-			button.addEventListener('touchstart', handleRotateNorth, false);
-			
-			var element = document.createElement('div');
-			element.className = 'rotate-north ol-unselectable ol-control';
-			element.appendChild(button);
-			
-			ol.control.Control.call(this, {
-				element: element,
-				target: options.target
-			});
-		
+			else if(me.RUNNING==true){
+				me.RUNNING=false;
+				document.getElementById("playB").innerHTML='<img src="./static/ggmc/img/play.png"/>';
+			}
+			else{
+				me.RUNNING=true;
+				me.start_move(null);
+				document.getElementById("playB").innerHTML='<img src="./static/ggmc/img/pause.png"/>';
+			}
+			console.log("playCB done");
 		};
-		ol.inherits(me.RotateNorthControl, ol.control.Control);
 		
-		map = new ol.Map({
-			layers: all_layers,
+		button.addEventListener('click', playCB, false);
+		button.addEventListener('touchstart', playCB, false);
+		
+		var element = document.createElement('div');
+		element.className = 'playB ol-unselectable ol-control';
+		element.appendChild(button);
+		
+		ol.control.Control.call(this, {
+			element: element,
+			target: options.target
+		});
+	};
+	ol.inherits(me.playB, ol.control.Control);
+	
+	me.setup_map=function(){
+		window.map = new ol.Map({
+			layers: me.all_layers,
 			target: me.div_id,
 			view: new ol.View({
 				center:ol.proj.transform(INSTALLED[me.current]["center"], 'EPSG:4326', 'EPSG:3857'),
 				zoom: 7
 			}),
-			interactions:[],
+//			interactions:[],
 			controls: ol.control.defaults({
 				attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
-				collapsible: false
+					collapsible: false
 				})
 			}).extend([
-				new me.RotateNorthControl()
+				new controlB(),new me.playB(),
 			])
 		});
 		
-		return me;
+		window.map.on('click',function(evt){
+			dummmy=window.map.forEachFeatureAtPixel(evt.pixel,function(target_feature,layer){
+				var target_name=target_feature.get("NAME");
+				if(!target_name)target_name=target_feature.get("Name");
+				if(String.toLowerCase(target_name)==me.current){;}
+				console.log(target_name);
+				me.check_feature(evt.pixel);
+			});
+		});
+		
+		window.map.on('pointermove',function(evt){
+			if (evt.dragging) {
+				return;
+			}
+			
+			for(var hidx=0;hidx<me.HILIGHTS.length;hidx++){
+				me.featureOverlay.removeFeature(me.HILIGHTS[hidx]);
+			}
+			
+			dummmy=window.map.forEachFeatureAtPixel(evt.pixel,function(target_feature,layer){
+				var target_name=target_feature.get("NAME");
+				if(!target_name)target_name=target_feature.get("Name");
+				
+				if(String.toLowerCase(target_name)==me.current){
+					//this skips printing boundary to console.log
+				}
+				else if(target_feature){
+					me.featureOverlay.addFeature(target_feature);
+					me.HILIGHTS.push(target_feature);
+					//console.log(target_name);
+				}
+			});
+		});
+		
+		me.featureOverlay = new ol.FeatureOverlay({
+		  map: window.map,
+		  style: new ol.style.Style({
+		  	stroke: new ol.style.Stroke({
+		    	color: 'orange',
+		    	width: 2
+		    }),
+		  }),
+		});
+		
+	}//END:me.setup_map
+	
+	
+	//CONTROL PANEL
+	me.setup_control_panel=function(){
+		
+		var c=document.getElementById("control_div");
+		
+		var closeB=new Image();
+		closeB.src="./static/ggmc/img/delete-white.png";
+		closeB.id="closeB";		
+		
+		var close_div=document.createElement("div");
+		close_div.className="close_div";
+		close_div.appendChild(closeB);
+		c.appendChild(close_div);
+		
+		$("#closeB").click(function(){
+			console.log("jquery CB");
+			$(".control_panel").toggleClass("show");
+			console.log("toggled show on");
+		});
+		
+		var area_select=document.createElement("select");
+		area_select.id="area_select";
+		
+		for(var sidx=0;sidx<INSTALLED["keys"].length;sidx++){
+			var opt=document.createElement("option");
+			opt.text=INSTALLED["keys"][sidx];
+			opt.selected=false;
+			if(sidx==0)opt.selected=true;
+			area_select.appendChild(opt);
+		}
+		c.appendChild(area_select);
+		area_select.addEventListener("change",me.change_areaCB,false);
+		
+		//mode toggle
+		var mode_toggleB=document.createElement("input");
+		mode_toggleB.type="radio";
+		mode_toggleB.checked=me.tour;
+		mode_toggleB.id="mode_toggleB";
+		c.appendChild(mode_toggleB);
+		mode_toggleB.addEventListener("click",me.mode_toggleCB,false);
+		
+	}
+	me.mode_toggleCB=function(){
+		if(me.tour==true){
+			me.tour=false;
+			document.getElementById("mode_toggleB").checked=false;
+		}
+		else{
+			me.tour=true;
+			document.getElementById("mode_toggleB").checked=true;
+		}
+	}
+	me.change_areaCB=function(){
+		
+		//get new selected area
+		var selection=get_selected("area_select");
+		if(selection!=null){
+			me.current=selection;
+			console.log("selection="+selection);
+		}
+		else{
+			console.log("failed to obtain selection");
+			return;
+		}
+		
+		//remove all layers from map
+		for(var lidx=0;lidx<me.all_layers.length;lidx++)
+			window.map.removeLayer(me.all_layers[lidx]);
+		
+		//refill layers lists
+		me.prepare_layers();
+		
+		//re-add layers to map
+		for(var lidx=0;lidx<me.all_layers.length;lidx++){
+			console.log("adding "+lidx+"/"+me.all_layers.length);
+			window.map.addLayer(me.all_layers[lidx]);
+		}
+		
+		window.map.getView().setCenter(ol.proj.transform(INSTALLED[me.current]["center"], 'EPSG:4326', 'EPSG:3857'));
+		
+		//resize (calls set res)
+		me.resize();
+	}
+	
+	
+	//GAME ORCHESTRATION:
+	me.start_move=function(feature){
+		
+		if(me.RUNNING==false)return;
+		
+		try{window.clearTimeout(me.last_timeout);}
+		catch(e){console.log(e);}
+		
+		if(!feature){
+		
+			if(me.all_targets.length==0){
+				me.end_game();
+				return;
+			}
+			
+			console.log("me.start_move no feature passed so selecting");
+			
+			var ridx=parseInt(Math.random()*me.all_targets.length);
+			console.log("cycling ridx="+ridx.toString()+"/"+me.all_targets.length);
+			
+			for(var dummy=0;dummy<ridx;dummy++){
+				//console.log(dummy+"/"+ridx);
+				me.all_targets.push(me.all_targets.shift());
+			}
+			console.log("shifting me.current_target_layer");
+			me.current_target_layer=me.all_targets.shift();
+			
+			console.log(me.current_target_layer.getSource().getFeatures()[0].get("NAME"));
+		}
+		else{
+			console.log("me.start_move with feature passed");
+		}
+		
+		var target_name=null;
+		target_name=me.current_target_layer.getSource().getFeatures()[0].get("NAME");
+		if(!target_name)target_name=me.current_target_layer.getSource().getFeatures()[0].get("Name");
+		
+		var xhtml="<center><h1>Next: "+target_name+"</h1></center>";
+		console.log("me.start_move:"+target_name+" "+me.all_targets.length.toString());
+		popup(xhtml);
+	}
+	me.end_game=function(){
+		try{document.body.removeChild(me.popup);}
+		catch(e){console.log("me.end_game");}
+		var xhtml='<center><h1>Congratulations!<br>You Finished!</h1></center>';
+		console.log(xhtml);
+		popup(xhtml);
+	}
+	me.check_feature = function(pixel) {
+		
+		//ISSUE: GTownParks and GTown cannot coexist b/c lambda feature=function(....) only returns first found
+		
+		if(!me.current_target_layer)return;
+		
+		console.log("me.check_feature clearing last_timeout");
+		window.clearTimeout(me.last_timeout);
+		
+		var feature;
+		var features=[];
+		var found=false;
+		
+		if(!pixel && me.tour){
+			features.push(me.current_target_layer.getSource().getFeatures()[0]);
+		}
+		else{
+			
+			dummy=window.map.forEachFeatureAtPixel(pixel,function(feature,layer){
+				var target_name=null;
+				target_name=feature.get("NAME");
+				if(!target_name)target_name=feature.get("Name");
+				console.log("returning: "+target_name);
+				features.push(feature);
+			});
+		}
+		
+		if(features.length>0 && !found){
+			
+			for(var fidx=0;fidx<features.length;fidx++){
+			
+				feature=features[fidx];
+				var target_name=null;
+				target_name=me.current_target_layer.getSource().getFeatures()[0].get("NAME");
+				if(!target_name)target_name=me.current_target_layer.getSource().getFeatures()[0].get("Name");
+				console.log(fidx.toString()+" "+target_name);
+			
+				if(feature==me.current_target_layer.getSource().getFeatures()[0]){
+					
+					console.log("***** Correct! *****");
+					
+					var layer_type=me.current_target_layer.get("type");
+					try{console.log(layer_type);}
+					catch(e){}
+					if(layer_type!="Point")
+						feature.setStyle(correct_style);
+					else
+						feature.setStyle(point_correct_style);
+						//console.log("NEED: Point layer correct_style");
+					
+					
+					found=true;
+					delete(me.current_target_layer);
+					me.current_target_layer=null;
+					if(me.tour){
+						console.log("check_feature setting timeout for pan_zoom_home");
+						me.last_timeout=window.setTimeout(pan_zoom_home,3*me.DELAY);
+					}
+					else{
+						window.setTimeout(me.start_move,1*me.DELAY);
+					}
+					return;
+				}
+			
+			}
+			
+			console.log("starting move passing feature: "+target_name);
+			me.start_move(feature);
+		}
+		else{
+			console.log("game over");
+		}
+	}
+	
+	return me;
 }
