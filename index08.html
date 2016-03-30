@@ -1,0 +1,40 @@
+<html>
+	<head>
+	
+	<title>GGMC</title>
+	<meta charset="UTF-8">
+	
+	<link rel="stylesheet" href="./static/ggmc/css/ol.css" type="text/css">
+	<link rel="stylesheet" href="./static/ggmc/css/ggmc.css" type="text/css">
+	
+	<script src="./static/ggmc/js/jquery.js"></script>
+	<script src="./static/ggmc/js/ol.js"></script>
+	
+	<script src="./static/ggmc/js/util.js"></script>
+	<script src="./static/ggmc/js/ggmc.js"></script>
+	<script src="./static/ggmc/js/config.js"></script>
+	<script src="./static/ggmc/js/constants.js"></script>
+	<script src="./static/ggmc/js/zoom.js"></script>
+	
+	<script type="text/javascript">
+		window.map=null;
+		window.app=null;
+		window.onresize=window.onorientationchange=function(e){
+			if(!window.app)return;
+			window.app.resize();
+		}
+		var initialize=function(e){
+			window.app=new GGMC("map_div","control_div");
+			window.app.setup_control_panel();
+			window.app.setup_map();//only call 1x here
+			window.app.change_areaCB();
+//			window.app.start_move();
+		}
+	</script>
+	
+	</head>
+	<body onload="initialize()">
+		<div id="control_div" class="control_panel"></div>
+		<div id="map_div"></div>
+	</body>
+</html>
