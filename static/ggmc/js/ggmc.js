@@ -361,12 +361,11 @@ var GGMC=function(div_id,control_panel_id){
 					
 					console.log("***** Correct! *****");
 					
-					try{
-						feature.setStyle(correct_style);
-					}
-					catch(e){
+					if(feature.get("type")=="Point"){
 						feature.setStyle(point_correct_style);
-						//console.log("NEED: Point layer correct_style");
+					}
+					else{
+						feature.setStyle(correct_style);
 					}
 					
 					found=true;
