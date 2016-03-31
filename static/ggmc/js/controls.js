@@ -44,7 +44,7 @@ var ControlPanel=function(){
 		
 		//re-add layers to map
 		for(var lidx=0;lidx<window.app.all_layers.length;lidx++){
-			console.log("adding "+lidx+"/"+window.app.all_layers.length);
+			//console.log("adding "+lidx+"/"+window.app.all_layers.length);
 			window.map.addLayer(window.app.all_layers[lidx]);
 		}
 		
@@ -63,7 +63,7 @@ var ControlPanel=function(){
 			var features=lyr.getSource().getFeatures();
 			for(var fidx=0;fidx<features.length;fidx++){
 				window.app.all_features.push(features[fidx]);
-				console.log(window.app.all_features.length);
+				//console.log(window.app.all_features.length);
 			}
 		}
 	}
@@ -99,41 +99,43 @@ var ControlPanel=function(){
 	close_div.appendChild(closeB);
 //	$("#control_panel").append(close_div);
 
-
-		var d=document.createElement("hr");
-		$("#control_panel").append(d);
-		
-		var category=layers.keys[kidx];
-		
-		var h=document.createElement("div");
-		h.className='layer_category';
-		h.id=parseInt(100000*Math.random());
-		
-		var t=document.createElement("table");
-		t.style.width="100%";
-		var tr=t.insertRow(-1);
-		var td;
-		
-		td=tr.insertCell(-1);
-		td.className="arrow_cell";
-		td.appendChild(mode_toggleB);
-		
-		td=tr.insertCell(-1);
-		td.align="center";
-		var asd=document.createElement("div");
-		asd.className="asd";
-		asd.appendChild(area_select);
-		td.appendChild(asd);
-		
-		td=tr.insertCell(-1);
-		td.className="arrow_cell";
-		td.appendChild(close_div);
-		
-		h.appendChild(t);
-		
-		$("#control_panel").append(h);
-
 	
+	
+	var d=document.createElement("hr");
+	$("#control_panel").append(d);
+	
+	var category=layers.keys[kidx];
+	
+	var h=document.createElement("div");
+	h.className='layer_category';
+	h.id=parseInt(100000*Math.random());
+	
+	var t=document.createElement("table");
+	t.style.width="100%";
+	var tr=t.insertRow(-1);
+	var td;
+	
+	td=tr.insertCell(-1);
+	td.className="arrow_cell";
+	td.appendChild(mode_toggleB);
+	
+	td=tr.insertCell(-1);
+	td.align="center";
+	var asd=document.createElement("div");
+	asd.className="asd";
+	asd.appendChild(area_select);
+	td.appendChild(asd);
+	
+	td=tr.insertCell(-1);
+	td.className="arrow_cell";
+	td.appendChild(close_div);
+	
+	h.appendChild(t);
+	
+	$("#control_panel").append(h);
+	
+	
+	//Callbacks:
 	$("#closeB").click(function(){
 		$(".control_panel").toggleClass("show");
 	});
@@ -144,7 +146,8 @@ var ControlPanel=function(){
 	$(".close_div").mouseout(function(){
 		$(".close_div").toggleClass("hilighted");
 	});
-		
+	
+	//Hard-coded layers (for now):
 	for(var kidx=0;kidx<layers.keys.length;kidx++){
 		
 		var d=document.createElement("hr");
@@ -221,7 +224,6 @@ var controlB=function(opt_options) {
 	button.title="Configuration";
 	
 	var controlCB = function() {
-		console.log("controlCB");
 		$(".control_panel").toggleClass("show");
 		console.log("controlCB show off");
 	};
