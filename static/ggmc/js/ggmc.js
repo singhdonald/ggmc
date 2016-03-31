@@ -1,4 +1,4 @@
-var GGMC=function(div_id,control_div_id){	
+var GGMC=function(div_id,control_panel_id){	
 	
 	var me={};
 	me.popup=document.createElement("div");
@@ -6,12 +6,16 @@ var GGMC=function(div_id,control_div_id){
 	me.popup.className="popup";
 	
 	me.div_id = div_id;
-	me.control_div_id=control_div_id;
-	me.tour=false;
+	me.control_panel_id=control_panel_id;
+	me.tour=true;
 	me.last_timeout=null;
 	
 	me.current = INSTALLED["keys"][0];
-//	me.base_layer=new ol.layer.Tile({title:'Satellite',sphericalMercator: true,source:new ol.source.MapQuest({layer:'sat'})});
+	
+	var BASE_LAYERS={};
+	BASE_LAYERS['Satellite']=new ol.layer.Tile({minResolution:500,preload:14,opacity:0.5,title:'Satellite',source:new ol.source.MapQuest({layer:'sat'})});
+	BASE_LAYERS['OpenStreetMap']=new ol.layer.Tile({preload:14,opacity:1.0,title:'OpenStreetMap',source:new ol.source.MapQuest({layer:'osm'})});
+	BASE_LAYERS['OpenStreetMap2']=new ol.layer.Tile({title:'OpenStreetMap2',source:new ol.source.OSM()});
 	
 	me.polygon_layers=null;
 	me.point_layers=null;
@@ -20,6 +24,7 @@ var GGMC=function(div_id,control_div_id){
 	me.boundary_layer=null;
 	me.all_layers=[];
 	me.all_targets=[];
+	me.all_features=[];
 	me.current_target_layer=null;
 	
 	me.debug=true;
@@ -27,7 +32,7 @@ var GGMC=function(div_id,control_div_id){
 	me.HILIGHTS=[];
 	me.DELAY=500.;
 	me.RUNNING=false;
-	
+
 	me.resize=function(){
 		var W=window.innerWidth;
 		var H=window.innerHeight;
@@ -40,6 +45,8 @@ var GGMC=function(div_id,control_div_id){
 		me.all_targets=[];
 		me.polygon_layers=[];
 		me.all_layers=[];
+		me.all_features=[];
+		
 		for(var pidx=0; pidx<INSTALLED[me.current]["polygon_features"].length;pidx++){
 			var src_url=INSTALLED[me.current]["path"] + INSTALLED[me.current]["polygon_features"][pidx]["filename"];
 			var polygon_source=new ol.source.Vector({
@@ -62,6 +69,8 @@ var GGMC=function(div_id,control_div_id){
 			polygon_layer.set("type","Polygon");
 			me.polygon_layers.push(polygon_layer);
 			me.all_targets.push(polygon_layer);
+			
+
 		}
 
 		me.point_layers=[];
@@ -90,6 +99,7 @@ var GGMC=function(div_id,control_div_id){
 			point_layer.set("type","Point");
 			me.point_layers.push(point_layer);
 			me.all_targets.push(point_layer);
+			
 		}
 
 
@@ -132,7 +142,8 @@ var GGMC=function(div_id,control_div_id){
 		});
 		
 		
-//		me.all_layers.push(me.base_layer);
+		me.all_layers.push(BASE_LAYERS['OpenStreetMap']);
+		me.all_layers.push(BASE_LAYERS['Satellite']);
 		me.all_layers.push(me.boundary_layer);
 		for(var pidx=0; pidx<me.polygon_layers.length; pidx++){
 			me.all_layers.push(me.polygon_layers[pidx]);
@@ -196,6 +207,7 @@ var GGMC=function(div_id,control_div_id){
 	ol.inherits(me.playB, ol.control.Control);
 	
 	me.setup_map=function(){
+		
 		window.map = new ol.Map({
 			layers: me.all_layers,
 			target: me.div_id,
@@ -260,91 +272,6 @@ var GGMC=function(div_id,control_div_id){
 	}//END:me.setup_map
 	
 	
-	//CONTROL PANEL
-	me.setup_control_panel=function(){
-		
-		var c=document.getElementById("control_div");
-		
-		var closeB=new Image();
-		closeB.src="./static/ggmc/img/delete-white.png";
-		closeB.id="closeB";		
-		
-		var close_div=document.createElement("div");
-		close_div.className="close_div";
-		close_div.appendChild(closeB);
-		c.appendChild(close_div);
-		
-		$("#closeB").click(function(){
-			console.log("jquery CB");
-			$(".control_panel").toggleClass("show");
-			console.log("toggled show on");
-		});
-		
-		var area_select=document.createElement("select");
-		area_select.id="area_select";
-		
-		for(var sidx=0;sidx<INSTALLED["keys"].length;sidx++){
-			var opt=document.createElement("option");
-			opt.text=INSTALLED["keys"][sidx];
-			opt.selected=false;
-			if(sidx==0)opt.selected=true;
-			area_select.appendChild(opt);
-		}
-		c.appendChild(area_select);
-		area_select.addEventListener("change",me.change_areaCB,false);
-		
-		//mode toggle
-		var mode_toggleB=document.createElement("input");
-		mode_toggleB.type="radio";
-		mode_toggleB.checked=me.tour;
-		mode_toggleB.id="mode_toggleB";
-		c.appendChild(mode_toggleB);
-		mode_toggleB.addEventListener("click",me.mode_toggleCB,false);
-		
-	}
-	me.mode_toggleCB=function(){
-		if(me.tour==true){
-			me.tour=false;
-			document.getElementById("mode_toggleB").checked=false;
-		}
-		else{
-			me.tour=true;
-			document.getElementById("mode_toggleB").checked=true;
-		}
-	}
-	me.change_areaCB=function(){
-		
-		//get new selected area
-		var selection=get_selected("area_select");
-		if(selection!=null){
-			me.current=selection;
-			console.log("selection="+selection);
-		}
-		else{
-			console.log("failed to obtain selection");
-			return;
-		}
-		
-		//remove all layers from map
-		for(var lidx=0;lidx<me.all_layers.length;lidx++)
-			window.map.removeLayer(me.all_layers[lidx]);
-		
-		//refill layers lists
-		me.prepare_layers();
-		
-		//re-add layers to map
-		for(var lidx=0;lidx<me.all_layers.length;lidx++){
-			console.log("adding "+lidx+"/"+me.all_layers.length);
-			window.map.addLayer(me.all_layers[lidx]);
-		}
-		
-		window.map.getView().setCenter(ol.proj.transform(INSTALLED[me.current]["center"], 'EPSG:4326', 'EPSG:3857'));
-		
-		//resize (calls set res)
-		me.resize();
-	}
-	
-	
 	//GAME ORCHESTRATION:
 	me.start_move=function(feature){
 		
@@ -355,35 +282,34 @@ var GGMC=function(div_id,control_div_id){
 		
 		if(!feature){
 		
-			if(me.all_targets.length==0){
+			if(me.all_features.length==0){
 				me.end_game();
 				return;
 			}
 			
 			console.log("me.start_move no feature passed so selecting");
 			
-			var ridx=parseInt(Math.random()*me.all_targets.length);
-			console.log("cycling ridx="+ridx.toString()+"/"+me.all_targets.length);
+			var ridx=parseInt(Math.random()*me.all_features.length);
+			console.log("cycling ridx="+ridx.toString()+"/"+me.all_features.length);
 			
 			for(var dummy=0;dummy<ridx;dummy++){
 				//console.log(dummy+"/"+ridx);
-				me.all_targets.push(me.all_targets.shift());
+				me.all_features.push(me.all_features.shift());
 			}
-			console.log("shifting me.current_target_layer");
-			me.current_target_layer=me.all_targets.shift();
+			console.log("shifting me.current_feature");
+			me.current_feature=me.all_features.shift();
 			
-			console.log(me.current_target_layer.getSource().getFeatures()[0].get("NAME"));
 		}
 		else{
 			console.log("me.start_move with feature passed");
 		}
 		
 		var target_name=null;
-		target_name=me.current_target_layer.getSource().getFeatures()[0].get("NAME");
-		if(!target_name)target_name=me.current_target_layer.getSource().getFeatures()[0].get("Name");
+		target_name=me.current_feature.get("NAME");
+		if(!target_name)target_name=me.current_feature.get("Name");
 		
 		var xhtml="<center><h1>Next: "+target_name+"</h1></center>";
-		console.log("me.start_move:"+target_name+" "+me.all_targets.length.toString());
+		console.log("me.start_move:"+target_name+" "+me.all_features.length.toString());
 		popup(xhtml);
 	}
 	me.end_game=function(){
@@ -392,12 +318,13 @@ var GGMC=function(div_id,control_div_id){
 		var xhtml='<center><h1>Congratulations!<br>You Finished!</h1></center>';
 		console.log(xhtml);
 		popup(xhtml);
+		document.getElementById("playB").innerHTML='<img src="./static/ggmc/img/play.png"/>';
 	}
 	me.check_feature = function(pixel) {
 		
 		//ISSUE: GTownParks and GTown cannot coexist b/c lambda feature=function(....) only returns first found
 		
-		if(!me.current_target_layer)return;
+		if(!me.current_feature)return;
 		
 		console.log("me.check_feature clearing last_timeout");
 		window.clearTimeout(me.last_timeout);
@@ -407,7 +334,7 @@ var GGMC=function(div_id,control_div_id){
 		var found=false;
 		
 		if(!pixel && me.tour){
-			features.push(me.current_target_layer.getSource().getFeatures()[0]);
+			features.push(me.current_feature);
 		}
 		else{
 			
@@ -426,27 +353,25 @@ var GGMC=function(div_id,control_div_id){
 			
 				feature=features[fidx];
 				var target_name=null;
-				target_name=me.current_target_layer.getSource().getFeatures()[0].get("NAME");
-				if(!target_name)target_name=me.current_target_layer.getSource().getFeatures()[0].get("Name");
+				target_name=me.current_feature.get("NAME");
+				if(!target_name)target_name=me.current_feature.get("Name");
 				console.log(fidx.toString()+" "+target_name);
 			
-				if(feature==me.current_target_layer.getSource().getFeatures()[0]){
+				if(feature==me.current_feature){
 					
 					console.log("***** Correct! *****");
 					
-					var layer_type=me.current_target_layer.get("type");
-					try{console.log(layer_type);}
-					catch(e){}
-					if(layer_type!="Point")
+					try{
 						feature.setStyle(correct_style);
-					else
+					}
+					catch(e){
 						feature.setStyle(point_correct_style);
 						//console.log("NEED: Point layer correct_style");
-					
+					}
 					
 					found=true;
-					delete(me.current_target_layer);
-					me.current_target_layer=null;
+					delete(me.current_feature);
+					me.current_feature=null;
 					if(me.tour){
 						console.log("check_feature setting timeout for pan_zoom_home");
 						me.last_timeout=window.setTimeout(pan_zoom_home,3*me.DELAY);
@@ -466,6 +391,5 @@ var GGMC=function(div_id,control_div_id){
 			console.log("game over");
 		}
 	}
-	
 	return me;
 }

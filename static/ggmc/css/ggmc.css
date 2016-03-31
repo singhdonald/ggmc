@@ -3,7 +3,7 @@ html,body,#map_div{
 	height:100%;
 	overflow:auto;
 	position:relative;
-	margin:0px;
+	margin:0;
 	background:#333333;
 }
 .playB{
@@ -14,32 +14,20 @@ html,body,#map_div{
 	top: 85px;
 	left: .5em;
 }
-.control_panel{
-	position:fixed;
-	height: 100%;
-	width: 100%;
-	left: -100%;
-	z-index: 10;
-	background-color: teal;
-	-webkit-transition: left 0.75s ease;
-	transition: left 0.75s ease;
-	opacity:0.8;
-	text-align:center;
-}
-.control_panel.show{
-	left: 0;
-}
 .popup{
-	opacity:1.0;
 	background:#333333;
-	color:#00FFF0;
+	color:lightgreen;
 	border:3px solid;
 	border-radius:10px;
 	position:absolute;
 	text-align:center;
 
 }
-.close_div{
-	width:100%;
-	text-align:right;
+.info_div{
+	position="absolute";
+	top="0px";
+	width="100%";
 }
+
+
+

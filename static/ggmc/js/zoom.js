@@ -22,7 +22,7 @@ var pan_zoom=function(location){
 		window.map.beforeRender(pan);
 		window.map.beforeRender(zoom);
 		
-		var bbox=window.app.current_target_layer.getSource().getFeatures()[0].getGeometry().getExtent();
+		var bbox=window.app.current_feature.getGeometry().getExtent();
 		var res=compute_resolution(bbox,true,window.innerWidth,window.innerHeight);
 		res*=1.2;
 		if(res==0)res=100;
@@ -30,7 +30,7 @@ var pan_zoom=function(location){
 		window.map.getView().setResolution(res);
 		window.map.getView().setCenter(location);
 		
-		if(window.app.current_target_layer != null){
+		if(window.app.current_feature != null){
 			console.log("pan_zoom setting timeout for check_feature");
 			window.app.last_timeout=window.setTimeout(window.app.check_feature,this_delay);
 		}

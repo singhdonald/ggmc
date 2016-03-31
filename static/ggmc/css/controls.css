@@ -1,0 +1,75 @@
+.background{
+	width:100%;height:100%;
+	background:#AAAAAA;
+}
+.close_div,#closeB{
+	text-align:right;
+	width:17px;
+	height:17px;
+}
+
+.close_div.hilighted{
+	background:orange;
+}
+.control_panel{
+	position:fixed;
+	height: 100%;
+	width: 250px;
+	left: -100%;
+	z-index: 10;
+	background-color:#333333;
+	color:white;
+	-webkit-transition: left 0.75s ease;
+	transition: left 0.75s ease;
+	opacity:0.85;
+	text-align:center;
+}
+.control_panel.show{
+	left: 0;
+}
+.cat_lyrs_div{
+	position:relative;
+	overflow:auto;
+}
+.arrow{
+	height:17px;
+	width:17px;
+	transition: transform 0.3s ease;
+}
+.arrow.up{
+	transform:rotate(180deg);
+}
+.arrow_cell{
+	height:17px;
+	width:17px;
+}
+.label{
+	color:orange;
+}
+.category_cell{
+	text-align:center;
+}
+.layer_category{
+	font-weight:bold;
+}
+.semi-square {
+   -webkit-border-radius: 5px;
+   -moz-border-radius: 5px;
+   border-radius: 5px;
+}
+.asd{ margin: 20px; }
+.styled-select {
+   height: 29px;
+   overflow: hidden;
+   width: 140px;
+}
+.blue    { background-color: #AAAAAA; }
+.blue select    { color: #fff; }
+.styled-select select {
+   background: transparent;
+   border: none;
+   font-size: 14px;
+   height: 29px;
+   padding: 5px; /* If you add too much padding here, the options won't show in IE */
+   width: 268px;
+}
