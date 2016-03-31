@@ -62,6 +62,7 @@ var ControlPanel=function(){
 			var lyr=window.app.all_targets[aidx];
 			var features=lyr.getSource().getFeatures();
 			for(var fidx=0;fidx<features.length;fidx++){
+				features[fidx].set("type",lyr.get("type"));
 				window.app.all_features.push(features[fidx]);
 				//console.log(window.app.all_features.length);
 			}
@@ -83,7 +84,7 @@ var ControlPanel=function(){
 	
 	//mode toggle
 	var mode_toggleB=document.createElement("input");
-	mode_toggleB.type="radio";
+	mode_toggleB.type="checkbox";
 	mode_toggleB.checked=window.app.tour;
 	mode_toggleB.id="mode_toggleB";
 //	$("#control_panel").append(mode_toggleB);
@@ -112,12 +113,12 @@ var ControlPanel=function(){
 	
 	var t=document.createElement("table");
 	t.style.width="100%";
+
 	var tr=t.insertRow(-1);
 	var td;
 	
 	td=tr.insertCell(-1);
 	td.className="arrow_cell";
-	td.appendChild(mode_toggleB);
 	
 	td=tr.insertCell(-1);
 	td.align="center";
@@ -129,7 +130,24 @@ var ControlPanel=function(){
 	td=tr.insertCell(-1);
 	td.className="arrow_cell";
 	td.appendChild(close_div);
+//	
+	var tr=t.insertRow(-1);
+	var td;
 	
+	td=tr.insertCell(-1);
+	td.className="arrow_cell";
+	
+	td=tr.insertCell(-1);
+	td.align="center";
+	var tour_label=document.createElement("div");
+	tour_label.className="tour_label";
+	tour_label.innerHTML="Tour Mode";
+	td.appendChild(tour_label);
+	
+	td=tr.insertCell(-1);
+	td.className="arrow_cell";
+	td.appendChild(mode_toggleB);
+//
 	h.appendChild(t);
 	
 	$("#control_panel").append(h);
@@ -147,11 +165,13 @@ var ControlPanel=function(){
 		$(".close_div").toggleClass("hilighted");
 	});
 	
+
+
 	//Hard-coded layers (for now):
 	for(var kidx=0;kidx<layers.keys.length;kidx++){
 		
-		var d=document.createElement("hr");
-		$("#control_panel").append(d);
+		var hr=document.createElement("hr");
+		$("#control_panel").append(hr);
 		
 		var category=layers.keys[kidx];
 		
@@ -190,12 +210,24 @@ var ControlPanel=function(){
 		cat_lyrs_div.id=h.id+"_cat_lyrs_div";
 		cat_lyrs_div.className="cat_lyrs_div";
 		
+		var lyrs_table=document.createElement("table");
+		lyrs_table.className="lyrs_table";
+		
 		for(var lidx=0;lidx<layers[category].length;lidx++){
-			var d=document.createElement("div");
-			d.innerHTML=layers[category][lidx];
-			d.className="layer_label";
-			cat_lyrs_div.appendChild(d);
+			var layer_label=document.createElement("div");
+			layer_label.innerHTML=layers[category][lidx];
+			layer_label.className="layer_label";
+			var id=parseInt(1E9*Math.random()).toString();
+			layer_label.id=id;
+			console.log(id);
+			//cat_lyrs_div.appendChild(layer_label);
+			var r=lyrs_table.insertRow(-1);
+			r.className="lyr_row";
+			var c=r.insertCell(-1);
+			c.className="lyr_cell";
+			c.appendChild(layer_label);
 		}
+		cat_lyrs_div.appendChild(lyrs_table);
 		$("#control_panel").append(cat_lyrs_div);
 		
 	}
@@ -207,6 +239,15 @@ var ControlPanel=function(){
 		$($(".arrow")[dummy]).click(function(e){
 			$(e.target).toggleClass("up");
 			$("#"+e.target.id.split("_")[0]+"_cat_lyrs_div").animate({height:'toggle'},300,function(){});
+		});
+	}
+	
+	for(var dummy=0;dummy<$(".layer_label").length;dummy++){
+		$($(".layer_label")[dummy]).mouseover(function(e){
+			$(e.target).toggleClass("hilighted");
+		});
+		$($(".layer_label")[dummy]).mouseout(function(e){
+			$(e.target).toggleClass("hilighted");
 		});
 	}
 	
