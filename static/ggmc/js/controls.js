@@ -1,8 +1,10 @@
 var layers={
-	'keys':['Base Layers','Geographic Data','National Data',],
+	'keys':['Base Layers','Rivers','Towns','Protected Areas','Urban Parks'],
 	'Base Layers':['Satellite','OpenStreetMap','OpenStreetMap2'],
-	'Geographic Data':['Main Rivers','Main Roads'],
-	'National Data':['Admin Regions','Towns'],
+	'Rivers':['Cuyuni','Berbice','Essequibo','Potaro','Rupununi'],
+	'Towns':['Georgetown','Bartica','Charity','New Amsterdam','Lethem','Annai','Mahdia'],
+	'Protected Areas':['Shell Beach','Kaieteur','Iwokrama','Kanuku Mountains','Konashens'],
+	'Urban Parks':['Guyana Zoo','Botanical Gardens','National Park','Joe Vera'],
 };
 
 var ControlPanel=function(){
@@ -261,6 +263,7 @@ var controlB=function(opt_options) {
 	var options = opt_options || {};
 	var button = document.createElement('button');
 	button.id="gearB";
+	button.className="controlB";
 	button.innerHTML = '<img src="./static/ggmc/img/gear-white.png"/>';
 	button.title="Configuration";
 	

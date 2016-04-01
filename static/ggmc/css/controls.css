@@ -27,6 +27,7 @@
 	transition: left 0.75s ease;
 	opacity:0.85;
 	text-align:center;
+	overflow:auto;
 }
 .control_panel.show{
 	left: 0;
@@ -54,6 +55,7 @@
 }
 .label{
 	color:orange;
+	font-size:14pt;
 }
 .category_cell{
 	text-align:center;

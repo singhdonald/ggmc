@@ -166,6 +166,7 @@ var GGMC=function(div_id,control_panel_id){
 		var options = opt_options || {};
 		var button = document.createElement('button');
 		button.id="playB";
+		button.className="playB";
 		button.innerHTML = '<img src="./static/ggmc/img/play.png"/>';
 		button.title="Start";
 		
@@ -271,7 +272,7 @@ var GGMC=function(div_id,control_panel_id){
 		
 	}//END:me.setup_map
 	
-	
+	  	
 	//GAME ORCHESTRATION:
 	me.start_move=function(feature){
 		
