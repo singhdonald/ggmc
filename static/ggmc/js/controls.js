@@ -89,6 +89,7 @@ var ControlPanel=function(){
 	mode_toggleB.type="checkbox";
 	mode_toggleB.checked=window.app.tour;
 	mode_toggleB.id="mode_toggleB";
+	mode_toggleB.className="mode_toggleB";
 //	$("#control_panel").append(mode_toggleB);
 	mode_toggleB.addEventListener("click",me.mode_toggleCB,false);
 
@@ -153,7 +154,8 @@ var ControlPanel=function(){
 	h.appendChild(t);
 	
 	$("#control_panel").append(h);
-	
+	$(".mode_toggleB").bootstrapSwitch();
+
 	
 	//Callbacks:
 	$("#closeB").click(function(){
