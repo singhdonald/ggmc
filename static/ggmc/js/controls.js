@@ -121,9 +121,6 @@ var ControlPanel=function(){
 	var td;
 	
 	td=tr.insertCell(-1);
-	td.className="arrow_cell";
-	
-	td=tr.insertCell(-1);
 	td.align="center";
 	var asd=document.createElement("div");
 	asd.className="asd";
@@ -133,12 +130,13 @@ var ControlPanel=function(){
 	td=tr.insertCell(-1);
 	td.className="arrow_cell";
 	td.appendChild(close_div);
-//	
-	var tr=t.insertRow(-1);
-	var td;
-	
+
 	td=tr.insertCell(-1);
 	td.className="arrow_cell";
+	
+//	
+	tr=t.insertRow(-1);
+	td;
 	
 	td=tr.insertCell(-1);
 	td.align="center";
@@ -150,6 +148,10 @@ var ControlPanel=function(){
 	td=tr.insertCell(-1);
 	td.className="arrow_cell";
 	td.appendChild(mode_toggleB);
+	
+	td=tr.insertCell(-1);
+	td.className="arrow_cell";
+	
 //
 	h.appendChild(t);
 	
@@ -189,9 +191,6 @@ var ControlPanel=function(){
 		var td;
 		
 		td=tr.insertCell(-1);
-		td.className="arrow_cell";
-		
-		td=tr.insertCell(-1);
 		td.className="category_cell";
 		var label=document.createElement("div");
 		label.className="label";
@@ -205,6 +204,9 @@ var ControlPanel=function(){
 		arrow.className="arrow";
 		arrow.src="./static/ggmc/img/arrow.png";
 		td.appendChild(arrow);
+		
+		td=tr.insertCell(-1);
+		td.className="arrow_cell";
 		
 		h.appendChild(t);
 		
