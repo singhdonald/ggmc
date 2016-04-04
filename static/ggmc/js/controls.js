@@ -177,6 +177,7 @@ var ControlPanel=function(){
 	for(var kidx=0;kidx<layers.keys.length;kidx++){
 		
 		var hr=document.createElement("hr");
+		hr.className="hr";
 		$("#control_panel").append(hr);
 		
 		var category=layers.keys[kidx];
@@ -238,8 +239,9 @@ var ControlPanel=function(){
 		
 	}
 	
-	var d=document.createElement("hr");
-	$("#control_panel").append(d);
+	var hr=document.createElement("hr");
+	hr.className="hr";
+	$("#control_panel").append(hr);
 	
 	for(var dummy=0;dummy<$(".arrow").length;dummy++){
 		$($(".arrow")[dummy]).click(function(e){
