@@ -121,9 +121,6 @@ var ControlPanel=function(){
 	var td;
 	
 	td=tr.insertCell(-1);
-	td.className="arrow_cell";
-	
-	td=tr.insertCell(-1);
 	td.align="center";
 	var asd=document.createElement("div");
 	asd.className="asd";
@@ -133,12 +130,13 @@ var ControlPanel=function(){
 	td=tr.insertCell(-1);
 	td.className="arrow_cell";
 	td.appendChild(close_div);
-//	
-	var tr=t.insertRow(-1);
-	var td;
-	
+
 	td=tr.insertCell(-1);
 	td.className="arrow_cell";
+	
+//	
+	tr=t.insertRow(-1);
+	td;
 	
 	td=tr.insertCell(-1);
 	td.align="center";
@@ -150,6 +148,10 @@ var ControlPanel=function(){
 	td=tr.insertCell(-1);
 	td.className="arrow_cell";
 	td.appendChild(mode_toggleB);
+	
+	td=tr.insertCell(-1);
+	td.className="arrow_cell";
+	
 //
 	h.appendChild(t);
 	
@@ -175,6 +177,7 @@ var ControlPanel=function(){
 	for(var kidx=0;kidx<layers.keys.length;kidx++){
 		
 		var hr=document.createElement("hr");
+		hr.className="hr";
 		$("#control_panel").append(hr);
 		
 		var category=layers.keys[kidx];
@@ -187,9 +190,6 @@ var ControlPanel=function(){
 		t.style.width="100%";
 		var tr=t.insertRow(-1);
 		var td;
-		
-		td=tr.insertCell(-1);
-		td.className="arrow_cell";
 		
 		td=tr.insertCell(-1);
 		td.className="category_cell";
@@ -205,6 +205,9 @@ var ControlPanel=function(){
 		arrow.className="arrow";
 		arrow.src="./static/ggmc/img/arrow.png";
 		td.appendChild(arrow);
+		
+		td=tr.insertCell(-1);
+		td.className="arrow_cell";
 		
 		h.appendChild(t);
 		
@@ -236,8 +239,9 @@ var ControlPanel=function(){
 		
 	}
 	
-	var d=document.createElement("hr");
-	$("#control_panel").append(d);
+	var hr=document.createElement("hr");
+	hr.className="hr";
+	$("#control_panel").append(hr);
 	
 	for(var dummy=0;dummy<$(".arrow").length;dummy++){
 		$($(".arrow")[dummy]).click(function(e){
