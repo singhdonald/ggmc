@@ -9,7 +9,7 @@ var INSTALLED={
 		"width":2,
 		"polygon_features":[
 			{"filename":"pacs.geojson","color":"rgba(0,255,0,1)","fill":'rgba(0,255,0,0.25)','width':1},
-			{"filename":"gy_rivers.geojson","color":"rgba(0,0,255,1)","fill":'rgba(0,0,255,1)','width':1},
+//			{"filename":"gy_rivers.geojson","color":"rgba(0,0,255,1)","fill":'rgba(0,0,255,1)','width':1},
 		],
 		"point_features":[
 			{"filename":"gy_towns.geojson","color":"rgba(255,0,0,1)","fill":'rgba(255,255,255,1)','width':5,'radius':10},

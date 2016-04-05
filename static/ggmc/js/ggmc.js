@@ -39,6 +39,54 @@ var GGMC=function(div_id,control_panel_id){
 		var res=compute_resolution(INSTALLED[me.current]['bbox'],false,W,H);
 		window.map.getView().setResolution(res);
 	}
+	me.change_areaCB=function(){
+		
+		//Get new selected area
+		
+		//var selection=get_selected("area_select");
+		var selection="guyana";
+		
+		if(selection!=null){
+			me.current=selection;
+			console.log("selection="+selection);
+		}
+		else{
+			console.log("failed to obtain selection");
+			return;
+		}
+		
+		//remove all layers from map
+		for(var lidx=0;lidx<me.all_layers.length;lidx++)
+			window.map.removeLayer(me.all_layers[lidx]);
+		
+		//refill layers lists
+		me.prepare_layers();
+		
+		//re-add layers to map
+		for(var lidx=0;lidx<me.all_layers.length;lidx++){
+			//console.log("adding "+lidx+"/"+me.all_layers.length);
+			window.map.addLayer(me.all_layers[lidx]);
+		}
+		
+		window.map.getView().setCenter(ol.proj.transform(INSTALLED[me.current]["center"], 'EPSG:4326', 'EPSG:3857'));
+		
+		//resize (calls set res)
+		me.resize();
+		
+		window.setTimeout(me.test,2000,false);
+	}
+	me.test=function(){
+		//alert(me.polygon_layers[0].getSource().getFeatures());
+		for(var aidx=0;aidx<me.all_targets.length;aidx++){
+			var lyr=me.all_targets[aidx];
+			var features=lyr.getSource().getFeatures();
+			for(var fidx=0;fidx<features.length;fidx++){
+				features[fidx].set("type",lyr.get("type"));
+				me.all_features.push(features[fidx]);
+				//console.log(window.app.all_features.length);
+			}
+		}
+	}
 //	
 	me.prepare_layers=function(){
 		console.log("me.prepare_layers: "+me.current);
@@ -167,7 +215,7 @@ var GGMC=function(div_id,control_panel_id){
 		var button = document.createElement('button');
 		button.id="playB";
 		button.className="playB";
-		button.innerHTML = '<img src="./static/ggmc/img/play.png"/>';
+		button.innerHTML = '<img src="./static/ggmc/img/flaticon/play.png" class="icon"/>';
 		button.title="Start";
 		
 		var playCB = function() {
@@ -177,18 +225,18 @@ var GGMC=function(div_id,control_panel_id){
 			if(me.all_targets.length==0){
 				console.log("resetting game from playCB");
 				me.change_areaCB();
-				document.getElementById("playB").innerHTML='<img src="./static/ggmc/img/pause.png"/>';
+				document.getElementById("playB").innerHTML='<img src="./static/ggmc/img/flaticon/pause.png" class="icon"/>';
 				me.RUNNING=true;
 				window.setTimeout(me.start_move,2*me.DELAY);//necessary!
 			}
 			else if(me.RUNNING==true){
 				me.RUNNING=false;
-				document.getElementById("playB").innerHTML='<img src="./static/ggmc/img/play.png"/>';
+				document.getElementById("playB").innerHTML='<img src="./static/ggmc/img/flaticon/play.png" class="icon"/>';
 			}
 			else{
 				me.RUNNING=true;
 				me.start_move(null);
-				document.getElementById("playB").innerHTML='<img src="./static/ggmc/img/pause.png"/>';
+				document.getElementById("playB").innerHTML='<img src="./static/ggmc/img/flaticon/pause.png" class="icon"/>';
 			}
 			console.log("playCB done");
 		};
@@ -222,7 +270,7 @@ var GGMC=function(div_id,control_panel_id){
 					collapsible: false
 				})
 			}).extend([
-				new controlB(),new me.playB(),
+				new gearB(),new me.playB(),
 			])
 		});
 		
@@ -319,7 +367,7 @@ var GGMC=function(div_id,control_panel_id){
 		var xhtml='<center><h1>Congratulations!<br>You Finished!</h1></center>';
 		console.log(xhtml);
 		popup(xhtml);
-		document.getElementById("playB").innerHTML='<img src="./static/ggmc/img/play.png"/>';
+		document.getElementById("playB").innerHTML='<img src="./static/ggmc/img/play.png" class="icon"/>';
 	}
 	me.check_feature = function(pixel) {
 		
