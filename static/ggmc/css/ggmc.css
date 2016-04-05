@@ -34,9 +34,9 @@ html,body,#map_div{
 
 }
 .info_div{
-	position="absolute";
-	top="0px";
-	width="100%";
+	position:absolute;
+	top:0px;
+	width:100%;
 }
 .tooltip-inner {
 	white-space: nowrap;
