@@ -23,7 +23,7 @@
 	<script src="./static/ggmc/js/zoom.js"></script>
 	<script src="./static/ggmc/js/gearB.js"></script>
 	<script src="./static/ggmc/js/controls.js"></script>
-	
+	<script src="./static/ggmc/js/map.js"></script>
 	<script type="text/javascript">
 		window.map=null;
 		window.app=null;
@@ -34,6 +34,7 @@
 		var initialize=function(e){
 			window.app=new GGMC("map_div","control_panel");
 			window.app.setup_map();//only call 1x here
+			var dummy=new Map();
 			window.control_panel=new ControlPanel();
 			window.app.change_areaCB();
 			window.control_panel.resize();
