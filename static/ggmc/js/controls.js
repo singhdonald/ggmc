@@ -8,6 +8,17 @@ var make_vspace10=function(){
 	vspace10.className="vspace10";
 	return vspace10;
 }
+var make_layer_switch=function(idn){
+	var _switch=document.createElement("input");
+	_switch.type="checkbox";
+//	tourB.checked=window.app.tour;
+	_switch.id=idn;
+	_switch.className="switchB";
+	var switch_div=document.createElement("div");
+	switch_div.className="switch_div";
+	switch_div.appendChild(_switch);
+	return switch_div;
+}
 var switchCB=function(e,s){
 	console.log("lkdflkjs");
 }
@@ -121,8 +132,18 @@ var ControlPanel=function(){
 		head_div.appendChild(make_hr());
 	
 	}
-	
-	me.category_block=function(category,layers){
+	me.basename=function(path){
+		return path.split('/').reverse()[0];
+	}
+	me.checkboxCB=function(e){
+		console.log("checkboxCB: "+me.basename(e.target.src));
+		var img=e.target;
+		if(me.basename(img.src)=="checkbox-0.png")
+			img.src="./static/ggmc/img/checkbox-1.png";
+		else
+			img.src="./static/ggmc/img/checkbox-0.png";
+	}
+	me.category_block=function(category,layers,disabled){
 		var h=document.createElement("div");
 		h.className='layer_category';
 		h.id=parseInt(100000*Math.random());
@@ -150,13 +171,16 @@ var ControlPanel=function(){
 		h.appendChild(t);
 		
 		$("#config_panel").append(h);
-
+		
 		var cat_lyrs_div=document.createElement("div");
 		cat_lyrs_div.id=h.id+"_cat_lyrs_div";
 		cat_lyrs_div.className="cat_lyrs_div";
 		
 		var lyrs_table=document.createElement("table");
 		lyrs_table.className="lyrs_table";
+
+		cat_lyrs_div.appendChild(lyrs_table);
+		$("#config_panel").append(cat_lyrs_div);
 		
 		for(var lidx=0;lidx<layers.length;lidx++){
 			var layer_label=document.createElement("div");
@@ -171,16 +195,35 @@ var ControlPanel=function(){
 			var c=r.insertCell(-1);
 			c.className="lyr_cell";
 			c.appendChild(layer_label);
-		}
-		cat_lyrs_div.appendChild(lyrs_table);
-		$("#config_panel").append(cat_lyrs_div);
+			
+			var c=r.insertCell(-1);
+			var idn="switch_"+parseInt(1E9*Math.random());
+//			c.appendChild(new make_layer_switch(idn));
+//			$("#"+idn).bootstrapSwitch("size","mini");
+//			$("#"+idn).bootstrapSwitch();
+			var img=new Image();
+			img.id=idn;
+			img.className="icon";
+			img.src="./static/ggmc/img/checkbox-0.png";
+			c.appendChild(img);
+			img.addEventListener("click",me.checkboxCB,false);
+			
 
+			var c=r.insertCell(-1);
+			var idn="hamburger_"+parseInt(1E9*Math.random());
+			var img=new Image();
+			img.id=idn;
+			img.className="icon";
+			img.src="./static/ggmc/img/flaticon/interface-1.png";
+			c.appendChild(img);
+		
+		}
 	}
 	
 	me.make_head_div();
-	me.category_block("Base Layers",['Satellite','OpenStreetMap','OpenStreetMap2']);
+	me.category_block("Base Layers",['Satellite','OpenStreetMap','OpenStreetMap2'],true);
 	$("#config_panel").append(make_hr());
-	me.category_block("Main Rivers",['Cuyuni','Berbice','Essequibo','Potaro','Rupununi']);
+	me.category_block("Main Rivers",['Cuyuni','Berbice','Essequibo','Potaro','Rupununi'],false);
 	$("#config_panel").append(make_hr());
 	
 	for(var dummy=0;dummy<$(".arrow").length;dummy++){
