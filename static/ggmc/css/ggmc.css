@@ -7,6 +7,19 @@ html,body,#map_div{
 	background:#FFFFFF;
 }
 
+.ol-zoom{
+	right:5px;
+}
+
+.gearB{
+	top: 85px;
+	right:5px;
+}
+.playB{
+	top: 125px;
+	right:5px;
+}
+
 .icon{
 	height:17px;
 }
