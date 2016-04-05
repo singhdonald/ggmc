@@ -1,3 +1,7 @@
+.hr{
+	margin-top:5px;
+	margin-bottom:5px;
+}
 .head_div{
 	position:absolute;
 	top:0px;
@@ -60,7 +64,12 @@
 .vspace10{
 	height:10px;
 }
-
+.tt_div{
+	width:100%;
+}
+.tt{
+	width:100%;
+}
 
 .cat_lyrs_div{
 	position:relative;
@@ -72,12 +81,10 @@
 	text-align:center;
 }
 .layer_label{
-	width:250px;
 	color:#fff;
 	height:30px;
 	display: table-cell;
 	vertical-align:middle;
-	
 }
 .layer_label.hilighted{
 	background:#555555;
