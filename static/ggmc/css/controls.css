@@ -1,0 +1,112 @@
+.hr{
+	margin-top:5px;
+	margin-bottom:5px;
+}
+.head_div{
+	position:absolute;
+	top:0px;
+	left:0px;
+	width:250px;
+}
+.config_panel{
+	position:absolute;
+	height:100%;
+	background:#353535;
+	width: 250px;
+	overflow:auto;
+	text-align:center;
+	opacity:1.0;
+}
+.drag_panel{
+	position:absolute;
+	height:100%;
+	width: 250px;
+	left: -100%;
+	z-index: 990;
+	background-color:#454545;
+	color:white;
+	-webkit-transition: left 0.75s ease;
+	transition: left 0.75s ease;
+	opacity:1.0;
+	text-align:center;
+	overflow:auto;
+}
+.control_panel{
+	position:fixed;
+	height: 100%;
+	width: 250px;
+	left: -100%;
+	z-index: 10;
+	background-color:#333333;
+	color:white;
+	-webkit-transition: left 0.75s ease;
+	transition: left 0.75s ease;
+	opacity:1.0;
+	text-align:center;
+	overflow:auto;
+}
+.control_panel.show{
+	left: 0;
+}
+.drag_panel.show{
+	left: 0%;
+}
+.background{
+	width:100%;height:100%;
+	background:#AAAAAA;
+}
+.switch_icon{
+	height:20px;
+}
+.switch_div{
+	height:22px;
+}
+.vspace10{
+	height:10px;
+}
+.tt_div{
+	width:100%;
+}
+.tt{
+	width:100%;
+}
+
+.cat_lyrs_div{
+	position:relative;
+	overflow:auto;
+	text-align:center;
+}
+.lyrs_table{
+	width:100%;
+	text-align:center;
+}
+.layer_label{
+	color:#fff;
+	height:30px;
+	display: table-cell;
+	vertical-align:middle;
+}
+.layer_label.hilighted{
+	background:#555555;
+}
+.layer_category{
+	font-weight:bold;
+}
+.arrow{
+	height:17px;
+	width:17px;
+	transition: transform 0.3s ease;
+}
+.arrow.up{
+	transform:rotate(180deg);
+}
+.arrow_cell{
+	width:17px;
+}
+.label{
+	color:orange;
+	font-size:14pt;
+}
+.category_cell{
+	text-align:center;
+}
