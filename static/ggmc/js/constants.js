@@ -71,3 +71,12 @@ var popdown=function(e){
 		}
 	);
 }
+
+var splash_screen=function(){
+//	alert(':)  Welcome To Our Tour Guide Of Our Uniquely Majestic Towns And Rivers  :)');
+	var splash_div=document.createElement('div');
+	splash_div.className = "splash_div";
+	splash_div.innerHTML=':)  Welcome To Our Tour Guide Of Our Uniquely Majestic Towns And Rivers  :)';
+	document.body.appendChild(splash_div);
+}
+

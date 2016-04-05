@@ -44,3 +44,7 @@ html,body,#map_div{
 .tooltip-inner {
 	white-space: nowrap;
 }
+
+.splash_div {
+	background-color: magenta;
+}
