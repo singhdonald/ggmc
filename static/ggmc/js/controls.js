@@ -81,7 +81,7 @@ var ControlPanel=function(){
 		head_div.appendChild(switch_div);
 		$("#control_panel").append(head_div);
 		
-		$.fn.bootstrapSwitch.defaults.handleWidth="50px";
+		$.fn.bootstrapSwitch.defaults.labelWidth="50px";
 
 		$("#tourB").bootstrapSwitch();
 		$("#tourB").bootstrapSwitch("state",window.app.tour);
@@ -142,6 +142,53 @@ var ControlPanel=function(){
 			img.src="./static/ggmc/img/checkbox-1.png";
 		else
 			img.src="./static/ggmc/img/checkbox-0.png";
+			
+		var draggable_div=me.make_layer_row("testing");	
+		$("#drag_panel").append(draggable_div);
+		
+	}
+	me.make_layer_row=function(layer_name){
+			var tt_div=document.createElement("div");
+			tt_div.className="tt_div";
+			
+			var tt=document.createElement("table");
+			tt.className="tt";
+			var ttr=tt.insertRow(-1);
+			var ttc=ttr.insertCell(-1);
+			
+			var layer_label=document.createElement("div");
+			layer_label.innerHTML=layer_name;
+			layer_label.className="layer_label";
+			var id=parseInt(1E9*Math.random()).toString();
+			layer_label.id=id;
+			console.log(id);
+			//cat_lyrs_div.appendChild(layer_label);
+			var ttc=ttr.insertCell(-1);
+			ttc.className="lyr_cell";
+			ttc.appendChild(layer_label);
+			
+			var ttc=ttr.insertCell(-1);
+			ttc.className="icon_cell";
+			var idn=layer_name+"_"+parseInt(1E9*Math.random());
+			var img=new Image();
+			img.id=idn;
+			img.className="icon";
+			img.src="./static/ggmc/img/checkbox-0.png";
+			ttc.appendChild(img);
+			img.addEventListener("click",me.checkboxCB,false);
+			
+
+			var ttc=ttr.insertCell(-1);
+			ttc.className="icon_cell";
+			var idn="hamburger_"+parseInt(1E9*Math.random());
+			var img=new Image();
+			img.id=idn;
+			img.className="icon";
+			img.src="./static/ggmc/img/flaticon/interface-1.png";
+			ttc.appendChild(img);
+			tt_div.appendChild(tt);
+			
+			return tt_div;
 	}
 	me.category_block=function(category,layers,disabled){
 		var h=document.createElement("div");
@@ -161,7 +208,7 @@ var ControlPanel=function(){
 		td.appendChild(label);
 		
 		td=tr.insertCell(-1);
-		td.className="arrow_cell";
+		td.className="icon_cell";
 		var arrow=new Image();
 		arrow.id=h.id+"_arrow";
 		arrow.className="arrow";
@@ -178,45 +225,22 @@ var ControlPanel=function(){
 		
 		var lyrs_table=document.createElement("table");
 		lyrs_table.className="lyrs_table";
-
+		
 		cat_lyrs_div.appendChild(lyrs_table);
 		$("#config_panel").append(cat_lyrs_div);
 		
 		for(var lidx=0;lidx<layers.length;lidx++){
-			var layer_label=document.createElement("div");
-			layer_label.innerHTML=layers[lidx];
-			layer_label.className="layer_label";
-			var id=parseInt(1E9*Math.random()).toString();
-			layer_label.id=id;
-			console.log(id);
-			//cat_lyrs_div.appendChild(layer_label);
+			
 			var r=lyrs_table.insertRow(-1);
 			r.className="lyr_row";
 			var c=r.insertCell(-1);
-			c.className="lyr_cell";
-			c.appendChild(layer_label);
 			
-			var c=r.insertCell(-1);
-			var idn="switch_"+parseInt(1E9*Math.random());
-//			c.appendChild(new make_layer_switch(idn));
-//			$("#"+idn).bootstrapSwitch("size","mini");
-//			$("#"+idn).bootstrapSwitch();
-			var img=new Image();
-			img.id=idn;
-			img.className="icon";
-			img.src="./static/ggmc/img/checkbox-0.png";
-			c.appendChild(img);
-			img.addEventListener("click",me.checkboxCB,false);
+			//Candidate for Dragable object
+			var tt_div=me.make_layer_row(layers[lidx]);
 			
-
-			var c=r.insertCell(-1);
-			var idn="hamburger_"+parseInt(1E9*Math.random());
-			var img=new Image();
-			img.id=idn;
-			img.className="icon";
-			img.src="./static/ggmc/img/flaticon/interface-1.png";
-			c.appendChild(img);
-		
+			//
+			
+			c.appendChild(tt_div);
 		}
 	}
 	
@@ -225,6 +249,8 @@ var ControlPanel=function(){
 	$("#config_panel").append(make_hr());
 	me.category_block("Main Rivers",['Cuyuni','Berbice','Essequibo','Potaro','Rupununi'],false);
 	$("#config_panel").append(make_hr());
+	me.category_block("Towns",['Georgetown','Bartica','Charity','New Amsterdam','Lethem','Annai','Mahdia'],false);
+	
 	
 	for(var dummy=0;dummy<$(".arrow").length;dummy++){
 		$($(".arrow")[dummy]).click(function(e){
@@ -240,12 +266,6 @@ var ControlPanel=function(){
 			$(e.target).toggleClass("hilighted");
 		});
 	}
-	
-	//AreaSelect, TourSwitch, BaseLayersSwitch (enables entire widget+children), DelaySlider, 
-	
-	//BaseLayers, OtherCategories
-	
-	//DragableActiveLayers
 	
 	return me;
 	

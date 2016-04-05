@@ -64,7 +64,12 @@
 .vspace10{
 	height:10px;
 }
-
+.tt_div{
+	width:100%;
+}
+.tt{
+	width:100%;
+}
 
 .cat_lyrs_div{
 	position:relative;

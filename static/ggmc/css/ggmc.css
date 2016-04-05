@@ -18,8 +18,11 @@ html,body,#map_div{
 	right:5px;
 }
 .icon{
-	width:17px;
 	height:17px;
+}
+.icon_cell{
+	width:25px;
+	text-align:center;
 }
 .popup{
 	background:#333333;
