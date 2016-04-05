@@ -1,0 +1,43 @@
+html,body,#map_div{
+	width:100%;
+	height:100%;
+	overflow:auto;
+	position:relative;
+	margin:0;
+	background:#FFFFFF;
+}
+.playB{
+	top: 125px;
+	right:5px;
+}
+.gearB{
+	top: 85px;
+	right:5px;
+}
+.ol-zoom{
+	right:5px;
+}
+.icon{
+	height:17px;
+}
+.icon_cell{
+	width:25px;
+	text-align:center;
+}
+.popup{
+	background:#333333;
+	color:lightgreen;
+	border:3px solid;
+	border-radius:10px;
+	position:absolute;
+	text-align:center;
+
+}
+.info_div{
+	position="absolute";
+	top="0px";
+	width="100%";
+}
+.tooltip-inner {
+	white-space: nowrap;
+}
