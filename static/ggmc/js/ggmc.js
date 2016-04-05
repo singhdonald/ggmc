@@ -82,6 +82,7 @@ var GGMC=function(div_id,control_panel_id){
 			var features=lyr.getSource().getFeatures();
 			for(var fidx=0;fidx<features.length;fidx++){
 				features[fidx].set("type",lyr.get("type"));
+                features[fidx].set("category",lyr.get("category"));
 				me.all_features.push(features[fidx]);
 				//console.log(window.app.all_features.length);
 			}
@@ -115,6 +116,10 @@ var GGMC=function(div_id,control_panel_id){
 				}),
 			});
 			polygon_layer.set("type","Polygon");
+            
+            var category=INSTALLED[me.current]["polygon_features"][pidx]["category"];
+            polygon_layer.set("category",category);
+            
 			me.polygon_layers.push(polygon_layer);
 			me.all_targets.push(polygon_layer);
 			
@@ -145,6 +150,10 @@ var GGMC=function(div_id,control_panel_id){
 				}),
 			});
 			point_layer.set("type","Point");
+            
+            category=INSTALLED[me.current]["point_features"][pidx]["category"];
+			point_layer.set("category",category);
+            
 			me.point_layers.push(point_layer);
 			me.all_targets.push(point_layer);
 			
@@ -168,6 +177,10 @@ var GGMC=function(div_id,control_panel_id){
 				})
 			});
 			line_layer.set("type","Line");
+            
+            category=INSTALLED[me.current]["line_features"][pidx]["category"];
+			line_layer.set("category",category);
+            
 			me.line_layers.push(line_layer);
 			me.all_targets.push(line_layer);
 		}
