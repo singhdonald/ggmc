@@ -4,15 +4,22 @@ html,body,#map_div{
 	overflow:auto;
 	position:relative;
 	margin:0;
-	background:#333333;
+	background:#FFFFFF;
 }
 .playB{
 	top: 125px;
-	left: .5em;
+	right:5px;
 }
-.controlB{
+.gearB{
 	top: 85px;
-	left: .5em;
+	right:5px;
+}
+.ol-zoom{
+	right:5px;
+}
+.icon{
+	width:17px;
+	height:17px;
 }
 .popup{
 	background:#333333;
