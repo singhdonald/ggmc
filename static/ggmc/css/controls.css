@@ -66,11 +66,14 @@
 }
 .tt_div{
 	width:100%;
+	padding-left:10px;
+	padding-right:10px;
+	padding-top:0px;
+	padding-bottom:0px;
 }
 .tt{
 	width:100%;
 }
-
 .cat_lyrs_div{
 	position:relative;
 	overflow:auto;
@@ -109,4 +112,12 @@
 }
 .category_cell{
 	text-align:center;
+}
+
+.styled-select {
+   height: 29px;
+   overflow: hidden;
+   width: 100px;
+   color: #ddd;
+   background-color: #333333;
 }

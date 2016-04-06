@@ -47,9 +47,24 @@ var ControlPanel=function(){
 		head_div.className="head_div";
 		head_div.appendChild(make_hr());
 
+		//
+		var area_select=document.createElement("select");
+		area_select.id="area_select";
+		area_select.className="styled-select blue semi-square";
+		for(var sidx=0;sidx<INSTALLED["keys"].length;sidx++){
+			var opt=document.createElement("option");
+			opt.text=INSTALLED["keys"][sidx];
+			opt.selected=false;
+			if(sidx==0)opt.selected=true;
+			area_select.appendChild(opt);
+		}
+//		$("#control_panel").append(area_select);
+		area_select.addEventListener("change",window.app.change_areaCB,false);
+		
+		
+		//
 		var tourB=document.createElement("input");
 		tourB.type="checkbox";
-//		tourB.checked=window.app.tour;
 		tourB.id="tourB";
 		tourB.className="switchB";
 		var tour_div=document.createElement("div");
@@ -58,7 +73,6 @@ var ControlPanel=function(){
 
 		var baseB=document.createElement("input");
 		baseB.type="checkbox";
-//		baseB.checked=window.app.tour;
 		baseB.id="baseB";
 		baseB.className="switchB";
 		var base_div=document.createElement("div");
@@ -67,13 +81,14 @@ var ControlPanel=function(){
 		
 		var switchB=document.createElement("input");
 		switchB.type="checkbox";
-//		switchB.checked=window.app.tour;
 		switchB.id="switchB";
 		switchB.className="switchB";
 		var switch_div=document.createElement("div");
 		switch_div.className="switch_div";
 		switch_div.appendChild(switchB);
 		
+		head_div.appendChild(area_select);
+		head_div.appendChild(new make_vspace10());
 		head_div.appendChild(tour_div);
 		head_div.appendChild(new make_vspace10());
 		head_div.appendChild(base_div);
