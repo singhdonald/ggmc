@@ -43,8 +43,8 @@ var GGMC=function(div_id,control_panel_id){
 		
 		//Get new selected area
 		
-		//var selection=get_selected("area_select");
-		var selection="guyana";
+		var selection=get_selected("area_select");
+		//var selection="guyana";
 		
 		if(selection!=null){
 			me.current=selection;
@@ -85,11 +85,17 @@ var GGMC=function(div_id,control_panel_id){
                 features[fidx].set("category",lyr.get("category"));
 				me.all_features.push(features[fidx]);
 				//console.log(window.app.all_features.length);
+				var feature_name=null;
+				try{feature_name=features[fidx].get("Name");}
+				catch(e){feature_name=features[fidx].get("NAME");}
+				console.log(lyr.get("category")+" "+feature_name);
 			}
 		}
+		console.log("all_features.length="+me.all_features.length.toString());
 	}
 //	
 	me.prepare_layers=function(){
+		
 		console.log("me.prepare_layers: "+me.current);
 		me.all_targets=[];
 		me.polygon_layers=[];
@@ -235,12 +241,12 @@ var GGMC=function(div_id,control_panel_id){
 			console.log("playCB");
 			//$(".control_panel").toggleClass("show");
 			
-			if(me.all_targets.length==0){
+			if(me.all_features.length==0){
 				console.log("resetting game from playCB");
 				me.change_areaCB();
 				document.getElementById("playB").innerHTML='<img src="./static/ggmc/img/flaticon/pause.png" class="icon"/>';
 				me.RUNNING=true;
-				window.setTimeout(me.start_move,2*me.DELAY);//necessary!
+				window.setTimeout(me.start_move,4*me.DELAY);//necessary!
 			}
 			else if(me.RUNNING==true){
 				me.RUNNING=false;
@@ -339,14 +345,16 @@ var GGMC=function(div_id,control_panel_id){
 		
 		if(me.RUNNING==false)return;
 		
+		console.log("all_features.length="+me.all_features.length.toString());
+
 		try{window.clearTimeout(me.last_timeout);}
 		catch(e){console.log(e);}
 		
 		if(!feature){
 		
 			if(me.all_features.length==0){
-				me.end_game();
-				return;
+				console.log("returning me.end_game()");
+				return me.end_game();
 			}
 			
 			console.log("me.start_move no feature passed so selecting");
@@ -370,8 +378,10 @@ var GGMC=function(div_id,control_panel_id){
 		target_name=me.current_feature.get("NAME");
 		if(!target_name)target_name=me.current_feature.get("Name");
 		
-		var xhtml="<center><h1>Next: "+target_name+"</h1></center>";
-		console.log("me.start_move:"+target_name+" "+me.all_features.length.toString());
+		var target_category=me.current_feature.get("category");
+		
+		var xhtml="<center><h3>Next:</h3><h1>"+target_name+"</h1><h3>"+target_category+"</h3></center>";
+		console.log("me.start_move:"+target_name+" "+target_category+" "+me.all_features.length.toString());
 		popup(xhtml);
 	}
 	me.end_game=function(){
@@ -380,7 +390,7 @@ var GGMC=function(div_id,control_panel_id){
 		var xhtml='<center><h1>Congratulations!<br>You Finished!</h1></center>';
 		console.log(xhtml);
 		popup(xhtml);
-		document.getElementById("playB").innerHTML='<img src="./static/ggmc/img/play.png" class="icon"/>';
+		document.getElementById("playB").innerHTML='<img src="./static/ggmc/img/flaticon/play.png" class="icon"/>';
 	}
 	me.check_feature = function(pixel) {
 		
