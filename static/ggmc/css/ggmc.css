@@ -6,17 +6,20 @@ html,body,#map_div{
 	margin:0;
 	background:#FFFFFF;
 }
-.playB{
-	top: 125px;
+
+.ol-zoom{
 	right:5px;
 }
+
 .gearB{
 	top: 85px;
 	right:5px;
 }
-.ol-zoom{
+.playB{
+	top: 125px;
 	right:5px;
 }
+
 .icon{
 	height:17px;
 }
@@ -34,10 +37,14 @@ html,body,#map_div{
 
 }
 .info_div{
-	position="absolute";
-	top="0px";
-	width="100%";
+	position:absolute;
+	top:0px;
+	width:100%;
 }
 .tooltip-inner {
 	white-space: nowrap;
+}
+
+.splash_div {
+	background-color: magenta;
 }
