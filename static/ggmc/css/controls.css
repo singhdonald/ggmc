@@ -94,6 +94,10 @@
 }
 .layer_category{
 	font-weight:bold;
+	padding-left:10px;
+	padding-right:10px;
+	padding-top:0px;
+	padding-bottom:0px;
 }
 .arrow{
 	height:17px;
