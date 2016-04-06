@@ -25,15 +25,14 @@ var switchCB=function(e,s){
 var ControlPanel=function(){
 		
 	var me={};
-	me.panels=[
-		document.getElementById("config_panel"),
-		document.getElementById("drag_panel")
-	];
 	
 	me.resize=function(){
-		
-		for(var pidx=0;pidx<me.panels.length;pidx++){
-			var p=me.panels[pidx];
+		panels=[
+			document.getElementById("config_panel"),
+			document.getElementById("drag_panel")
+		];
+		for(var pidx=0;pidx<panels.length;pidx++){
+			var p=panels[pidx];
 			var head_bcr=document.getElementById("head_div").getBoundingClientRect();
 			p.style.height=(window.innerHeight-head_bcr.height)+"px";
 			p.style.top=head_bcr.height+"px";
@@ -147,13 +146,10 @@ var ControlPanel=function(){
 		head_div.appendChild(make_hr());
 	
 	}
-	me.basename=function(path){
-		return path.split('/').reverse()[0];
-	}
 	me.checkboxCB=function(e){
-		console.log("checkboxCB: "+me.basename(e.target.src));
+		console.log("checkboxCB: "+get_basename(e.target.src));
 		var img=e.target;
-		if(me.basename(img.src)=="checkbox-0.png")
+		if(get_basename(img.src)=="checkbox-0.png")
 			img.src="./static/ggmc/img/checkbox-1.png";
 		else
 			img.src="./static/ggmc/img/checkbox-0.png";
@@ -264,17 +260,53 @@ var ControlPanel=function(){
 	me.make_head_div();
 	me.category_block("Base Layers",['Satellite','OpenStreetMap','OpenStreetMap2'],true);
 	$("#config_panel").append(make_hr());
-	me.category_block("Main Rivers",['Cuyuni','Berbice','Essequibo','Potaro','Rupununi'],false);
-	$("#config_panel").append(make_hr());
-	me.category_block("Towns",['Georgetown','Bartica','Charity','New Amsterdam','Lethem','Annai','Mahdia'],false);
 	
+	me.make_category_blocks=function(){
+		
+		if(window.app.all_features.length==0)return;
+		
+		var current_category=window.app.all_features[0].get("category");
+		var current_features=[];
+		
+		for(var fidx=0;fidx<window.app.all_features.length;fidx++){
+			
+			var f=window.app.all_features[fidx];
+			var feature_name=null;
+			feature_name=f.get("NAME");
+			if(!feature_name)feature_name=f.get("Name");
+			
+			if(f.get("category")!=current_category){
+				
+				me.category_block(current_category,current_features,false);
+				$("#config_panel").append(make_hr());
+				
+				current_category=f.get("category");
+				current_features=[];
+			
+			}
+			
+			current_features.push(feature_name);
+			console.log("control.js: "+current_category+" "+feature_name);
+		}
+		
+		if(current_features.length>0)
+			me.category_block(current_category,current_features,false);
+		
+		for(var dummy=0;dummy<$(".arrow").length;dummy++){
+			$($(".arrow")[dummy]).click(function(e){
+				$(e.target).toggleClass("up");
+				$("#"+e.target.id.split("_")[0]+"_cat_lyrs_div").animate({height:'toggle'},300,function(){});
+			});
+		}
 	
-	for(var dummy=0;dummy<$(".arrow").length;dummy++){
-		$($(".arrow")[dummy]).click(function(e){
-			$(e.target).toggleClass("up");
-			$("#"+e.target.id.split("_")[0]+"_cat_lyrs_div").animate({height:'toggle'},300,function(){});
-		});
 	}
+	
+	
+	//me.category_block("Main Rivers",['Cuyuni','Berbice','Essequibo','Potaro','Rupununi'],false);
+	//$("#config_panel").append(make_hr());
+	//me.category_block("Towns",['Georgetown','Bartica','Charity','New Amsterdam','Lethem','Annai','Mahdia'],false);
+	
+	
 	for(var dummy=0;dummy<$(".layer_label").length;dummy++){
 		$($(".layer_label")[dummy]).mouseover(function(e){
 			$(e.target).toggleClass("hilighted");

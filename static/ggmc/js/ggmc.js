@@ -73,9 +73,9 @@ var GGMC=function(div_id,control_panel_id){
 		//resize (calls set res)
 		me.resize();
 		
-		window.setTimeout(me.test,2000,false);
+		window.setTimeout(me.fill_all_features,2000,false);
 	}
-	me.test=function(){
+	me.fill_all_features=function(){
 		//alert(me.polygon_layers[0].getSource().getFeatures());
 		for(var aidx=0;aidx<me.all_targets.length;aidx++){
 			var lyr=me.all_targets[aidx];
@@ -83,15 +83,22 @@ var GGMC=function(div_id,control_panel_id){
 			for(var fidx=0;fidx<features.length;fidx++){
 				features[fidx].set("type",lyr.get("type"));
                 features[fidx].set("category",lyr.get("category"));
-				me.all_features.push(features[fidx]);
 				//console.log(window.app.all_features.length);
 				var feature_name=null;
 				try{feature_name=features[fidx].get("Name");}
 				catch(e){feature_name=features[fidx].get("NAME");}
-				console.log(lyr.get("category")+" "+feature_name);
+				console.log(features[fidx].get("category")+" "+feature_name);
+				
+				me.all_features.push(features[fidx]);
+				
+				console.log(me.all_features[me.all_features.length-1].get("category")+" "+me.all_features[me.all_features.length-1].get("Name"));
+				
 			}
 		}
 		console.log("all_features.length="+me.all_features.length.toString());
+		
+		
+		window.control_panel.make_category_blocks();
 	}
 //	
 	me.prepare_layers=function(){

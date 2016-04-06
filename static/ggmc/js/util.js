@@ -10,6 +10,10 @@ var get_selected=function(select_id){
 	return selection;
 }
 
+get_basename=function(path){
+	return path.split('/').reverse()[0];
+}
+
 var compute_resolution=function(bbox,is3857,W,H){
 	
 	var xmax=bbox[2];
