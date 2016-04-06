@@ -169,7 +169,7 @@ var ControlPanel=function(){
 			var tt=document.createElement("table");
 			tt.className="tt";
 			var ttr=tt.insertRow(-1);
-			var ttc=ttr.insertCell(-1);
+			//var ttc=ttr.insertCell(-1);
 			
 			var layer_label=document.createElement("div");
 			layer_label.innerHTML=layer_name;
