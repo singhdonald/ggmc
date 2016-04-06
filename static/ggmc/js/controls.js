@@ -214,6 +214,8 @@ var ControlPanel=function(){
 		t.style.width="100%";
 		var tr=t.insertRow(-1);
 		var td;
+		td=tr.insertCell(-1);//just for symmetry
+		td.className="icon_cell";
 		
 		td=tr.insertCell(-1);
 		td.className="category_cell";
