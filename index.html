@@ -38,10 +38,10 @@
 		var initialize=function(e){
 			
 			window.app=new GGMC("map_div","control_panel");
-			window.app.setup_map();//only call 1x here
+			//window.app.setup_map();//only call 1x here
 			
 			var map_manager=new Map("map_div");
-			//map_manager.setup_map();
+			map_manager.setup_map();
 			
 			window.control_panel=new ControlPanel();
 			window.app.change_areaCB();
