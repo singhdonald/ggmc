@@ -28,27 +28,11 @@ var ControlPanel=function(){
 	
 	me.foi=null;//feature of interest
 	
-	me.resize=function(){
-		panels=[
-			document.getElementById("config_panel"),
-			document.getElementById("drag_panel")
-		];
-		for(var pidx=0;pidx<panels.length;pidx++){
-			var p=panels[pidx];
-			var head_bcr=document.getElementById("head_div").getBoundingClientRect();
-			p.style.height=(window.innerHeight-head_bcr.height)+"px";
-			p.style.top=head_bcr.height+"px";
-		}
-	}
-	
 	me.make_head_div=function(){
-		//PanelSelect
-		var head_div=document.createElement("div");
-		head_div.id="head_div";
-		head_div.className="head_div";
-		head_div.appendChild(make_hr());
-
-		//
+		
+		var opts={'parent_id':'control_panel','id':'Configuration','className':'roll_up_div','roll_up_class':'rollup','roll_up_name':'Configuration','roll_up_icon_src':"./static/ggmc/img/arrow.png",};
+		var rollup=new RollUpDiv(opts);
+		
 		var area_select=document.createElement("select");
 		area_select.id="area_select";
 		area_select.className="styled-select blue semi-square";
@@ -71,7 +55,7 @@ var ControlPanel=function(){
 		var tour_div=document.createElement("div");
 		tour_div.className="switch_div";
 		tour_div.appendChild(tourB);
-
+		
 		var baseB=document.createElement("input");
 		baseB.type="checkbox";
 		baseB.id="baseB";
@@ -79,7 +63,7 @@ var ControlPanel=function(){
 		var base_div=document.createElement("div");
 		base_div.className="switch_div";
 		base_div.appendChild(baseB);
-		
+/*		
 		var switchB=document.createElement("input");
 		switchB.type="checkbox";
 		switchB.id="switchB";
@@ -87,15 +71,16 @@ var ControlPanel=function(){
 		var switch_div=document.createElement("div");
 		switch_div.className="switch_div";
 		switch_div.appendChild(switchB);
+*/		
+		rollup.rollup.appendChild(area_select);
+		rollup.rollup.appendChild(new make_vspace10());
+		rollup.rollup.appendChild(tour_div);
+		rollup.rollup.appendChild(new make_vspace10());
+		rollup.rollup.appendChild(base_div);
+//		rollup.rollup.appendChild(new make_vspace10());
+//		rollup.rollup.appendChild(switch_div);
 		
-		head_div.appendChild(area_select);
-		head_div.appendChild(new make_vspace10());
-		head_div.appendChild(tour_div);
-		head_div.appendChild(new make_vspace10());
-		head_div.appendChild(base_div);
-		head_div.appendChild(new make_vspace10());
-		head_div.appendChild(switch_div);
-		$("#control_panel").append(head_div);
+		$("#control_panel").append(rollup);
 		
 		$.fn.bootstrapSwitch.defaults.labelWidth="50px";
 
@@ -128,7 +113,7 @@ var ControlPanel=function(){
 			console.log(state); // true | false
 			
 		});
-		
+/*		
 		$("#switchB").bootstrapSwitch();
 		$("#switchB").bootstrapSwitch("state",false);
 		$("#switchB").bootstrapSwitch("size","mini");
@@ -143,9 +128,8 @@ var ControlPanel=function(){
 			console.log(state); // true | false
 			$(".drag_panel").toggleClass("show");
 		});
+*/		
 		
-		
-		head_div.appendChild(make_hr());
 	
 	}
 	me.checkboxCB=function(e){
@@ -157,7 +141,7 @@ var ControlPanel=function(){
 			img.src="./static/ggmc/img/checkbox-0.png";
 			
 		var draggable_div=me.make_layer_row("testing");	
-		$("#drag_panel").append(draggable_div);
+//		$("#drag_panel").append(draggable_div);
 		
 		var source=window.app.all_sources[1];
 		if(!me.foi){
@@ -218,46 +202,24 @@ var ControlPanel=function(){
 			
 			return tt_div;
 	}
-	me.layer_block=function(layer_name,layers,disabled){
-		var h=document.createElement("div");
-		h.className='layer_name';
-		h.id=parseInt(100000*Math.random());
-		
-		var t=document.createElement("table");
-		t.style.width="100%";
-		var tr=t.insertRow(-1);
-		var td;
-		td=tr.insertCell(-1);//just for symmetry
-		td.className="icon_cell";
-		
-		td=tr.insertCell(-1);
-		td.className="layer_cell";
-		var label=document.createElement("div");
-		label.className="label";
-		label.innerHTML=layer_name;
-		td.appendChild(label);
-		
-		td=tr.insertCell(-1);
-		td.className="icon_cell";
-		var arrow=new Image();
-		arrow.id=h.id+"_arrow";
-		arrow.className="arrow";
-		arrow.src="./static/ggmc/img/arrow.png";
-		td.appendChild(arrow);
-		
-		h.appendChild(t);
-		
-		$("#config_panel").append(h);
+	
+	me.layer_block=function(layer_name,layers,opts){
+		var rollup=new RollUpDiv(opts);
 		
 		var cat_lyrs_div=document.createElement("div");
-		cat_lyrs_div.id=h.id+"_cat_lyrs_div";
+		
+		var solid_id=layer_name;//handles up to 10 spaces!
+		for(var dummy=0;dummy<10;dummy++)
+			solid_id=solid_id.replace(" ","x");//can't be _ b/c splitting on _ already
+
+		cat_lyrs_div.id=solid_id+"_cat_lyrs_div";
 		cat_lyrs_div.className="cat_lyrs_div";
 		
 		var lyrs_table=document.createElement("table");
 		lyrs_table.className="lyrs_table";
 		
 		cat_lyrs_div.appendChild(lyrs_table);
-		$("#config_panel").append(cat_lyrs_div);
+		rollup.rollup.appendChild(cat_lyrs_div);
 		
 		for(var lidx=0;lidx<layers.length;lidx++){
 			
@@ -269,18 +231,31 @@ var ControlPanel=function(){
 			var tt_div=me.make_layer_row(layers[lidx]);
 			
 			//
-			
 			c.appendChild(tt_div);
 		}
+		
 	}
 	
 	me.make_head_div();
-	me.layer_block("Base Layers",['Satellite','OpenStreetMap','OpenStreetMap2'],true);
-	$("#config_panel").append(make_hr());
+	$("#control_panel").append(make_hr());
 	
 	me.make_layer_blocks=function(){
 		
+
+		var opts={'parent_id':'control_panel','id':"Satellite",'className':'roll_up_div','roll_up_class':'rollup','roll_up_name':"Satellite",'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
+		me.layer_block("Satellite",["Satellite"],opts);
+		$("#control_panel").append(make_hr());
+		
+		var opts={'parent_id':'control_panel','id':"OpenStreetMap",'className':'roll_up_div','roll_up_class':'rollup','roll_up_name':"OpenStreetMap",'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
+		me.layer_block("OpenStreetMap",["OpenStreetMap"],opts);
+		$("#control_panel").append(make_hr());
+		
+		var opts={'parent_id':'control_panel','id':"OpenStreetMap2",'className':'roll_up_div','roll_up_class':'rollup','roll_up_name':"OpenStreetMap2",'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
+		me.layer_block("OpenStreetMap2",["OpenStreetMap2"],opts);
+		$("#control_panel").append(make_hr());
+		
 		if(window.app.all_features.length==0)return;
+		
 		
 		var current_layer_name=window.app.all_features[0].get("layer_name");
 		var current_features=[];
@@ -294,43 +269,21 @@ var ControlPanel=function(){
 			
 			if(f.get("layer_name")!=current_layer_name){
 				
-				me.layer_block(current_layer_name,current_features,false);
-				$("#config_panel").append(make_hr());
+			var opts={'parent_id':'control_panel','id':current_layer_name,'className':'roll_up_div','roll_up_class':'rollup_constrained_height','roll_up_name':current_layer_name,'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
+				me.layer_block(current_layer_name,current_features,opts);
+				$("#control_panel").append(make_hr());
 				
 				current_layer_name=f.get("layer_name");
 				current_features=[];
 			
 			}
-			
 			current_features.push(feature_name);
 			console.log("control.js: "+current_layer_name+" "+feature_name);
 		}
 		
 		if(current_features.length>0)
-			me.layer_block(current_layer_name,current_features,false);
-		
-		for(var dummy=0;dummy<$(".arrow").length;dummy++){
-			$($(".arrow")[dummy]).click(function(e){
-				$(e.target).toggleClass("up");
-				$("#"+e.target.id.split("_")[0]+"_cat_lyrs_div").animate({height:'toggle'},300,function(){});
-			});
-		}
-	
-	}
-	
-	
-	//me.layer_block("Main Rivers",['Cuyuni','Berbice','Essequibo','Potaro','Rupununi'],false);
-	//$("#config_panel").append(make_hr());
-	//me.layer_block("Towns",['Georgetown','Bartica','Charity','New Amsterdam','Lethem','Annai','Mahdia'],false);
-	
-	
-	for(var dummy=0;dummy<$(".layer_label").length;dummy++){
-		$($(".layer_label")[dummy]).mouseover(function(e){
-			$(e.target).toggleClass("hilighted");
-		});
-		$($(".layer_label")[dummy]).mouseout(function(e){
-			$(e.target).toggleClass("hilighted");
-		});
+			var opts={'parent_id':'control_panel','id':current_layer_name,'className':'roll_up_div','roll_up_class':'rollup_constrained_height','roll_up_name':current_layer_name,'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
+			me.layer_block(current_layer_name,current_features,opts);
 	}
 	
 	return me;

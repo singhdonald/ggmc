@@ -13,6 +13,17 @@ var get_selected=function(select_id){
 get_basename=function(path){
 	return path.split('/').reverse()[0];
 }
+var make_random_color=function(){
+	var rval="#";
+	var chars=["0","1","5","6","A","B","C","D","E","F"];
+	for(var dummy=0;dummy<6;dummy++){
+		var cidx=parseInt(Math.random()*chars.length);
+		try{rval+=chars[cidx];}
+		catch(e){rval+="F";}
+	}
+	return rval;
+}
+		
 
 var compute_resolution=function(bbox,is3857,W,H){
 	

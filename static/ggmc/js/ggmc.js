@@ -235,33 +235,40 @@ var GGMC=function(div_id,control_panel_id){
 	
 	
 	//MAP
-	me.mapCB = function() {
+	me.playCB = function() {
 			console.log("mapB.CB");
 			//$(".control_panel").toggleClass("show");
 			
 			if(me.all_features.length==0){
 				console.log("resetting game from CB");
 				me.change_areaCB();
-				document.getElementById("mapB").innerHTML='<img src="./static/ggmc/img/flaticon/pause.png" class="icon"/>';
+				document.getElementById("playB").innerHTML='<img src="./static/ggmc/img/flaticon/pause.png" class="icon"/>';
 				me.RUNNING=true;
 				window.setTimeout(me.start_move,4*me.DELAY);//necessary!
 			}
 			else if(me.RUNNING==true){
 				me.RUNNING=false;
-				document.getElementById("mapB").innerHTML='<img src="./static/ggmc/img/flaticon/play.png" class="icon"/>';
+				document.getElementById("playB").innerHTML='<img src="./static/ggmc/img/flaticon/play.png" class="icon"/>';
 			}
 			else{
 				me.RUNNING=true;
 				me.start_move(null);
-				document.getElementById("mapB").innerHTML='<img src="./static/ggmc/img/flaticon/pause.png" class="icon"/>';
+				document.getElementById("playB").innerHTML='<img src="./static/ggmc/img/flaticon/pause.png" class="icon"/>';
 			}
 			console.log("mapB.CB done");
 		};
+
+	me.controlsCB = function() {
+		$(".control_panel").toggleClass("show");
+		console.log("controlCB show off");
+	};
 	
 	me.setup_map=function(){
 		
-		var opts={"CB":me.mapCB,"title":"Start","innerHTML":'<img src="./static/ggmc/img/flaticon/play.png" class="icon"/>','id':'mapB','className':'mapB map_button'};
-		var mapB=new MapButton(opts);
+		var play_opts={"CB":me.playCB,"title":"Start","innerHTML":'<img src="./static/ggmc/img/flaticon/play.png" class="icon"/>','id':'playB','className':'playB map_button'};
+		var gear_opts={"CB":me.controlsCB,"title":"Configuration","innerHTML":'<img src="./static/ggmc/img/flaticon/gear.png" class="icon"/>','id':'gearB','className':'gearB map_button'};
+		var playB=new MapButton(play_opts);
+		var gearB=new MapButton(gear_opts);
 		
 		window.map = new ol.Map({
 			layers: me.all_layers,
@@ -276,7 +283,7 @@ var GGMC=function(div_id,control_panel_id){
 					collapsible: false
 				})
 			}).extend([
-				new gearB(),mapB,
+				gearB,playB,
 			])
 		});
 		
