@@ -10,12 +10,11 @@ html,body,#map_div{
 .ol-zoom{
 	right:5px;
 }
-
 .gearB{
 	top: 85px;
 	right:5px;
 }
-.playB{
+.mapB{
 	top: 125px;
 	right:5px;
 }
