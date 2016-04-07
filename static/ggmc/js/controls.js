@@ -203,12 +203,12 @@ var ControlPanel=function(){
 			return tt_div;
 	}
 	
-	me.layer_block=function(layer_name,layers,opts){
+	me.layer_block=function(layers,opts){
 		var rollup=new RollUpDiv(opts);
 		
 		var cat_lyrs_div=document.createElement("div");
 		
-		var solid_id=layer_name;//handles up to 10 spaces!
+		var solid_id=opts['roll_up_name'];//handles up to 10 spaces!
 		for(var dummy=0;dummy<10;dummy++)
 			solid_id=solid_id.replace(" ","x");//can't be _ b/c splitting on _ already
 
@@ -243,15 +243,15 @@ var ControlPanel=function(){
 		
 
 		var opts={'parent_id':'control_panel','id':"Satellite",'className':'roll_up_div','roll_up_class':'rollup','roll_up_name':"Satellite",'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
-		me.layer_block("Satellite",["Satellite"],opts);
+		me.layer_block(["Satellite"],opts);
 		$("#control_panel").append(make_hr());
 		
 		var opts={'parent_id':'control_panel','id':"OpenStreetMap",'className':'roll_up_div','roll_up_class':'rollup','roll_up_name':"OpenStreetMap",'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
-		me.layer_block("OpenStreetMap",["OpenStreetMap"],opts);
+		me.layer_block(["OpenStreetMap"],opts);
 		$("#control_panel").append(make_hr());
 		
 		var opts={'parent_id':'control_panel','id':"OpenStreetMap2",'className':'roll_up_div','roll_up_class':'rollup','roll_up_name':"OpenStreetMap2",'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
-		me.layer_block("OpenStreetMap2",["OpenStreetMap2"],opts);
+		me.layer_block(["OpenStreetMap2"],opts);
 		$("#control_panel").append(make_hr());
 		
 		if(window.app.all_features.length==0)return;
@@ -270,7 +270,7 @@ var ControlPanel=function(){
 			if(f.get("layer_name")!=current_layer_name){
 				
 			var opts={'parent_id':'control_panel','id':current_layer_name,'className':'roll_up_div','roll_up_class':'rollup_constrained_height','roll_up_name':current_layer_name,'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
-				me.layer_block(current_layer_name,current_features,opts);
+				me.layer_block(current_features,opts);
 				$("#control_panel").append(make_hr());
 				
 				current_layer_name=f.get("layer_name");
@@ -283,7 +283,7 @@ var ControlPanel=function(){
 		
 		if(current_features.length>0)
 			var opts={'parent_id':'control_panel','id':current_layer_name,'className':'roll_up_div','roll_up_class':'rollup_constrained_height','roll_up_name':current_layer_name,'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
-			me.layer_block(current_layer_name,current_features,opts);
+			me.layer_block(current_features,opts);
 	}
 	
 	return me;
