@@ -25,6 +25,7 @@ var GGMC=function(div_id,control_panel_id){
 	me.all_layers=[];
 	me.all_targets=[];
 	me.all_features=[];
+	me.all_sources=[];
 	me.current_target_layer=null;
 	
 	me.debug=true;
@@ -82,35 +83,32 @@ var GGMC=function(div_id,control_panel_id){
 			var features=lyr.getSource().getFeatures();
 			for(var fidx=0;fidx<features.length;fidx++){
 				features[fidx].set("type",lyr.get("type"));
-                features[fidx].set("category",lyr.get("category"));
+                features[fidx].set("layer_name",lyr.get("layer_name"));
 				//console.log(window.app.all_features.length);
 				var feature_name=null;
-				try{feature_name=features[fidx].get("Name");}
-				catch(e){feature_name=features[fidx].get("NAME");}
-				console.log(features[fidx].get("category")+" "+feature_name);
-				
+				feature_name=features[fidx].get("Name");
+				if(!feature_name)feature_name=features[fidx].get("NAME");
+				console.log(features[fidx].get("layer_name")+" "+feature_name);
 				me.all_features.push(features[fidx]);
-				
-				console.log(me.all_features[me.all_features.length-1].get("category")+" "+me.all_features[me.all_features.length-1].get("Name"));
-				
 			}
 		}
 		console.log("all_features.length="+me.all_features.length.toString());
 		
 		
-		window.control_panel.make_category_blocks();
+		window.control_panel.make_layer_blocks();
 	}
 //	
 	me.prepare_layers=function(){
 		
 		console.log("me.prepare_layers: "+me.current);
+		me.all_sources=[];
 		me.all_targets=[];
 		me.polygon_layers=[];
 		me.all_layers=[];
 		me.all_features=[];
 		
-		for(var pidx=0; pidx<INSTALLED[me.current]["polygon_features"].length;pidx++){
-			var src_url=INSTALLED[me.current]["path"] + INSTALLED[me.current]["polygon_features"][pidx]["filename"];
+		for(var pidx=0; pidx<INSTALLED[me.current]["polygon_sources"].length;pidx++){
+			var src_url=INSTALLED[me.current]["path"] + INSTALLED[me.current]["polygon_sources"][pidx]["filename"];
 			var polygon_source=new ol.source.Vector({
 				url: src_url,
 				format: new ol.format.GeoJSON()
@@ -120,53 +118,55 @@ var GGMC=function(div_id,control_panel_id){
 				source: polygon_source,
 				style:new ol.style.Style({
 					stroke: new ol.style.Stroke({
-						color: INSTALLED[me.current]["polygon_features"][pidx]["color"],
-						width: INSTALLED[me.current]["polygon_features"][pidx]["width"]
+						color: INSTALLED[me.current]["polygon_sources"][pidx]["color"],
+						width: INSTALLED[me.current]["polygon_sources"][pidx]["width"]
 					}),
 					fill: new ol.style.Fill({
-						color: INSTALLED[me.current]["polygon_features"][pidx]["fill"],
+						color: INSTALLED[me.current]["polygon_sources"][pidx]["fill"],
 					})
 				}),
 			});
 			polygon_layer.set("type","Polygon");
             
-            var category=INSTALLED[me.current]["polygon_features"][pidx]["category"];
-            polygon_layer.set("category",category);
+            var layer_name=INSTALLED[me.current]["polygon_sources"][pidx]["layer_name"];
+            polygon_layer.set("layer_name",layer_name);
             
+			me.all_sources.push(polygon_source);
 			me.polygon_layers.push(polygon_layer);
 			me.all_targets.push(polygon_layer);
-			
-
+		
 		}
 
 		me.point_layers=[];
-		for(var pidx=0;pidx<INSTALLED[me.current]["point_features"].length;pidx++){
+		for(var pidx=0;pidx<INSTALLED[me.current]["point_sources"].length;pidx++){
 			
-			var src_url=INSTALLED[me.current]["path"] + INSTALLED[me.current]["point_features"][pidx]["filename"];
+			var src_url=INSTALLED[me.current]["path"] + INSTALLED[me.current]["point_sources"][pidx]["filename"];
 			var point_source=new ol.source.Vector({
 				url: src_url,
 				format: new ol.format.GeoJSON()
 			});
+			
 			var point_layer= new ol.layer.Vector({
 				source: point_source,
 				style:new ol.style.Style({
 					image:new ol.style.Circle({
-						radius:INSTALLED[me.current]["point_features"][pidx]["radius"],
+						radius:INSTALLED[me.current]["point_sources"][pidx]["radius"],
 						stroke: new ol.style.Stroke({
-							color: INSTALLED[me.current]["point_features"][pidx]["color"],
-							width: INSTALLED[me.current]["point_features"][pidx]["width"]
+							color: INSTALLED[me.current]["point_sources"][pidx]["color"],
+							width: INSTALLED[me.current]["point_sources"][pidx]["width"]
 						}),				
 						fill: new ol.style.Fill({
-							color: INSTALLED[me.current]["point_features"][pidx]["fill"],
+							color: INSTALLED[me.current]["point_sources"][pidx]["fill"],
 						}),
 					})
 				}),
 			});
 			point_layer.set("type","Point");
             
-            category=INSTALLED[me.current]["point_features"][pidx]["category"];
-			point_layer.set("category",category);
+            layer_name=INSTALLED[me.current]["point_sources"][pidx]["layer_name"];
+			point_layer.set("layer_name",layer_name);
             
+			me.all_sources.push(point_source);
 			me.point_layers.push(point_layer);
 			me.all_targets.push(point_layer);
 			
@@ -174,26 +174,28 @@ var GGMC=function(div_id,control_panel_id){
 
 
 		me.line_layers=[];
-		for(var lidx=0;lidx<INSTALLED[me.current]["line_features"].length;lidx++){
-			var src_url=INSTALLED[me.current]["path"] + INSTALLED[me.current]["line_features"][lidx]["filename"];
+		for(var lidx=0;lidx<INSTALLED[me.current]["line_sources"].length;lidx++){
+			var src_url=INSTALLED[me.current]["path"] + INSTALLED[me.current]["line_sources"][lidx]["filename"];
 			var line_source=new ol.source.Vector({
 				url: src_url,
 				format: new ol.format.GeoJSON()
 			});
+			
 			var line_layer= new ol.layer.Vector({
 				source: line_source,
 				style:new ol.style.Style({
 					stroke: new ol.style.Stroke({
-						color: INSTALLED[me.current]["line_features"][lidx]["color"],
-						width: INSTALLED[me.current]["line_features"][lidx]["width"]
+						color: INSTALLED[me.current]["line_sources"][lidx]["color"],
+						width: INSTALLED[me.current]["line_sources"][lidx]["width"]
 					}),					
 				})
 			});
 			line_layer.set("type","Line");
             
-            category=INSTALLED[me.current]["line_features"][pidx]["category"];
-			line_layer.set("category",category);
+            layer_name=INSTALLED[me.current]["line_sources"][pidx]["layer_name"];
+			line_layer.set("layer_name",layer_name);
             
+			me.all_sources.push(line_source);
 			me.line_layers.push(line_layer);
 			me.all_targets.push(line_layer);
 		}
@@ -216,8 +218,8 @@ var GGMC=function(div_id,control_panel_id){
 		});
 		
 		
-//		me.all_layers.push(BASE_LAYERS['OpenStreetMap']);
-//		me.all_layers.push(BASE_LAYERS['Satellite']);
+		me.all_layers.push(BASE_LAYERS['OpenStreetMap']);
+		me.all_layers.push(BASE_LAYERS['Satellite']);
 		me.all_layers.push(me.boundary_layer);
 		for(var pidx=0; pidx<me.polygon_layers.length; pidx++){
 			me.all_layers.push(me.polygon_layers[pidx]);
@@ -233,55 +235,33 @@ var GGMC=function(div_id,control_panel_id){
 	
 	
 	//MAP
-	me.playB = function(opt_options) {
-		
-		//http://openlayers.org/en/v3.14.0/examples/custom-controls.html
-		
-		var options = opt_options || {};
-		var button = document.createElement('button');
-		button.id="playB";
-		button.className="playB";
-		button.innerHTML = '<img src="./static/ggmc/img/flaticon/play.png" class="icon"/>';
-		button.title="Start";
-		
-		var playCB = function() {
-			console.log("playCB");
+	me.mapCB = function() {
+			console.log("mapB.CB");
 			//$(".control_panel").toggleClass("show");
 			
 			if(me.all_features.length==0){
-				console.log("resetting game from playCB");
+				console.log("resetting game from CB");
 				me.change_areaCB();
-				document.getElementById("playB").innerHTML='<img src="./static/ggmc/img/flaticon/pause.png" class="icon"/>';
+				document.getElementById("mapB").innerHTML='<img src="./static/ggmc/img/flaticon/pause.png" class="icon"/>';
 				me.RUNNING=true;
 				window.setTimeout(me.start_move,4*me.DELAY);//necessary!
 			}
 			else if(me.RUNNING==true){
 				me.RUNNING=false;
-				document.getElementById("playB").innerHTML='<img src="./static/ggmc/img/flaticon/play.png" class="icon"/>';
+				document.getElementById("mapB").innerHTML='<img src="./static/ggmc/img/flaticon/play.png" class="icon"/>';
 			}
 			else{
 				me.RUNNING=true;
 				me.start_move(null);
-				document.getElementById("playB").innerHTML='<img src="./static/ggmc/img/flaticon/pause.png" class="icon"/>';
+				document.getElementById("mapB").innerHTML='<img src="./static/ggmc/img/flaticon/pause.png" class="icon"/>';
 			}
-			console.log("playCB done");
+			console.log("mapB.CB done");
 		};
-		
-		button.addEventListener('click', playCB, false);
-		button.addEventListener('touchstart', playCB, false);
-		
-		var element = document.createElement('div');
-		element.className = 'playB ol-unselectable ol-control';
-		element.appendChild(button);
-		
-		ol.control.Control.call(this, {
-			element: element,
-			target: options.target
-		});
-	};
-	ol.inherits(me.playB, ol.control.Control);
 	
 	me.setup_map=function(){
+		
+		var opts={"CB":me.mapCB,"title":"Start","innerHTML":'<img src="./static/ggmc/img/flaticon/play.png" class="icon"/>','id':'mapB','className':'mapB map_button'};
+		var mapB=new MapButton(opts);
 		
 		window.map = new ol.Map({
 			layers: me.all_layers,
@@ -296,7 +276,7 @@ var GGMC=function(div_id,control_panel_id){
 					collapsible: false
 				})
 			}).extend([
-				new gearB(),new me.playB(),
+				new gearB(),mapB,
 			])
 		});
 		
@@ -388,10 +368,10 @@ var GGMC=function(div_id,control_panel_id){
 		target_name=me.current_feature.get("NAME");
 		if(!target_name)target_name=me.current_feature.get("Name");
 		
-		var target_category=me.current_feature.get("category");
+		var target_layer_name=me.current_feature.get("layer_name");
 		
-		var xhtml="<center><h3>Next:</h3><h1>"+target_name+"</h1><h3>"+target_category+"</h3></center>";
-		console.log("me.start_move:"+target_name+" "+target_category+" "+me.all_features.length.toString());
+		var xhtml="<center><h3>Next:</h3><h1>"+target_name+"</h1><h3>"+target_layer_name+"</h3></center>";
+		console.log("me.start_move:"+target_name+" "+target_layer_name+" "+me.all_features.length.toString());
 		popup(xhtml);
 	}
 	me.end_game=function(){

@@ -92,7 +92,7 @@
 .layer_label.hilighted{
 	background:#555555;
 }
-.layer_category{
+.layer_name{
 	font-weight:bold;
 	padding-left:10px;
 	padding-right:10px;
@@ -114,7 +114,7 @@
 	color:orange;
 	font-size:14pt;
 }
-.category_cell{
+.layer_cell{
 	text-align:center;
 }
 

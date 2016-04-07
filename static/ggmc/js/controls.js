@@ -26,6 +26,8 @@ var ControlPanel=function(){
 		
 	var me={};
 	
+	me.foi=null;//feature of interest
+	
 	me.resize=function(){
 		panels=[
 			document.getElementById("config_panel"),
@@ -157,6 +159,22 @@ var ControlPanel=function(){
 		var draggable_div=me.make_layer_row("testing");	
 		$("#drag_panel").append(draggable_div);
 		
+		var source=window.app.all_sources[1];
+		if(!me.foi){
+			var N=source.getFeatures().length;
+			var fidx=parseInt(N*Math.random());
+			console.log("NumFeatures: "+N);
+			me.foi=source.getFeatures()[fidx];
+			source.removeFeature(me.foi);
+			console.log(source.getFeatures().length+" "+me.foi.get("NAME"));
+		}
+		else{
+			source.addFeature(me.foi);
+			me.foi=null;
+		}
+		
+		
+		
 	}
 	me.make_layer_row=function(layer_name){
 			var tt_div=document.createElement("div");
@@ -172,7 +190,7 @@ var ControlPanel=function(){
 			layer_label.className="layer_label";
 			var id=parseInt(1E9*Math.random()).toString();
 			layer_label.id=id;
-			console.log(id);
+			//console.log(id);
 			//cat_lyrs_div.appendChild(layer_label);
 			var ttc=ttr.insertCell(-1);
 			ttc.className="lyr_cell";
@@ -188,7 +206,6 @@ var ControlPanel=function(){
 			ttc.appendChild(img);
 			img.addEventListener("click",me.checkboxCB,false);
 			
-
 			var ttc=ttr.insertCell(-1);
 			ttc.className="icon_cell";
 			var idn="hamburger_"+parseInt(1E9*Math.random());
@@ -201,9 +218,9 @@ var ControlPanel=function(){
 			
 			return tt_div;
 	}
-	me.category_block=function(category,layers,disabled){
+	me.layer_block=function(layer_name,layers,disabled){
 		var h=document.createElement("div");
-		h.className='layer_category';
+		h.className='layer_name';
 		h.id=parseInt(100000*Math.random());
 		
 		var t=document.createElement("table");
@@ -214,10 +231,10 @@ var ControlPanel=function(){
 		td.className="icon_cell";
 		
 		td=tr.insertCell(-1);
-		td.className="category_cell";
+		td.className="layer_cell";
 		var label=document.createElement("div");
 		label.className="label";
-		label.innerHTML=category;
+		label.innerHTML=layer_name;
 		td.appendChild(label);
 		
 		td=tr.insertCell(-1);
@@ -258,14 +275,14 @@ var ControlPanel=function(){
 	}
 	
 	me.make_head_div();
-	me.category_block("Base Layers",['Satellite','OpenStreetMap','OpenStreetMap2'],true);
+	me.layer_block("Base Layers",['Satellite','OpenStreetMap','OpenStreetMap2'],true);
 	$("#config_panel").append(make_hr());
 	
-	me.make_category_blocks=function(){
+	me.make_layer_blocks=function(){
 		
 		if(window.app.all_features.length==0)return;
 		
-		var current_category=window.app.all_features[0].get("category");
+		var current_layer_name=window.app.all_features[0].get("layer_name");
 		var current_features=[];
 		
 		for(var fidx=0;fidx<window.app.all_features.length;fidx++){
@@ -275,22 +292,22 @@ var ControlPanel=function(){
 			feature_name=f.get("NAME");
 			if(!feature_name)feature_name=f.get("Name");
 			
-			if(f.get("category")!=current_category){
+			if(f.get("layer_name")!=current_layer_name){
 				
-				me.category_block(current_category,current_features,false);
+				me.layer_block(current_layer_name,current_features,false);
 				$("#config_panel").append(make_hr());
 				
-				current_category=f.get("category");
+				current_layer_name=f.get("layer_name");
 				current_features=[];
 			
 			}
 			
 			current_features.push(feature_name);
-			console.log("control.js: "+current_category+" "+feature_name);
+			console.log("control.js: "+current_layer_name+" "+feature_name);
 		}
 		
 		if(current_features.length>0)
-			me.category_block(current_category,current_features,false);
+			me.layer_block(current_layer_name,current_features,false);
 		
 		for(var dummy=0;dummy<$(".arrow").length;dummy++){
 			$($(".arrow")[dummy]).click(function(e){
@@ -302,9 +319,9 @@ var ControlPanel=function(){
 	}
 	
 	
-	//me.category_block("Main Rivers",['Cuyuni','Berbice','Essequibo','Potaro','Rupununi'],false);
+	//me.layer_block("Main Rivers",['Cuyuni','Berbice','Essequibo','Potaro','Rupununi'],false);
 	//$("#config_panel").append(make_hr());
-	//me.category_block("Towns",['Georgetown','Bartica','Charity','New Amsterdam','Lethem','Annai','Mahdia'],false);
+	//me.layer_block("Towns",['Georgetown','Bartica','Charity','New Amsterdam','Lethem','Annai','Mahdia'],false);
 	
 	
 	for(var dummy=0;dummy<$(".layer_label").length;dummy++){
