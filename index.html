@@ -9,6 +9,7 @@
 	<link rel="stylesheet" href="./static/ggmc/css/ol.css" type="text/css">
 	<link rel="stylesheet" href="./static/ggmc/css/ggmc.css" type="text/css">
 	<link rel="stylesheet" href="./static/ggmc/css/controls.css" type="text/css">
+	<link rel="stylesheet" href="./static/ggmc/css/roll_up_div.css" type="text/css">
 	<link rel="stylesheet" href="./static/ggmc/css/normalize.css" type="text/css">
 	
    	<script src="./static/ggmc/js/jquery-1.11.2.min.js"></script>
@@ -23,6 +24,9 @@
 	<script src="./static/ggmc/js/zoom.js"></script>
 	<script src="./static/ggmc/js/gearB.js"></script>
 	<script src="./static/ggmc/js/controls.js"></script>
+	<script src="./static/ggmc/js/map_button.js"></script>
+	<script src="./static/ggmc/js/roll_up_div.js"></script>
+	<script src="./static/ggmc/js/map.js"></script>
 	
 	<script type="text/javascript">
 		window.map=null;
@@ -32,26 +36,27 @@
 			window.app.resize();
 		}
 		var initialize=function(e){
+			
 			window.app=new GGMC("map_div","control_panel");
 			window.app.setup_map();//only call 1x here
+			
+			var map_manager=new Map("map_div");
+			//map_manager.setup_map();
+			
 			window.control_panel=new ControlPanel();
 			window.app.change_areaCB();
-			window.control_panel.resize();
 			
 			$('.ol-zoom-in, .ol-zoom-out, .gearB, .playB').tooltip({
 		    	placement: 'left'
 		    });
 			
-			splash_screen();
+			//splash_screen();
 		}
 	</script>
 	
 	</head>
 	<body onload="initialize()">
-		<div id="control_panel" class="control_panel">
-			<div id="config_panel" class="config_panel"></div>
-			<div id="drag_panel" class="drag_panel"></div>
-		</div>
+		<div id="control_panel" class="control_panel"></div>
 		<div id="map_div"></div>
 
 

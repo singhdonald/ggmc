@@ -25,61 +25,62 @@ var switchCB=function(e,s){
 var ControlPanel=function(){
 		
 	var me={};
-	me.panels=[
-		document.getElementById("config_panel"),
-		document.getElementById("drag_panel")
-	];
 	
-	me.resize=function(){
-		
-		for(var pidx=0;pidx<me.panels.length;pidx++){
-			var p=me.panels[pidx];
-			var head_bcr=document.getElementById("head_div").getBoundingClientRect();
-			p.style.height=(window.innerHeight-head_bcr.height)+"px";
-			p.style.top=head_bcr.height+"px";
-		}
-	}
+	me.foi=null;//feature of interest
 	
 	me.make_head_div=function(){
-		//PanelSelect
-		var head_div=document.createElement("div");
-		head_div.id="head_div";
-		head_div.className="head_div";
-		head_div.appendChild(make_hr());
-
+		
+		var opts={'parent_id':'control_panel','id':'Configuration','className':'roll_up_div','roll_up_class':'rollup','roll_up_name':'Configuration','roll_up_icon_src':"./static/ggmc/img/arrow.png",};
+		var rollup=new RollUpDiv(opts);
+		
+		var area_select=document.createElement("select");
+		area_select.id="area_select";
+		area_select.className="styled-select blue semi-square";
+		for(var sidx=0;sidx<INSTALLED["keys"].length;sidx++){
+			var opt=document.createElement("option");
+			opt.text=INSTALLED["keys"][sidx];
+			opt.selected=false;
+			if(sidx==0)opt.selected=true;
+			area_select.appendChild(opt);
+		}
+//		$("#control_panel").append(area_select);
+		area_select.addEventListener("change",window.app.change_areaCB,false);
+		
+		
+		//
 		var tourB=document.createElement("input");
 		tourB.type="checkbox";
-//		tourB.checked=window.app.tour;
 		tourB.id="tourB";
 		tourB.className="switchB";
 		var tour_div=document.createElement("div");
 		tour_div.className="switch_div";
 		tour_div.appendChild(tourB);
-
+		
 		var baseB=document.createElement("input");
 		baseB.type="checkbox";
-//		baseB.checked=window.app.tour;
 		baseB.id="baseB";
 		baseB.className="switchB";
 		var base_div=document.createElement("div");
 		base_div.className="switch_div";
 		base_div.appendChild(baseB);
-		
+/*		
 		var switchB=document.createElement("input");
 		switchB.type="checkbox";
-//		switchB.checked=window.app.tour;
 		switchB.id="switchB";
 		switchB.className="switchB";
 		var switch_div=document.createElement("div");
 		switch_div.className="switch_div";
 		switch_div.appendChild(switchB);
+*/		
+		rollup.rollup.appendChild(area_select);
+		rollup.rollup.appendChild(new make_vspace10());
+		rollup.rollup.appendChild(tour_div);
+		rollup.rollup.appendChild(new make_vspace10());
+		rollup.rollup.appendChild(base_div);
+//		rollup.rollup.appendChild(new make_vspace10());
+//		rollup.rollup.appendChild(switch_div);
 		
-		head_div.appendChild(tour_div);
-		head_div.appendChild(new make_vspace10());
-		head_div.appendChild(base_div);
-		head_div.appendChild(new make_vspace10());
-		head_div.appendChild(switch_div);
-		$("#control_panel").append(head_div);
+		$("#control_panel").append(rollup);
 		
 		$.fn.bootstrapSwitch.defaults.labelWidth="50px";
 
@@ -112,7 +113,7 @@ var ControlPanel=function(){
 			console.log(state); // true | false
 			
 		});
-		
+/*		
 		$("#switchB").bootstrapSwitch();
 		$("#switchB").bootstrapSwitch("state",false);
 		$("#switchB").bootstrapSwitch("size","mini");
@@ -127,24 +128,36 @@ var ControlPanel=function(){
 			console.log(state); // true | false
 			$(".drag_panel").toggleClass("show");
 		});
+*/		
 		
-		
-		head_div.appendChild(make_hr());
 	
 	}
-	me.basename=function(path){
-		return path.split('/').reverse()[0];
-	}
 	me.checkboxCB=function(e){
-		console.log("checkboxCB: "+me.basename(e.target.src));
+		console.log("checkboxCB: "+get_basename(e.target.src));
 		var img=e.target;
-		if(me.basename(img.src)=="checkbox-0.png")
+		if(get_basename(img.src)=="checkbox-0.png")
 			img.src="./static/ggmc/img/checkbox-1.png";
 		else
 			img.src="./static/ggmc/img/checkbox-0.png";
 			
 		var draggable_div=me.make_layer_row("testing");	
-		$("#drag_panel").append(draggable_div);
+//		$("#drag_panel").append(draggable_div);
+		
+		var source=window.app.all_sources[1];
+		if(!me.foi){
+			var N=source.getFeatures().length;
+			var fidx=parseInt(N*Math.random());
+			console.log("NumFeatures: "+N);
+			me.foi=source.getFeatures()[fidx];
+			source.removeFeature(me.foi);
+			console.log(source.getFeatures().length+" "+me.foi.get("NAME"));
+		}
+		else{
+			source.addFeature(me.foi);
+			me.foi=null;
+		}
+		
+		
 		
 	}
 	me.make_layer_row=function(layer_name){
@@ -154,14 +167,14 @@ var ControlPanel=function(){
 			var tt=document.createElement("table");
 			tt.className="tt";
 			var ttr=tt.insertRow(-1);
-			var ttc=ttr.insertCell(-1);
+			//var ttc=ttr.insertCell(-1);
 			
 			var layer_label=document.createElement("div");
 			layer_label.innerHTML=layer_name;
 			layer_label.className="layer_label";
 			var id=parseInt(1E9*Math.random()).toString();
 			layer_label.id=id;
-			console.log(id);
+			//console.log(id);
 			//cat_lyrs_div.appendChild(layer_label);
 			var ttc=ttr.insertCell(-1);
 			ttc.className="lyr_cell";
@@ -177,7 +190,6 @@ var ControlPanel=function(){
 			ttc.appendChild(img);
 			img.addEventListener("click",me.checkboxCB,false);
 			
-
 			var ttc=ttr.insertCell(-1);
 			ttc.className="icon_cell";
 			var idn="hamburger_"+parseInt(1E9*Math.random());
@@ -190,44 +202,24 @@ var ControlPanel=function(){
 			
 			return tt_div;
 	}
-	me.category_block=function(category,layers,disabled){
-		var h=document.createElement("div");
-		h.className='layer_category';
-		h.id=parseInt(100000*Math.random());
-		
-		var t=document.createElement("table");
-		t.style.width="100%";
-		var tr=t.insertRow(-1);
-		var td;
-		
-		td=tr.insertCell(-1);
-		td.className="category_cell";
-		var label=document.createElement("div");
-		label.className="label";
-		label.innerHTML=category;
-		td.appendChild(label);
-		
-		td=tr.insertCell(-1);
-		td.className="icon_cell";
-		var arrow=new Image();
-		arrow.id=h.id+"_arrow";
-		arrow.className="arrow";
-		arrow.src="./static/ggmc/img/arrow.png";
-		td.appendChild(arrow);
-		
-		h.appendChild(t);
-		
-		$("#config_panel").append(h);
+	
+	me.layer_block=function(layers,opts){
+		var rollup=new RollUpDiv(opts);
 		
 		var cat_lyrs_div=document.createElement("div");
-		cat_lyrs_div.id=h.id+"_cat_lyrs_div";
+		
+		var solid_id=opts['roll_up_name'];//handles up to 10 spaces!
+		for(var dummy=0;dummy<10;dummy++)
+			solid_id=solid_id.replace(" ","x");//can't be _ b/c splitting on _ already
+
+		cat_lyrs_div.id=solid_id+"_cat_lyrs_div";
 		cat_lyrs_div.className="cat_lyrs_div";
 		
 		var lyrs_table=document.createElement("table");
 		lyrs_table.className="lyrs_table";
 		
 		cat_lyrs_div.appendChild(lyrs_table);
-		$("#config_panel").append(cat_lyrs_div);
+		rollup.rollup.appendChild(cat_lyrs_div);
 		
 		for(var lidx=0;lidx<layers.length;lidx++){
 			
@@ -239,32 +231,59 @@ var ControlPanel=function(){
 			var tt_div=me.make_layer_row(layers[lidx]);
 			
 			//
-			
 			c.appendChild(tt_div);
 		}
+		
 	}
 	
 	me.make_head_div();
-	me.category_block("Base Layers",['Satellite','OpenStreetMap','OpenStreetMap2'],true);
-	$("#config_panel").append(make_hr());
-	me.category_block("Main Rivers",['Cuyuni','Berbice','Essequibo','Potaro','Rupununi'],false);
-	$("#config_panel").append(make_hr());
-	me.category_block("Towns",['Georgetown','Bartica','Charity','New Amsterdam','Lethem','Annai','Mahdia'],false);
+	$("#control_panel").append(make_hr());
 	
-	
-	for(var dummy=0;dummy<$(".arrow").length;dummy++){
-		$($(".arrow")[dummy]).click(function(e){
-			$(e.target).toggleClass("up");
-			$("#"+e.target.id.split("_")[0]+"_cat_lyrs_div").animate({height:'toggle'},300,function(){});
-		});
-	}
-	for(var dummy=0;dummy<$(".layer_label").length;dummy++){
-		$($(".layer_label")[dummy]).mouseover(function(e){
-			$(e.target).toggleClass("hilighted");
-		});
-		$($(".layer_label")[dummy]).mouseout(function(e){
-			$(e.target).toggleClass("hilighted");
-		});
+	me.make_layer_blocks=function(){
+		
+
+		var opts={'parent_id':'control_panel','id':"Satellite",'className':'roll_up_div','roll_up_class':'rollup','roll_up_name':"Satellite",'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
+		me.layer_block(["Satellite"],opts);
+		$("#control_panel").append(make_hr());
+		
+		var opts={'parent_id':'control_panel','id':"OpenStreetMap",'className':'roll_up_div','roll_up_class':'rollup','roll_up_name':"OpenStreetMap",'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
+		me.layer_block(["OpenStreetMap"],opts);
+		$("#control_panel").append(make_hr());
+		
+		var opts={'parent_id':'control_panel','id':"OpenStreetMap2",'className':'roll_up_div','roll_up_class':'rollup','roll_up_name':"OpenStreetMap2",'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
+		me.layer_block(["OpenStreetMap2"],opts);
+		$("#control_panel").append(make_hr());
+		
+		if(window.app.all_features.length==0)return;
+		
+		
+		var current_layer_name=window.app.all_features[0].get("layer_name");
+		var current_features=[];
+		
+		for(var fidx=0;fidx<window.app.all_features.length;fidx++){
+			
+			var f=window.app.all_features[fidx];
+			var feature_name=null;
+			feature_name=f.get("NAME");
+			if(!feature_name)feature_name=f.get("Name");
+			
+			if(f.get("layer_name")!=current_layer_name){
+				
+			var opts={'parent_id':'control_panel','id':current_layer_name,'className':'roll_up_div','roll_up_class':'rollup_constrained_height','roll_up_name':current_layer_name,'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
+				me.layer_block(current_features,opts);
+				$("#control_panel").append(make_hr());
+				
+				current_layer_name=f.get("layer_name");
+				current_features=[];
+			
+			}
+			current_features.push(feature_name);
+			console.log("control.js: "+current_layer_name+" "+feature_name);
+		}
+		
+		if(current_features.length>0)
+			var opts={'parent_id':'control_panel','id':current_layer_name,'className':'roll_up_div','roll_up_class':'rollup_constrained_height','roll_up_name':current_layer_name,'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
+			me.layer_block(current_features,opts);
 	}
 	
 	return me;

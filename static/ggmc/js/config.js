@@ -7,14 +7,14 @@ var INSTALLED={
 		"color":"rgba(255,255,0,1)",
 		"fill":"rgba(0,100,40,.1)",
 		"width":2,
-		"polygon_features":[
-			{"filename":"pacs.geojson","color":"rgba(0,255,0,1)","fill":'rgba(0,255,0,0.25)','width':1},
-			{"filename":"gy_rivers.geojson","color":"rgba(0,0,255,1)","fill":'rgba(0,0,255,1)','width':1},
+		"polygon_sources":[
+			{"filename":"pacs.geojson","color":"rgba(0,255,0,1)","fill":'rgba(0,255,0,0.25)','width':1,"layer_name":'Protected Areas'},
+			{"filename":"gy_rivers.geojson","color":"rgba(0,0,255,1)","fill":'rgba(0,0,255,1)','width':1, "layer_name":'Rivers'},
 		],
-		"point_features":[
-			{"filename":"gy_towns.geojson","color":"rgba(255,0,0,1)","fill":'rgba(255,255,255,1)','width':5,'radius':10},
+		"point_sources":[
+			{"filename":"gy_towns.geojson","color":"rgba(255,0,0,1)","fill":'rgba(255,255,255,1)','width':5,'radius':10, "layer_name":'Places'},
 		],
-		"line_features":[
+		"line_sources":[
 //			{"filename":"test_segment.geojson","color":"rgba(155,255,0,1)",'width':5},
 		]
 	},
@@ -25,9 +25,9 @@ var INSTALLED={
 		"color":"#ff0",
 		"fill":"rgba(0,100,0,0.5)",
 		"width":2,
-		"polygon_features":[],
-		"point_features":[],
-		"line_features":[]
+		"polygon_sources":[],
+		"point_sources":[],
+		"line_sources":[]
 	},
 	"greenland":{
 		"path":"./static/ggmc/data/greenland/",
@@ -36,9 +36,9 @@ var INSTALLED={
 		"color":"#ff0",
 		"fill":"rgba(100,100,0,0.5)",
 		"width":2,
-		"polygon_features":[],
-		"point_features":[],
-		"line_features":[]
+		"polygon_sources":[],
+		"point_sources":[],
+		"line_sources":[]
 	},
 }
 		

@@ -3,8 +3,6 @@
 	margin-bottom:5px;
 }
 .head_div{
-	position:absolute;
-	top:0px;
 	left:0px;
 	width:250px;
 }
@@ -66,11 +64,14 @@
 }
 .tt_div{
 	width:100%;
+	padding-left:10px;
+	padding-right:10px;
+	padding-top:0px;
+	padding-bottom:0px;
 }
 .tt{
 	width:100%;
 }
-
 .cat_lyrs_div{
 	position:relative;
 	overflow:auto;
@@ -89,8 +90,12 @@
 .layer_label.hilighted{
 	background:#555555;
 }
-.layer_category{
+.layer_name{
 	font-weight:bold;
+	padding-left:10px;
+	padding-right:10px;
+	padding-top:0px;
+	padding-bottom:0px;
 }
 .arrow{
 	height:17px;
@@ -107,6 +112,14 @@
 	color:orange;
 	font-size:14pt;
 }
-.category_cell{
+.layer_cell{
 	text-align:center;
+}
+
+.styled-select {
+   height: 29px;
+   overflow: hidden;
+   width: 100px;
+   color: #ddd;
+   background-color: #333333;
 }
