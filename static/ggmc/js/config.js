@@ -42,7 +42,7 @@ var INSTALLED={
 	},
 	"world":{
 		"path":"./static/ggmc/data/world/",
-		"bbox":[-180,-89,180,89],
+		"bbox":[-150,-60,150,60],
         "center":[0,0],
         "color":"rgba(255,0,0,0)",
         "fill":"rgba(0,100,0,0.1)",
