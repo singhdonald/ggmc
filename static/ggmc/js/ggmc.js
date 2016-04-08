@@ -29,8 +29,6 @@ var GGMC=function(div_id,control_panel_id){
 	me.current_target_layer=null;
 	
 	me.debug=true;
-	me.featureOverlay=null;
-	me.HILIGHTS=[];
 	me.DELAY=500.;
 	me.RUNNING=false;
 
@@ -233,108 +231,6 @@ var GGMC=function(div_id,control_panel_id){
 
 	}//END:me.prepare_layers
 	
-	
-	//MAP
-	me.playCB = function() {
-			console.log("mapB.CB");
-			//$(".control_panel").toggleClass("show");
-			
-			if(me.all_features.length==0){
-				console.log("resetting game from CB");
-				me.change_areaCB();
-				document.getElementById("playB").innerHTML='<img src="./static/ggmc/img/flaticon/pause.png" class="icon"/>';
-				me.RUNNING=true;
-				window.setTimeout(me.start_move,4*me.DELAY);//necessary!
-			}
-			else if(me.RUNNING==true){
-				me.RUNNING=false;
-				document.getElementById("playB").innerHTML='<img src="./static/ggmc/img/flaticon/play.png" class="icon"/>';
-			}
-			else{
-				me.RUNNING=true;
-				me.start_move(null);
-				document.getElementById("playB").innerHTML='<img src="./static/ggmc/img/flaticon/pause.png" class="icon"/>';
-			}
-			console.log("mapB.CB done");
-		};
-
-	me.controlsCB = function() {
-		$(".control_panel").toggleClass("show");
-		console.log("controlCB show off");
-	};
-	
-	me.setup_map=function(){
-		
-		var play_opts={"CB":me.playCB,"title":"Start","innerHTML":'<img src="./static/ggmc/img/flaticon/play.png" class="icon"/>','id':'playB','className':'playB map_button'};
-		var gear_opts={"CB":me.controlsCB,"title":"Configuration","innerHTML":'<img src="./static/ggmc/img/flaticon/gear.png" class="icon"/>','id':'gearB','className':'gearB map_button'};
-		var playB=new MapButton(play_opts);
-		var gearB=new MapButton(gear_opts);
-		
-		window.map = new ol.Map({
-			layers: me.all_layers,
-			target: me.div_id,
-			view: new ol.View({
-				center:ol.proj.transform(INSTALLED[me.current]["center"], 'EPSG:4326', 'EPSG:3857'),
-				zoom: 7
-			}),
-//			interactions:[],
-			controls: ol.control.defaults({
-				attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
-					collapsible: false
-				})
-			}).extend([
-				gearB,playB,
-			])
-		});
-		
-		window.map.on('click',function(evt){
-			dummmy=window.map.forEachFeatureAtPixel(evt.pixel,function(target_feature,layer){
-				var target_name=target_feature.get("NAME");
-				if(!target_name)target_name=target_feature.get("Name");
-				if(String.toLowerCase(target_name)==me.current){;}
-				console.log(target_name);
-				me.check_feature(evt.pixel);
-			});
-		});
-		
-		window.map.on('pointermove',function(evt){
-			if (evt.dragging) {
-				return;
-			}
-			
-			for(var hidx=0;hidx<me.HILIGHTS.length;hidx++){
-				me.featureOverlay.removeFeature(me.HILIGHTS[hidx]);
-			}
-			
-			dummmy=window.map.forEachFeatureAtPixel(evt.pixel,function(target_feature,layer){
-				var target_name=target_feature.get("NAME");
-				if(!target_name)target_name=target_feature.get("Name");
-				
-				if(String.toLowerCase(target_name)==me.current){
-					//this skips printing boundary to console.log
-				}
-				else if(target_name==me.current){
-					//this skips printing boundary to console.log
-				}
-				else if(target_feature){
-					me.featureOverlay.addFeature(target_feature);
-					me.HILIGHTS.push(target_feature);
-					//console.log(target_name);
-				}
-			});
-		});
-		
-		me.featureOverlay = new ol.FeatureOverlay({
-		  map: window.map,
-		  style: new ol.style.Style({
-		  	stroke: new ol.style.Stroke({
-		    	color: 'orange',
-		    	width: 2
-		    }),
-		  }),
-		});
-		
-	}//END:me.setup_map
 	
 	  	
 	//GAME ORCHESTRATION:

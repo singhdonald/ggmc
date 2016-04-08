@@ -1,6 +1,9 @@
 var Map=function(div_id){
 	var me={};
 	me.div_id=div_id;
+	me.featureOverlay=null;
+	me.HILIGHTS=[];
+
 	//MAP
 	me.playCB = function() {
 			console.log("mapB.CB");
@@ -70,7 +73,7 @@ var Map=function(div_id){
 			}
 			
 			for(var hidx=0;hidx<me.HILIGHTS.length;hidx++){
-				me.featureOverlay.removeFeature(window.app.HILIGHTS[hidx]);
+				me.featureOverlay.removeFeature(me.HILIGHTS[hidx]);
 			}
 			
 			dummmy=window.map.forEachFeatureAtPixel(evt.pixel,function(target_feature,layer){
