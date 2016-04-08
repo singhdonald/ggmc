@@ -1,6 +1,18 @@
 var RollUpDiv=function(opts){
 	var me={};
 	
+	var CB=opts['checkboxCB'];
+	var callCB=function(e){
+		try{
+			console.log("callCB");
+			CB(e);
+		}
+		catch(e){
+			console.log("Failed to call checkboxCB");
+			console.log(e);
+		}
+	}
+
 	me.head=document.createElement("div");
 	
 	var solid_id=opts['id'];//handles up to 10 spaces!
@@ -23,6 +35,18 @@ var RollUpDiv=function(opts){
 	me.label.className="roll_up_label";
 	me.label.innerHTML=opts['roll_up_name'];
 	td.appendChild(me.label);
+	
+	if(opts['checkboxCB']){
+		td=tr.insertCell(-1);
+		td.className="roll_up_icon_cell";
+		var roll_up_icon=new Image();
+		roll_up_icon.id=me.head.id+"_checkbox";
+		roll_up_icon.className="roll_up_icon";
+		roll_up_icon.src="./static/ggmc/img/checkbox-0.png";
+		roll_up_icon.addEventListener("click",callCB,false);
+		td.appendChild(roll_up_icon);
+	}
+	else{console.log("no checkboxCB");}
 	
 	td=tr.insertCell(-1);
 	td.className="roll_up_icon_cell";

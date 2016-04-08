@@ -33,7 +33,16 @@ var ControlPanel=function(){
 	
 	me.foi=null;//feature of interest
 	
-	me.make_head_div=function(){
+	me.layer_checkboxCB=function(e){
+		console.log("controls.js: layer_checkboxCB");
+		var img=e.target;
+		if(get_basename(img.src)=="checkbox-0.png")
+			img.src="./static/ggmc/img/checkbox-1.png";
+		else
+			img.src="./static/ggmc/img/checkbox-0.png";
+	}
+	
+	me.make_persistent_content=function(){
 		
 		var opts={'parent_id':'control_panel','id':'Configuration','className':'roll_up_div','roll_up_class':'rollup','roll_up_name':'Configuration','roll_up_icon_src':"./static/ggmc/img/arrow.png",};
 		var rollup=new RollUpDiv(opts);
@@ -68,15 +77,7 @@ var ControlPanel=function(){
 		var base_div=document.createElement("div");
 		base_div.className="switch_div";
 		base_div.appendChild(baseB);
-/*		
-		var switchB=document.createElement("input");
-		switchB.type="checkbox";
-		switchB.id="switchB";
-		switchB.className="switchB";
-		var switch_div=document.createElement("div");
-		switch_div.className="switch_div";
-		switch_div.appendChild(switchB);
-*/		
+		
 		var switchT=document.createElement("table");
 		switchT.align="center";
 		var r=switchT.insertRow(-1);
@@ -95,7 +96,26 @@ var ControlPanel=function(){
 		rollup.rollup.appendChild(make_vspace10());
 		rollup.rollup.appendChild(switch_container);
 		rollup.rollup.appendChild(make_vspace10());
+		
+		rollup.head.appendChild(make_hr());
 		$("#control_panel").append(rollup);
+		
+		var bcr_rollup=rollup.head.getBoundingClientRect();
+		$(".base_cover_panel").css({"top":bcr_rollup.height+"px"});
+		
+		var opts={'parent_id':'control_panel','id':"Satellite",'className':'roll_up_div','roll_up_class':'rollup','roll_up_name':"Satellite",'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
+		me.layer_block(["Satellite"],opts);
+		$("#control_panel").append(make_hr());
+		
+		var opts={'parent_id':'control_panel','id':"OpenStreetMap",'className':'roll_up_div','roll_up_class':'rollup','roll_up_name':"OpenStreetMap",'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
+		me.layer_block(["OpenStreetMap"],opts);
+		$("#control_panel").append(make_hr());
+		
+		var opts={'parent_id':'control_panel','id':"OpenStreetMap2",'className':'roll_up_div','roll_up_class':'rollup','roll_up_name':"OpenStreetMap2",'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
+		me.layer_block(["OpenStreetMap2"],opts);
+		$("#control_panel").append(make_hr());
+		
+
 		
 		$.fn.bootstrapSwitch.defaults.labelWidth="50px";
 
@@ -115,10 +135,10 @@ var ControlPanel=function(){
 		});
 		
 		$("#baseB").bootstrapSwitch();
-		$("#baseB").bootstrapSwitch("state",false);
+		$("#baseB").bootstrapSwitch("state",true);
 		$("#baseB").bootstrapSwitch("size","mini");
-		$("#baseB").bootstrapSwitch("onColor","success");//'primary', 'info', 'success', 'warning', 'danger', 'default'
-		$("#baseB").bootstrapSwitch("offColor","danger");//'primary', 'info', 'success', 'warning', 'danger', 'default'
+		$("#baseB").bootstrapSwitch("offColor","success");//'primary', 'info', 'success', 'warning', 'danger', 'default'
+		$("#baseB").bootstrapSwitch("onColor","danger");//'primary', 'info', 'success', 'warning', 'danger', 'default'
 		$("#baseB").bootstrapSwitch("onText","<img class='switch_icon' src='./static/ggmc/img/layers.png'/>");//http://www.bootstrap-switch.org/options.html
 		$("#baseB").bootstrapSwitch("offText","<img class='switch_icon' src='./static/ggmc/img/layers.png'/>");
 		$("#baseB").bootstrapSwitch("labelText","<b> Base </b> ");
@@ -126,24 +146,8 @@ var ControlPanel=function(){
 			console.log(this); // DOM element
 			console.log(event); // jQuery event
 			console.log(state); // true | false
-			
+			$(".base_cover_panel").toggleClass("show");
 		});
-/*		
-		$("#switchB").bootstrapSwitch();
-		$("#switchB").bootstrapSwitch("state",false);
-		$("#switchB").bootstrapSwitch("size","mini");
-		$("#switchB").bootstrapSwitch("onColor","success");//'primary', 'info', 'success', 'warning', 'danger', 'default'
-		$("#switchB").bootstrapSwitch("offColor","warning");
-		$("#switchB").bootstrapSwitch("onText","<img class='switch_icon' src='./static/ggmc/img/flaticon/gear.png'/>");//http://www.bootstrap-switch.org/options.html
-		$("#switchB").bootstrapSwitch("offText","<img class='switch_icon' src='./static/ggmc/img/flaticon/gear.png'/>");
-		$("#switchB").bootstrapSwitch("labelText","<b>Panel</b>");
-		$("#switchB").on('switchChange.bootstrapSwitch', function(event, state) {
-			console.log(this); // DOM element
-			console.log(event); // jQuery event
-			console.log(state); // true | false
-			$(".drag_panel").toggleClass("show");
-		});
-*/		
 		
 	
 	}
@@ -154,7 +158,7 @@ var ControlPanel=function(){
 			img.src="./static/ggmc/img/checkbox-1.png";
 		else
 			img.src="./static/ggmc/img/checkbox-0.png";
-			
+/*
 		var draggable_div=me.make_layer_row("testing");	
 //		$("#drag_panel").append(draggable_div);
 		
@@ -172,9 +176,7 @@ var ControlPanel=function(){
 			source.addFeature(me.foi);
 			me.foi=null;
 		}
-		
-		
-		
+*/
 	}
 	me.make_layer_row=function(layer_name){
 			var tt_div=document.createElement("div");
@@ -214,10 +216,19 @@ var ControlPanel=function(){
 			img.className="icon";
 			img.src="./static/ggmc/img/flaticon/interface-1.png";
 			ttc.appendChild(img);
-			tt_div.appendChild(tt);
+			img.addEventListener("click",me.popoutCB,false);
 			
+			tt_div.appendChild(tt);
 			return tt_div;
 	}
+	
+	me.popoutCB = function(e) {
+		console.log(e.clientY+"px");
+		//document.getElementById("popout_panel").style.top=e.clientY+"px";
+		$(".popout_panel").css({"top":(e.clientY-100)+"px"});
+		$(".popout_panel").toggleClass("show");
+		console.log("popoutCB show off");
+	};
 	
 	me.layer_block=function(layers,opts){
 		var rollup=new RollUpDiv(opts);
@@ -255,19 +266,6 @@ var ControlPanel=function(){
 	
 	me.make_layer_blocks=function(){
 		
-
-		var opts={'parent_id':'control_panel','id':"Satellite",'className':'roll_up_div','roll_up_class':'rollup','roll_up_name':"Satellite",'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
-		me.layer_block(["Satellite"],opts);
-		$("#control_panel").append(make_hr());
-		
-		var opts={'parent_id':'control_panel','id':"OpenStreetMap",'className':'roll_up_div','roll_up_class':'rollup','roll_up_name':"OpenStreetMap",'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
-		me.layer_block(["OpenStreetMap"],opts);
-		$("#control_panel").append(make_hr());
-		
-		var opts={'parent_id':'control_panel','id':"OpenStreetMap2",'className':'roll_up_div','roll_up_class':'rollup','roll_up_name':"OpenStreetMap2",'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
-		me.layer_block(["OpenStreetMap2"],opts);
-		$("#control_panel").append(make_hr());
-		
 		if(window.app.all_features.length==0)return;
 		
 		
@@ -283,7 +281,7 @@ var ControlPanel=function(){
 			
 			if(f.get("layer_name")!=current_layer_name){
 				
-			var opts={'parent_id':'control_panel','id':current_layer_name,'className':'roll_up_div','roll_up_class':'rollup_constrained_height','roll_up_name':current_layer_name,'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
+				var opts={"checkboxCB":me.layer_checkboxCB,'parent_id':'control_panel','id':current_layer_name,'className':'roll_up_div','roll_up_class':'rollup_constrained_height','roll_up_name':current_layer_name,'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
 				me.layer_block(current_features,opts);
 				$("#control_panel").append(make_hr());
 				
@@ -296,13 +294,13 @@ var ControlPanel=function(){
 		}
 		
 		if(current_features.length>0)
-			var opts={'parent_id':'control_panel','id':current_layer_name,'className':'roll_up_div','roll_up_class':'rollup_constrained_height','roll_up_name':current_layer_name,'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
+			var opts={"checkboxCB":me.layer_checkboxCB,'parent_id':'control_panel','id':current_layer_name,'className':'roll_up_div','roll_up_class':'rollup_constrained_height','roll_up_name':current_layer_name,'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
 			me.layer_block(current_features,opts);
 	}
 	me.rebuild=function(){
 		var control_panel=document.getElementById("control_panel");
 		var children=control_panel.childNodes;
-		for(var cidx=children.length-1;cidx>1;cidx--){
+		for(var cidx=children.length-1;cidx>10;cidx--){
 			console.log("removing: "+children[cidx].id);
 			control_panel.removeChild(children[cidx]);
 		}
@@ -310,8 +308,7 @@ var ControlPanel=function(){
 		me.make_layer_blocks();
 	}
 	
-	me.make_head_div();
-	$("#control_panel").append(make_hr());
+	me.make_persistent_content();
 	
 	return me;
 	

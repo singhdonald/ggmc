@@ -91,8 +91,6 @@ var GGMC=function(div_id,control_panel_id){
 			}
 		}
 		console.log("all_features.length="+me.all_features.length.toString());
-		
-		
 		window.control_panel.rebuild();
 	}
 //	
@@ -216,8 +214,8 @@ var GGMC=function(div_id,control_panel_id){
 		});
 		
 		
-		me.all_layers.push(BASE_LAYERS['OpenStreetMap']);
-		me.all_layers.push(BASE_LAYERS['Satellite']);
+//		me.all_layers.push(BASE_LAYERS['OpenStreetMap']);
+//		me.all_layers.push(BASE_LAYERS['Satellite']);
 		me.all_layers.push(me.boundary_layer);
 		for(var pidx=0; pidx<me.polygon_layers.length; pidx++){
 			me.all_layers.push(me.polygon_layers[pidx]);

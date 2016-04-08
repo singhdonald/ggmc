@@ -6,6 +6,40 @@
 	left:0px;
 	width:250px;
 }
+.popout_panel{
+	position:absolute;
+	height:200px;
+	width: 0px;
+	left: 250px;
+	z-index: 990;
+	background-color:#FFAA00;
+	color:white;
+	-webkit-transition: width 0.75s ease;
+	transition: width 0.75s ease;
+	opacity:1.0;
+	text-align:center;
+	overflow:auto;
+}
+.popout_panel.show{
+	width: 250px;
+}
+.base_cover_panel{
+	position:absolute;
+	height:195px;
+	width: 250px;
+	left: 0%;
+	z-index: 990;
+	background-color:#AAAAAA;
+	color:white;
+	-webkit-transition: left 0.75s ease;
+	transition: left 0.75s ease;
+	opacity:0.75;
+	text-align:center;
+	overflow:auto;
+}
+.base_cover_panel.show{
+	left:-100%;
+}
 .config_panel{
 	position:absolute;
 	height:100%;
