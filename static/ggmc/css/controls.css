@@ -62,6 +62,9 @@
 .vspace10{
 	height:10px;
 }
+.hspace10{
+	width:10px;
+}
 .tt_div{
 	width:100%;
 	padding-left:10px;
@@ -115,7 +118,12 @@
 .layer_cell{
 	text-align:center;
 }
-
+.centered{
+	text-align:center;
+}
+.w100{
+	width:100%;
+}
 .styled-select {
    height: 29px;
    overflow: hidden;

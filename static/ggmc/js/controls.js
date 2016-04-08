@@ -8,6 +8,11 @@ var make_vspace10=function(){
 	vspace10.className="vspace10";
 	return vspace10;
 }
+var make_hspace10=function(){
+	var hspace10=document.createElement("div");
+	hspace10.className="hspace10";
+	return hspace10;
+}
 var make_layer_switch=function(idn){
 	var _switch=document.createElement("input");
 	_switch.type="checkbox";
@@ -72,14 +77,24 @@ var ControlPanel=function(){
 		switch_div.className="switch_div";
 		switch_div.appendChild(switchB);
 */		
-		rollup.rollup.appendChild(area_select);
-		rollup.rollup.appendChild(new make_vspace10());
-		rollup.rollup.appendChild(tour_div);
-		rollup.rollup.appendChild(new make_vspace10());
-		rollup.rollup.appendChild(base_div);
-//		rollup.rollup.appendChild(new make_vspace10());
-//		rollup.rollup.appendChild(switch_div);
+		var switchT=document.createElement("table");
+		switchT.align="center";
+		var r=switchT.insertRow(-1);
+		var tour_cell=r.insertCell(-1);
+		tour_cell.appendChild(tour_div);
+		var hspace_cell=r.insertCell(-1);
+		hspace_cell.appendChild(make_hspace10());
+		var base_cell=r.insertCell(-1);
+		base_cell.appendChild(base_div);
 		
+		var switch_container=document.createElement("div");
+		switch_container.className="centered w100";
+		switch_container.appendChild(switchT);
+		
+		rollup.rollup.appendChild(area_select);
+		rollup.rollup.appendChild(make_vspace10());
+		rollup.rollup.appendChild(switch_container);
+		rollup.rollup.appendChild(make_vspace10());
 		$("#control_panel").append(rollup);
 		
 		$.fn.bootstrapSwitch.defaults.labelWidth="50px";
@@ -143,7 +158,8 @@ var ControlPanel=function(){
 		var draggable_div=me.make_layer_row("testing");	
 //		$("#drag_panel").append(draggable_div);
 		
-		var source=window.app.all_sources[1];
+		if(window.app.all_sources.length==0)return;
+		var source=window.app.all_sources[0];
 		if(!me.foi){
 			var N=source.getFeatures().length;
 			var fidx=parseInt(N*Math.random());
@@ -162,7 +178,7 @@ var ControlPanel=function(){
 	}
 	me.make_layer_row=function(layer_name){
 			var tt_div=document.createElement("div");
-			tt_div.className="tt_div";
+//			tt_div.className="tt_div";
 			
 			var tt=document.createElement("table");
 			tt.className="tt";
@@ -236,8 +252,6 @@ var ControlPanel=function(){
 		
 	}
 	
-	me.make_head_div();
-	$("#control_panel").append(make_hr());
 	
 	me.make_layer_blocks=function(){
 		
@@ -285,6 +299,19 @@ var ControlPanel=function(){
 			var opts={'parent_id':'control_panel','id':current_layer_name,'className':'roll_up_div','roll_up_class':'rollup_constrained_height','roll_up_name':current_layer_name,'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
 			me.layer_block(current_features,opts);
 	}
+	me.rebuild=function(){
+		var control_panel=document.getElementById("control_panel");
+		var children=control_panel.childNodes;
+		for(var cidx=children.length-1;cidx>1;cidx--){
+			console.log("removing: "+children[cidx].id);
+			control_panel.removeChild(children[cidx]);
+		}
+		
+		me.make_layer_blocks();
+	}
+	
+	me.make_head_div();
+	$("#control_panel").append(make_hr());
 	
 	return me;
 	

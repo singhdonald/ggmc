@@ -93,7 +93,7 @@ var GGMC=function(div_id,control_panel_id){
 		console.log("all_features.length="+me.all_features.length.toString());
 		
 		
-		window.control_panel.make_layer_blocks();
+		window.control_panel.rebuild();
 	}
 //	
 	me.prepare_layers=function(){

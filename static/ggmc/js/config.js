@@ -1,5 +1,5 @@
 var INSTALLED={
-	"keys":["guyana","greenland","iceland","world","gt_roads" ],
+	"keys":["iceland","guyana","greenland","gt_roads","world" ],
 	"guyana":{
 		"path":"./static/ggmc/data/guyana/",
 		"bbox":[-61.5,1.1,-56.3,8.7],
@@ -9,10 +9,10 @@ var INSTALLED={
 		"width":2,
 		"polygon_sources":[
 			{"filename":"pacs.geojson","color":"rgba(0,255,0,1)","fill":'rgba(0,255,0,0.25)','width':1,"layer_name":'Protected Areas'},
-			{"filename":"gy_rivers.geojson","color":"rgba(0,0,255,1)","fill":'rgba(0,0,255,1)','width':1, "layer_name":'Rivers'},
+//			{"filename":"gy_rivers.geojson","color":"rgba(0,0,255,1)","fill":'rgba(0,0,255,1)','width':1, "layer_name":'Rivers'},
 		],
 		"point_sources":[
-			{"filename":"gy_towns.geojson","color":"rgba(255,0,0,1)","fill":'rgba(255,255,255,1)','width':5,'radius':10, "layer_name":'Places'},
+//			{"filename":"gy_towns.geojson","color":"rgba(255,0,0,1)","fill":'rgba(255,255,255,1)','width':5,'radius':10, "layer_name":'Places'},
 		],
 		"line_sources":[
 //			{"filename":"test_segment.geojson","color":"rgba(155,255,0,1)",'width':5},
@@ -42,8 +42,8 @@ var INSTALLED={
 	},
 	"world":{
 		"path":"./static/ggmc/data/world/",
-		"bbox":[-150,-60,150,60],
-        "center":[0,0],
+		"bbox":[-160,-60,100,60],
+        "center":[0,20],
         "color":"rgba(255,0,0,0)",
         "fill":"rgba(0,100,0,0.1)",
         "width":0,
@@ -61,7 +61,7 @@ var INSTALLED={
         "fill":"rgba(0,100,0,0.1)",
         "width":0,
         "polygon_sources":[
-            {"filename":"gt_roads.geojson","color":"rgba(0,255,234,1)","fill":'rgba(0,255,0,0.25)','width':1,"layer_name":'Georgetown Roads'}
+            {"filename":"gt_roads.geojson","color":"rgba(0,255,234,1)","fill":'rgba(0,255,0,0.25)','width':3,"layer_name":'Georgetown Roads'}
         ],
         "point_sources":[],
         "line_sources":[]
