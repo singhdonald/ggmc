@@ -37,8 +37,9 @@ var RollUpDiv=function(opts){
 	
 	me.rollup=document.createElement("div");
 	me.rollup.id=me.head.id+"_rollup";
-	me.rollup.className=opts['roll_up_class'];
-	$("#"+opts['parent_id']).append(me.rollup);
+	//me.rollup.className=opts['roll_up_class'];
+	//$("#"+opts['parent_id']).append(me.rollup);
+	me.head.appendChild(me.rollup);
 	
 	$("#"+roll_up_icon.id).click(function(e){
 		$(e.target).toggleClass("up");
