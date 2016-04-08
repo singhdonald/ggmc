@@ -1,5 +1,5 @@
 var INSTALLED={
-	"keys":["guyana","greenland","iceland"],
+	"keys":["guyana","greenland","iceland","world","gt_roads" ],
 	"guyana":{
 		"path":"./static/ggmc/data/guyana/",
 		"bbox":[-61.5,1.1,-56.3,8.7],
@@ -40,5 +40,32 @@ var INSTALLED={
 		"point_sources":[],
 		"line_sources":[]
 	},
+	"world":{
+		"path":"./static/ggmc/data/world/",
+		"bbox":[-180,-89,180,89],
+        "center":[0,0],
+        "color":"rgba(255,0,0,0)",
+        "fill":"rgba(0,100,0,0.1)",
+        "width":0,
+        "polygon_sources":[
+            {"filename":"world_borders.geojson","color":"rgba(0,255,0,1)","fill":'rgba(0,255,0,0.25)','width':1,"layer_name":'Countries'},
+        ],
+        "point_sources":[],
+        "line_sources":[]
+    },		
+    "gt_roads":{
+        "path":"./static/ggmc/data/georgetown/",
+        "bbox":[-58.104,6.762, -58.169,6.832],
+		"center":[-58.13836,6.79834],
+        "color":"rgba(255,0,0,0)",
+        "fill":"rgba(0,100,0,0.1)",
+        "width":0,
+        "polygon_sources":[
+            {"filename":"gt_roads.geojson","color":"rgba(0,255,234,1)","fill":'rgba(0,255,0,0.25)','width':1,"layer_name":'Georgetown Roads'}
+        ],
+        "point_sources":[],
+        "line_sources":[]
+    }
+	
 }
-		
+	

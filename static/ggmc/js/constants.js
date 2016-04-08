@@ -76,7 +76,25 @@ var splash_screen=function(){
 //	alert(':)  Welcome To Our Tour Guide Of Our Uniquely Majestic Towns And Rivers  :)');
 	var splash_div=document.createElement('div');
 	splash_div.className = "splash_div";
+	
+	splash_div.id = "splash_div";
 	splash_div.innerHTML=':)  Welcome To Our Tour Guide Of Our Uniquely Majestic Towns And Rivers  :)';
+	splash_div.style.left=(window.innerWidth/2-300/2)+"px";
+	splash_div.style.top=(window.innerHeight/2-200/2)+"px";
+	splash_div.style.width=(300)+"px";
+	splash_div.style.height=(200)+"px";
+	splash_div.style.opacity=0.0;
+	console.log("hi canica was here");
 	document.body.appendChild(splash_div);
+	
+	$("#splash_div").animate(
+		{opacity:1.0},
+		2*window.app.DELAY,
+		function(){
+			
+			try{document.body.removeChild(splash_div);}
+			catch(e){;}
+		}
+	)
 }
 
