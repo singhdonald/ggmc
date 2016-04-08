@@ -41,7 +41,7 @@ var Map=function(div_id){
 		var gearB=new MapButton(gear_opts);
 		
 		window.map = new ol.Map({
-			layers: window.app.all_layers,
+			layers:[],
 			target: me.div_id,
 			view: new ol.View({
 				center:ol.proj.transform(INSTALLED[window.app.current]["center"], 'EPSG:4326', 'EPSG:3857'),

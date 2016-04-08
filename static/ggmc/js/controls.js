@@ -33,7 +33,16 @@ var ControlPanel=function(){
 	
 	me.foi=null;//feature of interest
 	
-	me.make_head_div=function(){
+	me.layer_checkboxCB=function(e){
+		console.log("controls.js: layer_checkboxCB");
+		var img=e.target;
+		if(get_basename(img.src)=="checkbox-0.png")
+			img.src="./static/ggmc/img/checkbox-1.png";
+		else
+			img.src="./static/ggmc/img/checkbox-0.png";
+	}
+	
+	me.make_persistent_content=function(){
 		
 		var opts={'parent_id':'control_panel','id':'Configuration','className':'roll_up_div','roll_up_class':'rollup','roll_up_name':'Configuration','roll_up_icon_src':"./static/ggmc/img/arrow.png",};
 		var rollup=new RollUpDiv(opts);
@@ -68,15 +77,7 @@ var ControlPanel=function(){
 		var base_div=document.createElement("div");
 		base_div.className="switch_div";
 		base_div.appendChild(baseB);
-/*		
-		var switchB=document.createElement("input");
-		switchB.type="checkbox";
-		switchB.id="switchB";
-		switchB.className="switchB";
-		var switch_div=document.createElement("div");
-		switch_div.className="switch_div";
-		switch_div.appendChild(switchB);
-*/		
+		
 		var switchT=document.createElement("table");
 		switchT.align="center";
 		var r=switchT.insertRow(-1);
@@ -96,6 +97,21 @@ var ControlPanel=function(){
 		rollup.rollup.appendChild(switch_container);
 		rollup.rollup.appendChild(make_vspace10());
 		$("#control_panel").append(rollup);
+		
+		$("#control_panel").append(make_hr());
+		var opts={"checkboxCB":me.layer_checkboxCB,'parent_id':'control_panel','id':"Satellite",'className':'roll_up_div','roll_up_class':'rollup','roll_up_name':"Satellite",'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
+		me.layer_block(["Satellite"],opts);
+		$("#control_panel").append(make_hr());
+		
+		var opts={"checkboxCB":me.layer_checkboxCB,'parent_id':'control_panel','id':"OpenStreetMap",'className':'roll_up_div','roll_up_class':'rollup','roll_up_name':"OpenStreetMap",'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
+		me.layer_block(["OpenStreetMap"],opts);
+		$("#control_panel").append(make_hr());
+		
+		var opts={"checkboxCB":me.layer_checkboxCB,'parent_id':'control_panel','id':"OpenStreetMap2",'className':'roll_up_div','roll_up_class':'rollup','roll_up_name':"OpenStreetMap2",'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
+		me.layer_block(["OpenStreetMap2"],opts);
+		$("#control_panel").append(make_hr());
+		
+
 		
 		$.fn.bootstrapSwitch.defaults.labelWidth="50px";
 
@@ -128,22 +144,6 @@ var ControlPanel=function(){
 			console.log(state); // true | false
 			
 		});
-/*		
-		$("#switchB").bootstrapSwitch();
-		$("#switchB").bootstrapSwitch("state",false);
-		$("#switchB").bootstrapSwitch("size","mini");
-		$("#switchB").bootstrapSwitch("onColor","success");//'primary', 'info', 'success', 'warning', 'danger', 'default'
-		$("#switchB").bootstrapSwitch("offColor","warning");
-		$("#switchB").bootstrapSwitch("onText","<img class='switch_icon' src='./static/ggmc/img/flaticon/gear.png'/>");//http://www.bootstrap-switch.org/options.html
-		$("#switchB").bootstrapSwitch("offText","<img class='switch_icon' src='./static/ggmc/img/flaticon/gear.png'/>");
-		$("#switchB").bootstrapSwitch("labelText","<b>Panel</b>");
-		$("#switchB").on('switchChange.bootstrapSwitch', function(event, state) {
-			console.log(this); // DOM element
-			console.log(event); // jQuery event
-			console.log(state); // true | false
-			$(".drag_panel").toggleClass("show");
-		});
-*/		
 		
 	
 	}
@@ -154,7 +154,7 @@ var ControlPanel=function(){
 			img.src="./static/ggmc/img/checkbox-1.png";
 		else
 			img.src="./static/ggmc/img/checkbox-0.png";
-			
+/*
 		var draggable_div=me.make_layer_row("testing");	
 //		$("#drag_panel").append(draggable_div);
 		
@@ -172,9 +172,7 @@ var ControlPanel=function(){
 			source.addFeature(me.foi);
 			me.foi=null;
 		}
-		
-		
-		
+*/
 	}
 	me.make_layer_row=function(layer_name){
 			var tt_div=document.createElement("div");
@@ -255,19 +253,6 @@ var ControlPanel=function(){
 	
 	me.make_layer_blocks=function(){
 		
-
-		var opts={'parent_id':'control_panel','id':"Satellite",'className':'roll_up_div','roll_up_class':'rollup','roll_up_name':"Satellite",'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
-		me.layer_block(["Satellite"],opts);
-		$("#control_panel").append(make_hr());
-		
-		var opts={'parent_id':'control_panel','id':"OpenStreetMap",'className':'roll_up_div','roll_up_class':'rollup','roll_up_name':"OpenStreetMap",'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
-		me.layer_block(["OpenStreetMap"],opts);
-		$("#control_panel").append(make_hr());
-		
-		var opts={'parent_id':'control_panel','id':"OpenStreetMap2",'className':'roll_up_div','roll_up_class':'rollup','roll_up_name':"OpenStreetMap2",'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
-		me.layer_block(["OpenStreetMap2"],opts);
-		$("#control_panel").append(make_hr());
-		
 		if(window.app.all_features.length==0)return;
 		
 		
@@ -302,7 +287,7 @@ var ControlPanel=function(){
 	me.rebuild=function(){
 		var control_panel=document.getElementById("control_panel");
 		var children=control_panel.childNodes;
-		for(var cidx=children.length-1;cidx>1;cidx--){
+		for(var cidx=children.length-1;cidx>7;cidx--){
 			console.log("removing: "+children[cidx].id);
 			control_panel.removeChild(children[cidx]);
 		}
@@ -310,7 +295,7 @@ var ControlPanel=function(){
 		me.make_layer_blocks();
 	}
 	
-	me.make_head_div();
+	me.make_persistent_content();
 	$("#control_panel").append(make_hr());
 	
 	return me;
