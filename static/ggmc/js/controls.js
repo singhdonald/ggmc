@@ -96,18 +96,22 @@ var ControlPanel=function(){
 		rollup.rollup.appendChild(make_vspace10());
 		rollup.rollup.appendChild(switch_container);
 		rollup.rollup.appendChild(make_vspace10());
+		
+		rollup.head.appendChild(make_hr());
 		$("#control_panel").append(rollup);
 		
-		$("#control_panel").append(make_hr());
-		var opts={"checkboxCB":me.layer_checkboxCB,'parent_id':'control_panel','id':"Satellite",'className':'roll_up_div','roll_up_class':'rollup','roll_up_name':"Satellite",'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
+		var bcr_rollup=rollup.head.getBoundingClientRect();
+		$(".base_cover_panel").css({"top":bcr_rollup.height+"px"});
+		
+		var opts={'parent_id':'control_panel','id':"Satellite",'className':'roll_up_div','roll_up_class':'rollup','roll_up_name':"Satellite",'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
 		me.layer_block(["Satellite"],opts);
 		$("#control_panel").append(make_hr());
 		
-		var opts={"checkboxCB":me.layer_checkboxCB,'parent_id':'control_panel','id':"OpenStreetMap",'className':'roll_up_div','roll_up_class':'rollup','roll_up_name':"OpenStreetMap",'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
+		var opts={'parent_id':'control_panel','id':"OpenStreetMap",'className':'roll_up_div','roll_up_class':'rollup','roll_up_name':"OpenStreetMap",'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
 		me.layer_block(["OpenStreetMap"],opts);
 		$("#control_panel").append(make_hr());
 		
-		var opts={"checkboxCB":me.layer_checkboxCB,'parent_id':'control_panel','id':"OpenStreetMap2",'className':'roll_up_div','roll_up_class':'rollup','roll_up_name':"OpenStreetMap2",'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
+		var opts={'parent_id':'control_panel','id':"OpenStreetMap2",'className':'roll_up_div','roll_up_class':'rollup','roll_up_name':"OpenStreetMap2",'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
 		me.layer_block(["OpenStreetMap2"],opts);
 		$("#control_panel").append(make_hr());
 		
@@ -131,10 +135,10 @@ var ControlPanel=function(){
 		});
 		
 		$("#baseB").bootstrapSwitch();
-		$("#baseB").bootstrapSwitch("state",false);
+		$("#baseB").bootstrapSwitch("state",true);
 		$("#baseB").bootstrapSwitch("size","mini");
-		$("#baseB").bootstrapSwitch("onColor","success");//'primary', 'info', 'success', 'warning', 'danger', 'default'
-		$("#baseB").bootstrapSwitch("offColor","danger");//'primary', 'info', 'success', 'warning', 'danger', 'default'
+		$("#baseB").bootstrapSwitch("offColor","success");//'primary', 'info', 'success', 'warning', 'danger', 'default'
+		$("#baseB").bootstrapSwitch("onColor","danger");//'primary', 'info', 'success', 'warning', 'danger', 'default'
 		$("#baseB").bootstrapSwitch("onText","<img class='switch_icon' src='./static/ggmc/img/layers.png'/>");//http://www.bootstrap-switch.org/options.html
 		$("#baseB").bootstrapSwitch("offText","<img class='switch_icon' src='./static/ggmc/img/layers.png'/>");
 		$("#baseB").bootstrapSwitch("labelText","<b> Base </b> ");
@@ -142,7 +146,7 @@ var ControlPanel=function(){
 			console.log(this); // DOM element
 			console.log(event); // jQuery event
 			console.log(state); // true | false
-			
+			$(".base_cover_panel").toggleClass("show");
 		});
 		
 	
@@ -212,10 +216,19 @@ var ControlPanel=function(){
 			img.className="icon";
 			img.src="./static/ggmc/img/flaticon/interface-1.png";
 			ttc.appendChild(img);
-			tt_div.appendChild(tt);
+			img.addEventListener("click",me.popoutCB,false);
 			
+			tt_div.appendChild(tt);
 			return tt_div;
 	}
+	
+	me.popoutCB = function(e) {
+		console.log(e.clientY+"px");
+		//document.getElementById("popout_panel").style.top=e.clientY+"px";
+		$(".popout_panel").css({"top":(e.clientY-100)+"px"});
+		$(".popout_panel").toggleClass("show");
+		console.log("popoutCB show off");
+	};
 	
 	me.layer_block=function(layers,opts){
 		var rollup=new RollUpDiv(opts);
@@ -268,7 +281,7 @@ var ControlPanel=function(){
 			
 			if(f.get("layer_name")!=current_layer_name){
 				
-			var opts={'parent_id':'control_panel','id':current_layer_name,'className':'roll_up_div','roll_up_class':'rollup_constrained_height','roll_up_name':current_layer_name,'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
+				var opts={"checkboxCB":me.layer_checkboxCB,'parent_id':'control_panel','id':current_layer_name,'className':'roll_up_div','roll_up_class':'rollup_constrained_height','roll_up_name':current_layer_name,'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
 				me.layer_block(current_features,opts);
 				$("#control_panel").append(make_hr());
 				
@@ -281,13 +294,13 @@ var ControlPanel=function(){
 		}
 		
 		if(current_features.length>0)
-			var opts={'parent_id':'control_panel','id':current_layer_name,'className':'roll_up_div','roll_up_class':'rollup_constrained_height','roll_up_name':current_layer_name,'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
+			var opts={"checkboxCB":me.layer_checkboxCB,'parent_id':'control_panel','id':current_layer_name,'className':'roll_up_div','roll_up_class':'rollup_constrained_height','roll_up_name':current_layer_name,'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
 			me.layer_block(current_features,opts);
 	}
 	me.rebuild=function(){
 		var control_panel=document.getElementById("control_panel");
 		var children=control_panel.childNodes;
-		for(var cidx=children.length-1;cidx>7;cidx--){
+		for(var cidx=children.length-1;cidx>10;cidx--){
 			console.log("removing: "+children[cidx].id);
 			control_panel.removeChild(children[cidx]);
 		}
@@ -296,7 +309,6 @@ var ControlPanel=function(){
 	}
 	
 	me.make_persistent_content();
-	$("#control_panel").append(make_hr());
 	
 	return me;
 	
