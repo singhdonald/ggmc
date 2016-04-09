@@ -1,6 +1,7 @@
-var make_hr=function(){
+var make_hr=function(idn){
 	var hr=document.createElement("hr");
 	hr.className="hr";
+	if(idn!=null)hr.id=idn;
 	return hr;
 }
 var make_vspace10=function(){
@@ -97,7 +98,7 @@ var ControlPanel=function(){
 		rollup.rollup.appendChild(switch_container);
 		rollup.rollup.appendChild(make_vspace10());
 		
-		rollup.head.appendChild(make_hr());
+		rollup.head.appendChild(make_hr("hr0"));
 		$("#control_panel").append(rollup);
 		
 		var bcr_rollup=rollup.head.getBoundingClientRect();
@@ -113,7 +114,7 @@ var ControlPanel=function(){
 		
 		var opts={'parent_id':'control_panel','id':"OpenStreetMap2",'className':'roll_up_div','roll_up_class':'rollup','roll_up_name':"OpenStreetMap2",'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
 		me.layer_block(["OpenStreetMap2"],opts);
-		$("#control_panel").append(make_hr());
+		$("#control_panel").append(make_hr("hr3"));
 		
 
 		
@@ -122,8 +123,8 @@ var ControlPanel=function(){
 		$("#tourB").bootstrapSwitch();
 		$("#tourB").bootstrapSwitch("state",window.app.tour);
 		$("#tourB").bootstrapSwitch("size","mini");
-		$("#tourB").bootstrapSwitch("onColor","success");//'primary', 'info', 'success', 'warning', 'danger', 'default'
-		$("#tourB").bootstrapSwitch("offColor","danger");//'primary', 'info', 'success', 'warning', 'danger', 'default'
+		$("#tourB").bootstrapSwitch("onColor","info");//'primary', 'info', 'success', 'warning', 'danger', 'default'
+		$("#tourB").bootstrapSwitch("offColor","success");//'primary', 'info', 'success', 'warning', 'danger', 'default'
 		$("#tourB").bootstrapSwitch("onText","<img class='switch_icon' src='./static/ggmc/img/globe.png'/>");//http://www.bootstrap-switch.org/options.html
 		$("#tourB").bootstrapSwitch("offText","<img class='switch_icon' src='./static/ggmc/img/flaticon/search.png'/>");
 		$("#tourB").bootstrapSwitch("labelText","<b> Tour </b> ");
@@ -146,6 +147,12 @@ var ControlPanel=function(){
 			console.log(this); // DOM element
 			console.log(event); // jQuery event
 			console.log(state); // true | false
+			
+			var hr0_bcr=document.getElementById("hr0").getBoundingClientRect();
+			var hr3_bcr=document.getElementById("hr3").getBoundingClientRect();
+			var h=hr3_bcr.top-hr0_bcr.bottom;
+			console.log("h="+h);
+			$(".base_cover_panel").css({"height":h});
 			$(".base_cover_panel").toggleClass("show");
 		});
 		
@@ -300,7 +307,7 @@ var ControlPanel=function(){
 	me.rebuild=function(){
 		var control_panel=document.getElementById("control_panel");
 		var children=control_panel.childNodes;
-		for(var cidx=children.length-1;cidx>10;cidx--){
+		for(var cidx=children.length-1;cidx>9;cidx--){
 			console.log("removing: "+children[cidx].id);
 			control_panel.removeChild(children[cidx]);
 		}
