@@ -12,10 +12,58 @@ var GGMC=function(div_id,control_panel_id){
 	
 	me.current = INSTALLED["keys"][0];
 	
-	var BASE_LAYERS={};
-	BASE_LAYERS['Satellite']=new ol.layer.Tile({minResolution:500,preload:14,opacity:0.5,title:'Satellite',source:new ol.source.MapQuest({layer:'sat'})});
-	BASE_LAYERS['OpenStreetMap']=new ol.layer.Tile({preload:14,opacity:1.0,title:'OpenStreetMap',source:new ol.source.MapQuest({layer:'osm'})});
-	BASE_LAYERS['OpenStreetMap2']=new ol.layer.Tile({title:'OpenStreetMap2',source:new ol.source.OSM()});
+	me.BASE_ENABLED=false;
+	BASE_SOURCES={
+		'Satellite':new ol.source.MapQuest({layer:'sat'}),
+		'OpenStreetMap':new ol.source.MapQuest({layer:'osm'}),
+		'OpenStreetMap2':new ol.source.OSM(),
+	};
+	me.BASE_LAYERS={
+		'keys':['Satellite','OpenStreetMap','OpenStreetMap2'],
+		'Satellite':{
+			'type':'tile',
+			'api':'ol.layer.Tile',
+			'layer':new ol.layer.Tile({minResolution:500,preload:14,opacity:0.5,title:'Satellite',source:BASE_SOURCES['Satellite']}),
+			'source':BASE_SOURCES['Satellite'],
+			'feature_names':[],
+			'style':null,
+			'colors':{},
+			'toggle':true,
+		},
+		'OpenStreetMap':{
+			'type':'tile',
+			'api':'ol.layer.Tile',
+			'layer':new ol.layer.Tile({preload:14,opacity:1.0,title:'OpenStreetMap',source:BASE_SOURCES['OpenStreetMap']}),
+			'source':BASE_SOURCES['OpenStreetMap'],
+			'feature_names':[],
+			'style':null,
+			'colors':{},
+			'toggle':false,
+		},
+		'OpenStreetMap2':{
+			'type':'tile',
+			'api':'ol.layer.Tile',
+			'layer':new ol.layer.Tile({preload:14,opacity:1.0,title:'OpenStreetMap2',source:BASE_SOURCES['OpenStreetMap2']}),
+			'source':BASE_SOURCES['OpenStreetMap2'],
+			'feature_names':[],
+			'style':null,
+			'colors':{},
+			'toggle':false,
+		},
+	};
+	
+	me.LAYERS={
+		'keys':[],
+		'type':'polygon',
+		'api':'ol.layer.Vector',
+		'layer':'polygon_layer',
+		'source':'polygon_source',
+		'feature_names':[],
+		'features_off':[],
+		'style':null,
+		'colors':{},
+		'toggle':1,
+	}
 	
 	me.polygon_layers=null;
 	me.point_layers=null;
@@ -39,8 +87,11 @@ var GGMC=function(div_id,control_panel_id){
 		window.map.getView().setResolution(res);
 	}
 	me.change_areaCB=function(){
-		
+		console.log("change_areaCB");
 		//Get new selected area
+		
+		try{console.log("me.LAYERS['boundary']="+me.LAYERS['boundary']['layer']);}
+		catch(e){console.log(e);}
 		
 		var selection=get_selected("area_select");
 		//var selection="guyana";
@@ -54,19 +105,47 @@ var GGMC=function(div_id,control_panel_id){
 			return;
 		}
 		
-		//remove all layers from map
-		for(var lidx=0;lidx<me.all_layers.length;lidx++)
-			window.map.removeLayer(me.all_layers[lidx]);
+		//Remove all layers from map, reclaim memory
+		for(var lidx=0;lidx<me.LAYERS['keys'].length;lidx++){
+			console.log("removing layer: "+me.LAYERS['keys'][lidx]);
+			window.map.removeLayer(me.LAYERS[me.LAYERS['keys'][lidx]]['layer']);
+			delete(me.LAYERS[me.LAYERS['keys'][lidx]]);
+		}
+		try{
+			console.log("removing layer: boundary");
+			window.map.removeLayer(me.LAYERS['boundary']['layer']);
+			delete(me.LAYERS['boundary']);
+		}
+		catch(e){console.log(e);console.log(me.boundary_layer);}
 		
-		//refill layers lists
-		me.prepare_layers();
+		//Refill layers structure
+		var rval=me.prepare_layers();
 		
-		//re-add layers to map
+		//Re-add layers to map
+		if(me.BASE_ENABLED){
+			console.log("adding base layers");
+			var keys=me.BASE_LAYERS['keys'];
+			for(var kidx=0;kidx<keys.length;kidx++){
+				var key=keys[kidx];
+				if(me.BASE_LAYERS[key]['toggled']==1)
+					window.map.getLayers().insertAt(0, me.BASE_LAYERS[key]);
+			}
+		}
+		console.log("adding boundary layer");
+		window.map.addLayer(me.LAYERS['boundary']['layer']);
+		
+		console.log('adding '+me.LAYERS['keys'].length);
+		for(var lidx=0;lidx<me.LAYERS['keys'].length;lidx++){
+			console.log("adding layer: "+me.LAYERS['keys'][lidx]);
+			window.map.addLayer(me.LAYERS[me.LAYERS['keys'][lidx]]['layer']);
+		}
+/*		
+		console.log("here");
 		for(var lidx=0;lidx<me.all_layers.length;lidx++){
 			//console.log("adding "+lidx+"/"+me.all_layers.length);
 			window.map.addLayer(me.all_layers[lidx]);
 		}
-		
+*/		
 		window.map.getView().setCenter(ol.proj.transform(INSTALLED[me.current]["center"], 'EPSG:4326', 'EPSG:3857'));
 		
 		//resize (calls set res)
@@ -75,6 +154,18 @@ var GGMC=function(div_id,control_panel_id){
 		window.setTimeout(me.fill_all_features,2000,false);
 	}
 	me.fill_all_features=function(){
+		var keys=me.LAYERS['keys'];
+		for(var lidx=0;lidx<me.LAYERS['keys'].length;lidx++){
+			var key=keys[lidx];
+			var features=me.LAYERS[key]['source'].getFeatures();
+			for(var fidx=0;fidx<features.length;fidx++){
+				var feature_name=null;
+				feature_name=features[fidx].get("Name");
+				if(!feature_name)feature_name=features[fidx].get("NAME");
+				me.LAYERS[key]['feature_names'].push(feature_name);
+			}
+		}
+		
 		//alert(me.polygon_layers[0].getSource().getFeatures());
 		for(var aidx=0;aidx<me.all_targets.length;aidx++){
 			var lyr=me.all_targets[aidx];
@@ -86,7 +177,6 @@ var GGMC=function(div_id,control_panel_id){
 				var feature_name=null;
 				feature_name=features[fidx].get("Name");
 				if(!feature_name)feature_name=features[fidx].get("NAME");
-				console.log(features[fidx].get("layer_name")+" "+feature_name);
 				me.all_features.push(features[fidx]);
 			}
 		}
@@ -102,6 +192,8 @@ var GGMC=function(div_id,control_panel_id){
 		me.polygon_layers=[];
 		me.all_layers=[];
 		me.all_features=[];
+		
+		me.LAYERS={'keys':[],}
 		
 		for(var pidx=0; pidx<INSTALLED[me.current]["polygon_sources"].length;pidx++){
 			var src_url=INSTALLED[me.current]["path"] + INSTALLED[me.current]["polygon_sources"][pidx]["filename"];
@@ -130,7 +222,19 @@ var GGMC=function(div_id,control_panel_id){
 			me.all_sources.push(polygon_source);
 			me.polygon_layers.push(polygon_layer);
 			me.all_targets.push(polygon_layer);
-		
+			
+			me.LAYERS['keys'].push(layer_name);
+			me.LAYERS[layer_name]={
+				'type':'polygon',
+				'api':'ol.layer.Vector',
+				'layer':polygon_layer,
+				'source':polygon_source,
+				'feature_names':[],
+				'features_off':[],
+				'style':null,
+				'colors':{},
+				'toggle':true,
+			};
 		}
 
 		me.point_layers=[];
@@ -166,6 +270,20 @@ var GGMC=function(div_id,control_panel_id){
 			me.point_layers.push(point_layer);
 			me.all_targets.push(point_layer);
 			
+			me.LAYERS['keys'].push(layer_name);
+			me.LAYERS[layer_name]={
+				'type':'point',
+				'api':'ol.layer.Vector',
+				'layer':point_layer,
+				'source':point_source,
+				'feature_names':[],
+				'features_off':[],
+				'style':null,
+				'colors':{},
+				'toggle':true,
+			};
+
+			
 		}
 
 
@@ -194,6 +312,20 @@ var GGMC=function(div_id,control_panel_id){
 			me.all_sources.push(line_source);
 			me.line_layers.push(line_layer);
 			me.all_targets.push(line_layer);
+			
+			me.LAYERS['keys'].push(layer_name);
+			me.LAYERS[layer_name]={
+				'type':'line',
+				'api':'ol.layer.Vector',
+				'layer':line_layer,
+				'source':line_source,
+				'feature_names':[],
+				'features_off':[],
+				'style':null,
+				'colors':{},
+				'toggle':true,
+			};
+			
 		}
 		
 		me.boundary_source=new ol.source.Vector({
@@ -212,7 +344,20 @@ var GGMC=function(div_id,control_panel_id){
 				}),
 			}),
 		});
-		
+
+
+		me.LAYERS['boundary']={
+			'type':'polygon',
+			'api':'ol.layer.Vector',
+			'layer':me.boundary_layer,
+			'source':me.boundary_source,
+			'feature_names':[],
+			'features_off':[],
+			'style':null,
+			'colors':{},
+			'toggle':true,
+		};
+		console.log("me.LAYERS['boundary']="+me.LAYERS['boundary']['layer']);
 		
 //		me.all_layers.push(BASE_LAYERS['OpenStreetMap']);
 //		me.all_layers.push(BASE_LAYERS['Satellite']);
@@ -226,7 +371,9 @@ var GGMC=function(div_id,control_panel_id){
 		for(var pidx=0; pidx<me.point_layers.length; pidx++){
 			me.all_layers.push(me.point_layers[pidx]);
 		}
-
+		console.log("prepare_layers done");
+		return 1;
+		
 	}//END:me.prepare_layers
 	
 	
