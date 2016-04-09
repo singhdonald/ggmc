@@ -1,6 +1,16 @@
-var make_hr=function(){
+var is_base_by_name=function(layer_name){
+	var is_base=false;
+	for(var kidx=0;kidx<window.app.BASE_LAYERS['keys'].length;kidx++){
+		var key=window.app.BASE_LAYERS['keys'][kidx];
+		if(key==layer_name){is_base=true;}
+	}
+	console.log(layer_name+" is_base= "+is_base);
+	return is_base;
+}
+var make_hr=function(idn){
 	var hr=document.createElement("hr");
 	hr.className="hr";
+	if(idn!=null)hr.id=idn;
 	return hr;
 }
 var make_vspace10=function(){
@@ -13,38 +23,103 @@ var make_hspace10=function(){
 	hspace10.className="hspace10";
 	return hspace10;
 }
-var make_layer_switch=function(idn){
-	var _switch=document.createElement("input");
-	_switch.type="checkbox";
-//	tourB.checked=window.app.tour;
-	_switch.id=idn;
-	_switch.className="switchB";
-	var switch_div=document.createElement("div");
-	switch_div.className="switch_div";
-	switch_div.appendChild(_switch);
-	return switch_div;
-}
-var switchCB=function(e,s){
-	console.log("lkdflkjs");
-}
 var ControlPanel=function(){
 		
 	var me={};
 	
 	me.foi=null;//feature of interest
-	
+	me.MAP_LAYERS={};
+	me.MAP_LAYER_NAMES=[];
+
 	me.layer_checkboxCB=function(e){
-		console.log("controls.js: layer_checkboxCB");
+		
+		console.log("controls.js: layer_checkboxCB "+e.target.id);
+		
 		var img=e.target;
-		if(get_basename(img.src)=="checkbox-0.png")
+		var layer_name=e.target.id.split("_")[0];
+		layer_name=layer_name.replace("ZZZ"," ");
+		if(get_basename(img.src)=="checkbox-0.png"){
 			img.src="./static/ggmc/img/checkbox-1.png";
-		else
+			
+			if(is_base_by_name(layer_name)){
+				window.map.getLayers().insertAt(0, window.app.BASE_LAYERS[layer_name]['layer']);
+				window.app.BASE_LAYERS[layer_name]['toggle']=true;
+			}
+			else{
+				window.map.addLayer(window.app.LAYERS[layer_name]['layer']);
+				window.app.LAYERS[layer_name]['toggle']=true;
+			}
+		}
+		else{
 			img.src="./static/ggmc/img/checkbox-0.png";
+			
+			if(is_base_by_name(layer_name)){
+				window.map.removeLayer(window.app.BASE_LAYERS[layer_name]['layer']);
+				window.app.BASE_LAYERS[layer_name]['toggle']=false;
+			}
+			else{
+				window.map.removeLayer(window.app.LAYERS[layer_name]['layer']);
+				window.app.LAYERS[layer_name]['toggle']=false;
+			}
+			
+		}
+	}
+	me.feature_checkboxCB=function(e){
+		
+		console.log("feature_checkboxCB: "+get_basename(e.target.id));
+		
+		var img=e.target;
+		var layer_name=e.target.id.split("_")[0];
+		var feature_name=e.target.id.split("_")[1];
+		console.log(layer_name+"."+feature_name);
+		
+		var feature_objs=window.app.LAYERS[layer_name]['source'].getFeatures();
+		var feature=null;
+		for(var fidx=0;fidx<feature_objs.length;fidx++){
+			console.log(feature_objs[fidx].get("Name"));
+			if(feature_name==(feature_objs[fidx].get("Name") || feature_objs[fidx].get("NAME"))){
+				feature=feature_objs[fidx];
+				console.log("found feature_obj "+feature.get("Name")+feature.get("NAME"));
+				break;
+			}
+		}
+		
+		
+		if(get_basename(img.src)=="checkbox-0.png"){
+			
+			img.src="./static/ggmc/img/checkbox-1.png";
+			console.log("adding "+feature);
+			var fidx=0;
+			for(fidx=0;fidx<window.app.LAYERS[layer_name]['features_off'].length;fidx++){
+				if(feature_name==( window.app.LAYERS[layer_name]['features_off'][fidx].get("Name") || window.app.LAYERS[layer_name]['features_off'][fidx].get("NAME") )){
+					break;
+				}
+			}
+			var feature=window.app.LAYERS[layer_name]['features_off'][fidx];
+			console.log('added feature ... still  need to remove from list');
+			window.app.LAYERS[layer_name]['source'].addFeature(feature);
+			
+			//remove from features_off list
+			for(var ridx=0;ridx<fidx;ridx++)
+				window.app.LAYERS[layer_name]['features_off'].push(window.app.LAYERS[layer_name]['features_off'].shift());
+			
+			var garbage=window.app.LAYERS[layer_name]['features_off'].shift();
+			console.log("layer removed: "+window.app.LAYERS[layer_name]['features_off'].length);
+		}
+		else{
+			
+			img.src="./static/ggmc/img/checkbox-0.png";
+			console.log("removing "+feature);
+			window.app.LAYERS[layer_name]['features_off'].push(feature);
+			console.log("layer saved");
+			window.app.LAYERS[layer_name]['source'].removeFeature(feature);
+			
+		}
 	}
 	
 	me.make_persistent_content=function(){
 		
-		var opts={'parent_id':'control_panel','id':'Configuration','className':'roll_up_div','roll_up_class':'rollup','roll_up_name':'Configuration','roll_up_icon_src':"./static/ggmc/img/arrow.png",};
+		var opts={'parent_id':'control_panel','id':'Configuration','className':'roll_up_div','roll_up_class':'rollup','roll_up_name':'Configuration','roll_up_icon_src':null,};
 		var rollup=new RollUpDiv(opts);
 		
 		var area_select=document.createElement("select");
@@ -57,9 +132,7 @@ var ControlPanel=function(){
 			if(sidx==0)opt.selected=true;
 			area_select.appendChild(opt);
 		}
-//		$("#control_panel").append(area_select);
 		area_select.addEventListener("change",window.app.change_areaCB,false);
-		
 		
 		//
 		var tourB=document.createElement("input");
@@ -97,7 +170,7 @@ var ControlPanel=function(){
 		rollup.rollup.appendChild(switch_container);
 		rollup.rollup.appendChild(make_vspace10());
 		
-		rollup.head.appendChild(make_hr());
+		rollup.head.appendChild(make_hr("hr0"));
 		$("#control_panel").append(rollup);
 		
 		var bcr_rollup=rollup.head.getBoundingClientRect();
@@ -113,7 +186,7 @@ var ControlPanel=function(){
 		
 		var opts={'parent_id':'control_panel','id':"OpenStreetMap2",'className':'roll_up_div','roll_up_class':'rollup','roll_up_name':"OpenStreetMap2",'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
 		me.layer_block(["OpenStreetMap2"],opts);
-		$("#control_panel").append(make_hr());
+		$("#control_panel").append(make_hr("hr3"));
 		
 
 		
@@ -122,8 +195,8 @@ var ControlPanel=function(){
 		$("#tourB").bootstrapSwitch();
 		$("#tourB").bootstrapSwitch("state",window.app.tour);
 		$("#tourB").bootstrapSwitch("size","mini");
-		$("#tourB").bootstrapSwitch("onColor","success");//'primary', 'info', 'success', 'warning', 'danger', 'default'
-		$("#tourB").bootstrapSwitch("offColor","danger");//'primary', 'info', 'success', 'warning', 'danger', 'default'
+		$("#tourB").bootstrapSwitch("onColor","info");//'primary', 'info', 'success', 'warning', 'danger', 'default'
+		$("#tourB").bootstrapSwitch("offColor","success");//'primary', 'info', 'success', 'warning', 'danger', 'default'
 		$("#tourB").bootstrapSwitch("onText","<img class='switch_icon' src='./static/ggmc/img/globe.png'/>");//http://www.bootstrap-switch.org/options.html
 		$("#tourB").bootstrapSwitch("offText","<img class='switch_icon' src='./static/ggmc/img/flaticon/search.png'/>");
 		$("#tourB").bootstrapSwitch("labelText","<b> Tour </b> ");
@@ -146,39 +219,43 @@ var ControlPanel=function(){
 			console.log(this); // DOM element
 			console.log(event); // jQuery event
 			console.log(state); // true | false
+			
+			var hr0_bcr=document.getElementById("hr0").getBoundingClientRect();
+			var hr3_bcr=document.getElementById("hr3").getBoundingClientRect();
+			var h=hr3_bcr.top-hr0_bcr.bottom;
+			console.log("h="+h);
+			$(".base_cover_panel").css({"height":h});
 			$(".base_cover_panel").toggleClass("show");
+			
+			if(window.app.BASE_ENABLED)window.app.BASE_ENABLED=false;
+			else window.app.BASE_ENABLED=true;
+			
+			//inspect checkbox states and reload if set
+			//otherwise loading takes place in checkboxCB
+			var keys=window.app.BASE_LAYERS['keys'];
+			if(!state){
+				for(var kidx=0;kidx<keys.length;kidx++){
+					var key=keys[kidx];
+					if(window.app.BASE_LAYERS[key]['toggle']==1){
+						window.map.getLayers().insertAt(0, window.app.BASE_LAYERS[key]['layer']);
+					}
+				}
+				//window.map.getLayers().insertAt(0, window.app.BASE_LAYERS['Satellite']['layer']);
+			}
+			else{
+				for(var kidx=0;kidx<keys.length;kidx++){
+					var key=keys[kidx];
+					if(window.app.BASE_LAYERS[key]['toggle']==1){
+						window.map.removeLayer(window.app.BASE_LAYERS[key]['layer']);
+					}
+				}
+				//window.map.removeLayer(window.app.BASE_LAYERS['Satellite']['layer']);
+			}
+			
 		});
-		
 	
 	}
-	me.checkboxCB=function(e){
-		console.log("checkboxCB: "+get_basename(e.target.src));
-		var img=e.target;
-		if(get_basename(img.src)=="checkbox-0.png")
-			img.src="./static/ggmc/img/checkbox-1.png";
-		else
-			img.src="./static/ggmc/img/checkbox-0.png";
-/*
-		var draggable_div=me.make_layer_row("testing");	
-//		$("#drag_panel").append(draggable_div);
-		
-		if(window.app.all_sources.length==0)return;
-		var source=window.app.all_sources[0];
-		if(!me.foi){
-			var N=source.getFeatures().length;
-			var fidx=parseInt(N*Math.random());
-			console.log("NumFeatures: "+N);
-			me.foi=source.getFeatures()[fidx];
-			source.removeFeature(me.foi);
-			console.log(source.getFeatures().length+" "+me.foi.get("NAME"));
-		}
-		else{
-			source.addFeature(me.foi);
-			me.foi=null;
-		}
-*/
-	}
-	me.make_layer_row=function(layer_name){
+	me.make_feature_row=function(is_base,layer_name,feature_name){
 			var tt_div=document.createElement("div");
 //			tt_div.className="tt_div";
 			
@@ -187,26 +264,38 @@ var ControlPanel=function(){
 			var ttr=tt.insertRow(-1);
 			//var ttc=ttr.insertCell(-1);
 			
-			var layer_label=document.createElement("div");
-			layer_label.innerHTML=layer_name;
-			layer_label.className="layer_label";
-			var id=parseInt(1E9*Math.random()).toString();
-			layer_label.id=id;
+			var feature_label=document.createElement("div");
+			feature_label.innerHTML=feature_name;
+			feature_label.className="feature_label";
+			var id=feature_name+parseInt(1E9*Math.random()).toString();
+			feature_label.id=id;
 			//console.log(id);
-			//cat_lyrs_div.appendChild(layer_label);
+			//cat_features_div.appendChild(feature_label);
 			var ttc=ttr.insertCell(-1);
-			ttc.className="lyr_cell";
-			ttc.appendChild(layer_label);
+			ttc.className="feature_cell";
+			ttc.appendChild(feature_label);
 			
 			var ttc=ttr.insertCell(-1);
 			ttc.className="icon_cell";
-			var idn=layer_name+"_"+parseInt(1E9*Math.random());
+			var idn=layer_name+"_"+feature_name+"_"+parseInt(1E9*Math.random());
 			var img=new Image();
 			img.id=idn;
 			img.className="icon";
-			img.src="./static/ggmc/img/checkbox-0.png";
+			
+			var toggle=false;
+			if(is_base)toggle=window.app.BASE_LAYERS[layer_name]['toggle'];
+			else toggle=window.app.LAYERS[layer_name]['toggle'];
+			console.log(layer_name+"."+feature_name+" "+toggle.toString());
+			if(toggle)
+				img.src="./static/ggmc/img/checkbox-1.png";
+			else
+				img.src="./static/ggmc/img/checkbox-0.png";
+			
 			ttc.appendChild(img);
-			img.addEventListener("click",me.checkboxCB,false);
+			if(is_base)
+				img.addEventListener("click",me.layer_checkboxCB,false);
+			else
+				img.addEventListener("click",me.feature_checkboxCB,false);
 			
 			var ttc=ttr.insertCell(-1);
 			ttc.className="icon_cell";
@@ -230,32 +319,48 @@ var ControlPanel=function(){
 		console.log("popoutCB show off");
 	};
 	
-	me.layer_block=function(layers,opts){
+	me.layer_block=function(layer_name,opts){
+		
 		var rollup=new RollUpDiv(opts);
 		
-		var cat_lyrs_div=document.createElement("div");
+		var cat_features_div=document.createElement("div");
 		
 		var solid_id=opts['roll_up_name'];//handles up to 10 spaces!
 		for(var dummy=0;dummy<10;dummy++)
-			solid_id=solid_id.replace(" ","x");//can't be _ b/c splitting on _ already
+			solid_id=solid_id.replace(" ","ZZZ");//can't be _ b/c splitting on _ already
 
-		cat_lyrs_div.id=solid_id+"_cat_lyrs_div";
-		cat_lyrs_div.className="cat_lyrs_div";
+		cat_features_div.id=solid_id+"_cat_features_div";
+		cat_features_div.className="cat_features_div";
 		
-		var lyrs_table=document.createElement("table");
-		lyrs_table.className="lyrs_table";
+		var features_table=document.createElement("table");
+		features_table.className="features_table";
 		
-		cat_lyrs_div.appendChild(lyrs_table);
-		rollup.rollup.appendChild(cat_lyrs_div);
+		cat_features_div.appendChild(features_table);
+		rollup.rollup.appendChild(cat_features_div);
 		
-		for(var lidx=0;lidx<layers.length;lidx++){
+		var feature_names=[];
+		/*
+		var is_base=false;
+		for(var kidx=0;kidx<window.app.BASE_LAYERS['keys'].length;kidx++){
+			var key=window.app.BASE_LAYERS['keys'][kidx];
+			if(key==layer_name){is_base=true;}
+		}
+		*/
+		var is_base=is_base_by_name(layer_name);
+		if(is_base){
+			feature_names=[layer_name];
+		}
+		else{
+			feature_names=window.app.LAYERS[layer_name]['feature_names'];
+		}
+		for(var lidx=0;lidx<feature_names.length;lidx++){
 			
-			var r=lyrs_table.insertRow(-1);
-			r.className="lyr_row";
+			var r=features_table.insertRow(-1);
+			r.className="feature_row";
 			var c=r.insertCell(-1);
 			
 			//Candidate for Dragable object
-			var tt_div=me.make_layer_row(layers[lidx]);
+			var tt_div=me.make_feature_row(is_base,layer_name,feature_names[lidx]);
 			
 			//
 			c.appendChild(tt_div);
@@ -266,10 +371,33 @@ var ControlPanel=function(){
 	
 	me.make_layer_blocks=function(){
 		
+		
+		var keys=window.app.LAYERS['keys'];
+		
+		for(var kidx=0;kidx<keys.length;kidx++){
+			var key=keys[kidx];
+			var checkboxSRC="./static/ggmc/img/checkbox-0.png";
+			if(window.app.LAYERS[key]['toggle'])checkboxSRC="./static/ggmc/img/checkbox-1.png";
+			opts={
+				"checkboxCB":me.layer_checkboxCB,
+				"checkboxSRC":checkboxSRC,
+				'parent_id':'control_panel',
+				'id':key,
+				'className':'roll_up_div',
+				'roll_up_class':'rollup_constrained_height',
+				'roll_up_name':key,
+				'roll_up_icon_src':"./static/ggmc/img/arrow.png",
+			}
+			
+			//current_features now available globally as: window.app.LAYERS[key]['feature_names']=[...]
+			me.layer_block(key,opts);
+			
+		}
+/*		
 		if(window.app.all_features.length==0)return;
 		
 		
-		var current_layer_name=window.app.all_features[0].get("layer_name");
+		var current_layer_name=window.app.all_features[0].get("layer_name");//layers and features mixed together !!!
 		var current_features=[];
 		
 		for(var fidx=0;fidx<window.app.all_features.length;fidx++){
@@ -293,14 +421,16 @@ var ControlPanel=function(){
 			console.log("control.js: "+current_layer_name+" "+feature_name);
 		}
 		
-		if(current_features.length>0)
+		if(current_features.length>0){
 			var opts={"checkboxCB":me.layer_checkboxCB,'parent_id':'control_panel','id':current_layer_name,'className':'roll_up_div','roll_up_class':'rollup_constrained_height','roll_up_name':current_layer_name,'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
 			me.layer_block(current_features,opts);
+		}
+*/
 	}
 	me.rebuild=function(){
 		var control_panel=document.getElementById("control_panel");
 		var children=control_panel.childNodes;
-		for(var cidx=children.length-1;cidx>10;cidx--){
+		for(var cidx=children.length-1;cidx>9;cidx--){
 			console.log("removing: "+children[cidx].id);
 			control_panel.removeChild(children[cidx]);
 		}

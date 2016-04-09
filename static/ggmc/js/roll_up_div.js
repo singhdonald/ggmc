@@ -5,6 +5,7 @@ var RollUpDiv=function(opts){
 	var callCB=function(e){
 		try{
 			console.log("callCB");
+			console.log(opts['checkboxCB']);
 			CB(e);
 		}
 		catch(e){
@@ -17,7 +18,7 @@ var RollUpDiv=function(opts){
 	
 	var solid_id=opts['id'];//handles up to 10 spaces!
 	for(var dummy=0;dummy<10;dummy++)
-		solid_id=solid_id.replace(" ","x");//can't be _ b/c splitting on _ already
+		solid_id=solid_id.replace(" ","ZZZ");//can't be _ b/c splitting on _ already
 	me.head.id=solid_id;
 	
 	me.head.className='roll_up_div';
@@ -36,13 +37,13 @@ var RollUpDiv=function(opts){
 	me.label.innerHTML=opts['roll_up_name'];
 	td.appendChild(me.label);
 	
-	if(opts['checkboxCB']){
+	if(opts['checkboxCB']){//BASE_LAYERS are laid out differently
 		td=tr.insertCell(-1);
 		td.className="roll_up_icon_cell";
 		var roll_up_icon=new Image();
 		roll_up_icon.id=me.head.id+"_checkbox";
 		roll_up_icon.className="roll_up_icon";
-		roll_up_icon.src="./static/ggmc/img/checkbox-0.png";
+		roll_up_icon.src=opts['checkboxSRC'];
 		roll_up_icon.addEventListener("click",callCB,false);
 		td.appendChild(roll_up_icon);
 	}
@@ -53,8 +54,10 @@ var RollUpDiv=function(opts){
 	var roll_up_icon=new Image();
 	roll_up_icon.id=me.head.id+"_icon";
 	roll_up_icon.className="roll_up_icon";
-	roll_up_icon.src=opts["roll_up_icon_src"];
-	td.appendChild(roll_up_icon);
+	if(opts["roll_up_icon_src"]!=null){
+		roll_up_icon.src=opts["roll_up_icon_src"];
+		td.appendChild(roll_up_icon);
+	}
 	
 	me.head.appendChild(t);
 	$("#"+opts['parent_id']).append(me.head);

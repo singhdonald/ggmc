@@ -1,5 +1,5 @@
 var INSTALLED={
-	"keys":["iceland","guyana","greenland","gt_roads","world" ],
+	"keys":["guyana","gt_roads","world","iceland","greenland"],
 	"guyana":{
 		"path":"./static/ggmc/data/guyana/",
 		"bbox":[-61.5,1.1,-56.3,8.7],

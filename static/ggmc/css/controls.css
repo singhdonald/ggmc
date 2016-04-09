@@ -29,11 +29,11 @@
 	width: 250px;
 	left: 0%;
 	z-index: 990;
-	background-color:#AAAAAA;
+	background-color:#111111;
 	color:white;
 	-webkit-transition: left 0.75s ease;
 	transition: left 0.75s ease;
-	opacity:0.75;
+	opacity:0.85;
 	text-align:center;
 	overflow:auto;
 }
@@ -109,22 +109,22 @@
 .tt{
 	width:100%;
 }
-.cat_lyrs_div{
+.cat_features_div{
 	position:relative;
 	overflow:auto;
 	text-align:center;
 }
-.lyrs_table{
+.features_table{
 	width:100%;
 	text-align:center;
 }
-.layer_label{
+.feature_label{
 	color:#fff;
 	height:30px;
 	display: table-cell;
 	vertical-align:middle;
 }
-.layer_label.hilighted{
+.feature_label.hilighted{
 	background:#555555;
 }
 .layer_name{
@@ -149,7 +149,7 @@
 	color:orange;
 	font-size:14pt;
 }
-.layer_cell{
+.feature_cell{
 	text-align:center;
 }
 .centered{
