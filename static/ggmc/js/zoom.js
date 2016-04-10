@@ -22,7 +22,12 @@ var pan_zoom=function(location){
 		window.map.beforeRender(pan);
 		window.map.beforeRender(zoom);
 		
-		var bbox=window.app.current_feature.getGeometry().getExtent();
+		var f=window.app.current_feature;
+		var layer_name=f['layer_key'];
+		var feature_name=f['feature_name'];
+		
+		var bbox=window.app.LAYERS[layer_name]['features'][feature_name]['feature'].getGeometry().getExtent();
+		
 		var res=compute_resolution(bbox,true,window.innerWidth,window.innerHeight);
 		res*=1.2;
 		if(res==0)res=100;
