@@ -23,7 +23,7 @@ var GGMC=function(div_id,control_panel_id){
 		'Satellite':{
 			'type':'tile',
 			'api':'ol.layer.Tile',
-			'layer':new ol.layer.Tile({minResolution:500,preload:14,opacity:0.5,title:'Satellite',source:BASE_SOURCES['Satellite']}),
+			'layer':new ol.layer.Tile({minResolution:500,preload:14,opacity:1.0,title:'Satellite',source:BASE_SOURCES['Satellite']}),
 			'source':BASE_SOURCES['Satellite'],
 			'feature_names':[],
 			'style':null,

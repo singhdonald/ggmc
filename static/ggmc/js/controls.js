@@ -297,7 +297,7 @@ var ControlPanel=function(){
 				img.src="./static/ggmc/img/checkbox-0.png";
 			
 			ttc.appendChild(img);
-			if(is_base)
+			if(true)
 				img.addEventListener("click",me.layer_checkboxCB,false);
 			else
 				img.addEventListener("click",me.feature_checkboxCB,false);
@@ -346,7 +346,7 @@ var ControlPanel=function(){
 		var feature_names=[];
 		
 		var is_base=is_base_by_name(layer_name);
-		if(is_base){
+		if(true){
 			feature_names=[layer_name];
 		}
 		else{
@@ -358,10 +358,8 @@ var ControlPanel=function(){
 			r.className="feature_row";
 			var c=r.insertCell(-1);
 			
-			//Candidate for Dragable object
 			var tt_div=me.make_feature_row(is_base,layer_name,feature_names[lidx]);
 			
-			//
 			c.appendChild(tt_div);
 		}
 		
@@ -377,6 +375,7 @@ var ControlPanel=function(){
 			var key=keys[kidx];
 			var checkboxSRC="./static/ggmc/img/checkbox-0.png";
 			if(window.app.LAYERS[key]['toggle'])checkboxSRC="./static/ggmc/img/checkbox-1.png";
+			/*
 			opts={
 				"checkboxCB":me.layer_checkboxCB,
 				"checkboxSRC":checkboxSRC,
@@ -388,9 +387,20 @@ var ControlPanel=function(){
 				'roll_up_icon_src':"./static/ggmc/img/arrow.png",
 			}
 			
-			//current_features now available globally as: window.app.LAYERS[key]['feature_names']=[...]
 			me.layer_block(key,opts);
-			
+			$("#control_panel").append(make_hr("hr3"));
+			*/
+			opts={
+				'parent_id':'control_panel',
+				'id':key,
+				'className':'roll_up_div',
+				'roll_up_class':'rollup',
+				'roll_up_name':key,
+				'roll_up_icon_src':"./static/ggmc/img/arrow.png",
+			};
+			me.layer_block([key],opts);
+			$("#control_panel").append(make_hr());
+		
 		}
 	}
 	me.rebuild=function(){
