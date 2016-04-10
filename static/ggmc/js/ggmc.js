@@ -404,7 +404,7 @@ var GGMC=function(div_id,control_panel_id){
 		var target_layer_name=me.current_feature['layer_key'];
 		
 		var xhtml="<center><h3>Next:</h3><h1>"+target_name+"</h1><h3>"+target_layer_name+"</h3></center>";
-		console.log("me.start_move:"+target_name+" "+target_layer_name+" "+candidates.length.toString());
+		console.log("me.start_move:"+target_name+" "+target_layer_name);
 		popup(xhtml);
 	}
 	
