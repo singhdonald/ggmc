@@ -4,7 +4,7 @@ html,body,#map_div{
 	overflow:auto;
 	position:relative;
 	margin:0;
-	background:#000088;
+	background:#000000;
 }
 
 .ol-zoom{

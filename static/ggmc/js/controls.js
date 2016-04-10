@@ -103,6 +103,9 @@ var ControlPanel=function(){
 			for(var ridx=0;ridx<fidx;ridx++)
 				window.app.LAYERS[layer_name]['features_off'].push(window.app.LAYERS[layer_name]['features_off'].shift());
 			
+			//toggle candidate=true
+			window.app.LAYERS[layer_name]['features'][feature_name]['candidate']=true;
+			
 			var garbage=window.app.LAYERS[layer_name]['features_off'].shift();
 			console.log("layer removed: "+window.app.LAYERS[layer_name]['features_off'].length);
 		}
@@ -113,6 +116,10 @@ var ControlPanel=function(){
 			window.app.LAYERS[layer_name]['features_off'].push(feature);
 			console.log("layer saved");
 			window.app.LAYERS[layer_name]['source'].removeFeature(feature);
+			
+			//toggle candidate=true
+			window.app.LAYERS[layer_name]['features'][feature_name]['candidate']=false;
+
 			
 		}
 	}
@@ -240,7 +247,6 @@ var ControlPanel=function(){
 						window.map.getLayers().insertAt(0, window.app.BASE_LAYERS[key]['layer']);
 					}
 				}
-				//window.map.getLayers().insertAt(0, window.app.BASE_LAYERS['Satellite']['layer']);
 			}
 			else{
 				for(var kidx=0;kidx<keys.length;kidx++){
@@ -249,7 +255,6 @@ var ControlPanel=function(){
 						window.map.removeLayer(window.app.BASE_LAYERS[key]['layer']);
 					}
 				}
-				//window.map.removeLayer(window.app.BASE_LAYERS['Satellite']['layer']);
 			}
 			
 		});
@@ -339,13 +344,7 @@ var ControlPanel=function(){
 		rollup.rollup.appendChild(cat_features_div);
 		
 		var feature_names=[];
-		/*
-		var is_base=false;
-		for(var kidx=0;kidx<window.app.BASE_LAYERS['keys'].length;kidx++){
-			var key=window.app.BASE_LAYERS['keys'][kidx];
-			if(key==layer_name){is_base=true;}
-		}
-		*/
+		
 		var is_base=is_base_by_name(layer_name);
 		if(is_base){
 			feature_names=[layer_name];
@@ -393,39 +392,6 @@ var ControlPanel=function(){
 			me.layer_block(key,opts);
 			
 		}
-/*		
-		if(window.app.all_features.length==0)return;
-		
-		
-		var current_layer_name=window.app.all_features[0].get("layer_name");//layers and features mixed together !!!
-		var current_features=[];
-		
-		for(var fidx=0;fidx<window.app.all_features.length;fidx++){
-			
-			var f=window.app.all_features[fidx];
-			var feature_name=null;
-			feature_name=f.get("NAME");
-			if(!feature_name)feature_name=f.get("Name");
-			
-			if(f.get("layer_name")!=current_layer_name){
-				
-				var opts={"checkboxCB":me.layer_checkboxCB,'parent_id':'control_panel','id':current_layer_name,'className':'roll_up_div','roll_up_class':'rollup_constrained_height','roll_up_name':current_layer_name,'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
-				me.layer_block(current_features,opts);
-				$("#control_panel").append(make_hr());
-				
-				current_layer_name=f.get("layer_name");
-				current_features=[];
-			
-			}
-			current_features.push(feature_name);
-			console.log("control.js: "+current_layer_name+" "+feature_name);
-		}
-		
-		if(current_features.length>0){
-			var opts={"checkboxCB":me.layer_checkboxCB,'parent_id':'control_panel','id':current_layer_name,'className':'roll_up_div','roll_up_class':'rollup_constrained_height','roll_up_name':current_layer_name,'roll_up_icon_src':"./static/ggmc/img/arrow.png",};
-			me.layer_block(current_features,opts);
-		}
-*/
 	}
 	me.rebuild=function(){
 		var control_panel=document.getElementById("control_panel");

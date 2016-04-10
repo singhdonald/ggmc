@@ -47,7 +47,7 @@
 	width: 250px;
 	overflow:auto;
 	text-align:center;
-	opacity:1.0;
+	opacity:0.0;
 }
 .drag_panel{
 	position:absolute;
@@ -59,7 +59,7 @@
 	color:white;
 	-webkit-transition: left 0.75s ease;
 	transition: left 0.75s ease;
-	opacity:1.0;
+	opacity:0.0;
 	text-align:center;
 	overflow:auto;
 }
@@ -73,7 +73,7 @@
 	color:white;
 	-webkit-transition: left 0.75s ease;
 	transition: left 0.75s ease;
-	opacity:1.0;
+	opacity:0.9;
 	text-align:center;
 	overflow:auto;
 }

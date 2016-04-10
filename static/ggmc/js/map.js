@@ -9,7 +9,7 @@ var Map=function(div_id){
 			console.log("mapB.CB");
 			//$(".control_panel").toggleClass("show");
 			
-			if(window.app.all_features.length==0){
+			if(window.app.get_enabled_candidates().length==0){
 				console.log("resetting game from CB");
 				window.app.change_areaCB();
 				document.getElementById("playB").innerHTML='<img src="./static/ggmc/img/flaticon/pause.png" class="icon"/>';
