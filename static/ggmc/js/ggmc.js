@@ -232,6 +232,7 @@ var GGMC=function(div_id,control_panel_id){
 				'style':null,
 				'colors':{},
 				'toggle':true,
+				'type':'Polygon',
 			};
 		}
 
@@ -276,6 +277,7 @@ var GGMC=function(div_id,control_panel_id){
 				'style':null,
 				'colors':{},
 				'toggle':true,
+				'type':'Point',
 			};
 
 			
@@ -316,6 +318,7 @@ var GGMC=function(div_id,control_panel_id){
 				'style':null,
 				'colors':{},
 				'toggle':true,
+				'type':'Line',
 			};
 			
 		}
@@ -349,6 +352,7 @@ var GGMC=function(div_id,control_panel_id){
 			'style':null,
 			'colors':{},
 			'toggle':true,
+			'type':'Polygon',
 		};
 
 		console.log("prepare_layers done");
@@ -457,7 +461,7 @@ var GGMC=function(div_id,control_panel_id){
 					
 					console.log("***** Correct! *****");
 					
-					if(feature.get("type")=="Point"){
+					if(me.LAYERS[target_layer]['type']=="Point"){
 						feature.setStyle(point_correct_style);
 					}
 					else{
@@ -469,7 +473,7 @@ var GGMC=function(div_id,control_panel_id){
 					//toggle as candidate
 					me.LAYERS[me.current_feature['layer_key']]['features'][target_name]['candidate']=false;
 					
-					delete(me.current_feature);
+					//delete(me.current_feature);
 					me.current_feature=null;
 					
 					
