@@ -23,7 +23,7 @@ var GGMC=function(div_id,control_panel_id){
 		'Satellite':{
 			'type':'tile',
 			'api':'ol.layer.Tile',
-			'layer':new ol.layer.Tile({minResolution:500,preload:14,opacity:0.5,title:'Satellite',source:BASE_SOURCES['Satellite']}),
+			'layer':new ol.layer.Tile({minResolution:500,preload:14,opacity:1.0,title:'Satellite',source:BASE_SOURCES['Satellite']}),
 			'source':BASE_SOURCES['Satellite'],
 			'feature_names':[],
 			'style':null,
@@ -232,6 +232,7 @@ var GGMC=function(div_id,control_panel_id){
 				'style':null,
 				'colors':{},
 				'toggle':true,
+				'type':'Polygon',
 			};
 		}
 
@@ -276,6 +277,7 @@ var GGMC=function(div_id,control_panel_id){
 				'style':null,
 				'colors':{},
 				'toggle':true,
+				'type':'Point',
 			};
 
 			
@@ -316,6 +318,7 @@ var GGMC=function(div_id,control_panel_id){
 				'style':null,
 				'colors':{},
 				'toggle':true,
+				'type':'Line',
 			};
 			
 		}
@@ -349,6 +352,7 @@ var GGMC=function(div_id,control_panel_id){
 			'style':null,
 			'colors':{},
 			'toggle':true,
+			'type':'Polygon',
 		};
 
 		console.log("prepare_layers done");
@@ -400,7 +404,7 @@ var GGMC=function(div_id,control_panel_id){
 		var target_layer_name=me.current_feature['layer_key'];
 		
 		var xhtml="<center><h3>Next:</h3><h1>"+target_name+"</h1><h3>"+target_layer_name+"</h3></center>";
-		console.log("me.start_move:"+target_name+" "+target_layer_name+" "+candidates.length.toString());
+		console.log("me.start_move:"+target_name+" "+target_layer_name);
 		popup(xhtml);
 	}
 	
@@ -457,7 +461,7 @@ var GGMC=function(div_id,control_panel_id){
 					
 					console.log("***** Correct! *****");
 					
-					if(feature.get("type")=="Point"){
+					if(me.LAYERS[target_layer]['type']=="Point"){
 						feature.setStyle(point_correct_style);
 					}
 					else{
@@ -469,7 +473,7 @@ var GGMC=function(div_id,control_panel_id){
 					//toggle as candidate
 					me.LAYERS[me.current_feature['layer_key']]['features'][target_name]['candidate']=false;
 					
-					delete(me.current_feature);
+					//delete(me.current_feature);
 					me.current_feature=null;
 					
 					

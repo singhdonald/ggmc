@@ -297,14 +297,14 @@ var ControlPanel=function(){
 				img.src="./static/ggmc/img/checkbox-0.png";
 			
 			ttc.appendChild(img);
-			if(is_base)
+			if(true)
 				img.addEventListener("click",me.layer_checkboxCB,false);
 			else
 				img.addEventListener("click",me.feature_checkboxCB,false);
 			
 			var ttc=ttr.insertCell(-1);
 			ttc.className="icon_cell";
-			var idn="hamburger_"+parseInt(1E9*Math.random());
+			var idn=layer_name+"_hamburger_"+parseInt(1E9*Math.random());
 			var img=new Image();
 			img.id=idn;
 			img.className="icon";
@@ -315,13 +315,87 @@ var ControlPanel=function(){
 			tt_div.appendChild(tt);
 			return tt_div;
 	}
-	
+	me.rangeCB=function(e){
+		console.log("rangeCB: "+e.target.id);
+		
+		var split_id=e.target.id.split("_");
+		var layer_name=split_id[0].replace("ZZZ"," ");
+		var attribute_name=split_id[1];
+		
+		console.log(layer_name+" "+attribute_name+" "+e.target.value);
+		
+		range=document.getElementById(e.target.id);
+		if(is_base_by_name(layer_name)){
+			console.log(window.app.BASE_LAYERS[layer_name]['layer'].getKeys());
+			console.log("setting "+attribute_name+" to "+parseFloat(range.value)/100.);
+			window.app.BASE_LAYERS[layer_name]['layer'].set(attribute_name,parseFloat(range.value)/100.);
+			cmd="window.app.BASE_LAYERS['"+layer_name+"']['layer'].set"+attribute_name+"("+parseFloat(range.value)/100.+")";
+			console.log(cmd);
+			var dummy=eval(cmd);
+		}
+		else{
+			console.log(window.app.LAYERS[layer_name]['layer'].getKeys());
+			console.log("setting "+attribute_name+" to "+parseFloat(range.value)/100.);
+			window.app.LAYERS[layer_name]['layer'].set(attribute_name,parseFloat(range.value)/100.);
+			cmd="window.app.LAYERS['"+layer_name+"']['layer'].set"+attribute_name+"("+parseFloat(range.value)/100.+")";
+			console.log(cmd);
+			var dummy=eval(cmd);
+		}
+	}
 	me.popoutCB = function(e) {
-		console.log(e.clientY+"px");
-		//document.getElementById("popout_panel").style.top=e.clientY+"px";
+		
+		console.log(e.target.id);
+		var layer_name=e.target.id.split("_")[0].replace(" ","ZZZ");
+		console.log(layer_name);
+		
+		var layer_name=e.target.id.split("_")[0];
 		$(".popout_panel").css({"top":(e.clientY-100)+"px"});
+		$(".popout_panel").html("");
+		$(".popout_panel").html(layer_name);
+		
+		var t=document.createElement("table");
+		t.align="center";
+		
+		var attribute_names=['Opacity'];//,'Brightness','Saturation','Contrast','Hue'
+		for(var aidx=0;aidx<attribute_names.length;aidx++){
+			var r=t.insertRow(-1);
+			var c=r.insertCell(-1);
+			var label=document.createElement("div");
+			label.style.color="white";
+			label.innerHTML=attribute_names[aidx];
+			label.className="popout_label";
+			c.appendChild(label);
+
+			var w=document.createElement("input");
+			w.type="range";
+			w.id=layer_name+"_"+attribute_names[aidx];
+			w.setAttribute("min",0);
+			w.setAttribute("max",100);
+			if(is_base_by_name(layer_name)){
+				var val=window.app.BASE_LAYERS[layer_name]['layer'].getOpacity()*100;
+				console.log(val);
+				var cmd="window.app.BASE_LAYERS[layer_name]['layer'].get"+attribute_names[aidx]+"()*100";
+				console.log(cmd);
+				val=eval(cmd);
+				console.log(val);
+				w.setAttribute("value",val);
+			}
+			else{
+				var val=window.app.LAYERS[layer_name]['layer'].getOpacity()*100;
+				console.log(val);
+				var cmd="window.app.LAYERS[layer_name]['layer'].get"+attribute_names[aidx]+"()*100";
+				console.log(cmd);
+				val=eval(cmd);
+				console.log(val);
+				w.setAttribute("value",val);
+			}
+			w.style.width="100px";
+			c=r.insertCell(-1);
+			c.appendChild(w);
+			w.addEventListener("change",me.rangeCB,false);
+		}
+		$("#popout_panel").append(t);
 		$(".popout_panel").toggleClass("show");
-		console.log("popoutCB show off");
 	};
 	
 	me.layer_block=function(layer_name,opts){
@@ -346,7 +420,7 @@ var ControlPanel=function(){
 		var feature_names=[];
 		
 		var is_base=is_base_by_name(layer_name);
-		if(is_base){
+		if(true){
 			feature_names=[layer_name];
 		}
 		else{
@@ -358,10 +432,8 @@ var ControlPanel=function(){
 			r.className="feature_row";
 			var c=r.insertCell(-1);
 			
-			//Candidate for Dragable object
 			var tt_div=me.make_feature_row(is_base,layer_name,feature_names[lidx]);
 			
-			//
 			c.appendChild(tt_div);
 		}
 		
@@ -377,6 +449,7 @@ var ControlPanel=function(){
 			var key=keys[kidx];
 			var checkboxSRC="./static/ggmc/img/checkbox-0.png";
 			if(window.app.LAYERS[key]['toggle'])checkboxSRC="./static/ggmc/img/checkbox-1.png";
+			/*
 			opts={
 				"checkboxCB":me.layer_checkboxCB,
 				"checkboxSRC":checkboxSRC,
@@ -388,9 +461,20 @@ var ControlPanel=function(){
 				'roll_up_icon_src':"./static/ggmc/img/arrow.png",
 			}
 			
-			//current_features now available globally as: window.app.LAYERS[key]['feature_names']=[...]
 			me.layer_block(key,opts);
-			
+			$("#control_panel").append(make_hr("hr3"));
+			*/
+			opts={
+				'parent_id':'control_panel',
+				'id':key,
+				'className':'roll_up_div',
+				'roll_up_class':'rollup',
+				'roll_up_name':key,
+				'roll_up_icon_src':"./static/ggmc/img/arrow.png",
+			};
+			me.layer_block([key],opts);
+			$("#control_panel").append(make_hr());
+		
 		}
 	}
 	me.rebuild=function(){
