@@ -135,7 +135,7 @@ var GGMC=function(div_id,control_panel_id){
 			var keys=me.BASE_LAYERS['keys'];
 			for(var kidx=0;kidx<keys.length;kidx++){
 				var key=keys[kidx];
-				if(me.BASE_LAYERS[key]['toggled']==1)
+				if(me.BASE_LAYERS[key]['toggle']==1)
 					window.map.getLayers().insertAt(0, me.BASE_LAYERS[key]);
 			}
 		}

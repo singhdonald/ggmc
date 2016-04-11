@@ -27,10 +27,6 @@ var ControlPanel=function(){
 		
 	var me={};
 	
-	me.foi=null;//feature of interest
-	me.MAP_LAYERS={};
-	me.MAP_LAYER_NAMES=[];
-
 	me.layer_checkboxCB=function(e){
 		
 		console.log("controls.js: layer_checkboxCB "+e.target.id);
