@@ -1,28 +1,3 @@
-var is_base_by_name=function(layer_name){
-	var is_base=false;
-	for(var kidx=0;kidx<window.app.BASE_LAYERS['keys'].length;kidx++){
-		var key=window.app.BASE_LAYERS['keys'][kidx];
-		if(key==layer_name){is_base=true;}
-	}
-	console.log(layer_name+" is_base= "+is_base);
-	return is_base;
-}
-var make_hr=function(idn){
-	var hr=document.createElement("hr");
-	hr.className="hr";
-	if(idn!=null)hr.id=idn;
-	return hr;
-}
-var make_vspace10=function(){
-	var vspace10=document.createElement("div");
-	vspace10.className="vspace10";
-	return vspace10;
-}
-var make_hspace10=function(){
-	var hspace10=document.createElement("div");
-	hspace10.className="hspace10";
-	return hspace10;
-}
 var ControlPanel=function(){
 		
 	var me={};
