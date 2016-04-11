@@ -211,7 +211,6 @@ var GGMC=function(div_id,control_panel_id){
 			
 			me.LAYERS['keys'].push(layer_name);
 			me.LAYERS[layer_name]={
-				'type':'polygon',
 				'api':'ol.layer.Vector',
 				'layer':polygon_layer,
 				'source':polygon_source,
@@ -256,7 +255,6 @@ var GGMC=function(div_id,control_panel_id){
 			
 			me.LAYERS['keys'].push(layer_name);
 			me.LAYERS[layer_name]={
-				'type':'point',
 				'api':'ol.layer.Vector',
 				'layer':point_layer,
 				'source':point_source,
@@ -297,7 +295,6 @@ var GGMC=function(div_id,control_panel_id){
 			
 			me.LAYERS['keys'].push(layer_name);
 			me.LAYERS[layer_name]={
-				'type':'line',
 				'api':'ol.layer.Vector',
 				'layer':line_layer,
 				'source':line_source,
@@ -331,7 +328,6 @@ var GGMC=function(div_id,control_panel_id){
 
 
 		me.LAYERS['boundary']={
-			'type':'polygon',
 			'api':'ol.layer.Vector',
 			'layer':boundary_layer,
 			'source':boundary_source,
