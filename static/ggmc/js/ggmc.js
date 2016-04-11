@@ -52,18 +52,7 @@ var GGMC=function(div_id,control_panel_id){
 		},
 	};
 	
-	me.LAYERS={
-		'keys':[],
-		'type':'polygon',
-		'api':'ol.layer.Vector',
-		'layer':'polygon_layer',
-		'source':'polygon_source',
-		'feature_names':[],
-		'features_off':[],
-		'style':null,
-		'colors':{},
-		'toggle':1,
-	}
+	me.LAYERS={'keys':[],}
 	
 	me.polygon_layers=null;
 	me.point_layers=null;
@@ -112,7 +101,7 @@ var GGMC=function(div_id,control_panel_id){
 		try{console.log("me.LAYERS['boundary']="+me.LAYERS['boundary']['layer']);}
 		catch(e){console.log(e);}
 		
-		var selection=get_selected("area_select");
+		var selection=window.area_select.get_selected("area_select");
 		//var selection="guyana";
 		
 		if(selection!=null){
@@ -146,8 +135,8 @@ var GGMC=function(div_id,control_panel_id){
 			var keys=me.BASE_LAYERS['keys'];
 			for(var kidx=0;kidx<keys.length;kidx++){
 				var key=keys[kidx];
-				if(me.BASE_LAYERS[key]['toggled']==1)
-					window.map.getLayers().insertAt(0, me.BASE_LAYERS[key]);
+				if(me.BASE_LAYERS[key]['toggle']==1)
+					window.map.getLayers().insertAt(0, me.BASE_LAYERS[key]['layer']);
 			}
 		}
 		console.log("adding boundary layer");
