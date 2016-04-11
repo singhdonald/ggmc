@@ -29,8 +29,14 @@ var Map=function(div_id){
 		};
 
 	me.controlsCB = function() {
+		if(document.getElementById("control_panel").className.indexOf("show") > -1)
+		if(document.getElementById("popout_panel").className.indexOf("show") > -1)
+			$(".popout_panel").toggleClass("show");
+
 		$(".control_panel").toggleClass("show");
 		console.log("controlCB show off");
+		
+		
 	};
 	
 	me.setup_map=function(){

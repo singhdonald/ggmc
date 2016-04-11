@@ -52,18 +52,7 @@ var GGMC=function(div_id,control_panel_id){
 		},
 	};
 	
-	me.LAYERS={
-		'keys':[],
-		'type':'polygon',
-		'api':'ol.layer.Vector',
-		'layer':'polygon_layer',
-		'source':'polygon_source',
-		'feature_names':[],
-		'features_off':[],
-		'style':null,
-		'colors':{},
-		'toggle':1,
-	}
+	me.LAYERS={'keys':[],}
 	
 	me.polygon_layers=null;
 	me.point_layers=null;
@@ -112,7 +101,7 @@ var GGMC=function(div_id,control_panel_id){
 		try{console.log("me.LAYERS['boundary']="+me.LAYERS['boundary']['layer']);}
 		catch(e){console.log(e);}
 		
-		var selection=get_selected("area_select");
+		var selection=window.area_select.get_selected("area_select");
 		//var selection="guyana";
 		
 		if(selection!=null){

@@ -7,6 +7,7 @@
 	<link rel="stylesheet" href="./static/ggmc/css/bootstrap.min.css">
 	<link rel="stylesheet" href="./static/ggmc/css/bootstrap-switch.css">
 	<link rel="stylesheet" href="./static/ggmc/css/ol.css" type="text/css">
+	<link rel="stylesheet" href="./static/ggmc/css/selection_widget.css" type="text/css">
 	<link rel="stylesheet" href="./static/ggmc/css/ggmc.css" type="text/css">
 	<link rel="stylesheet" href="./static/ggmc/css/controls.css" type="text/css">
 	<link rel="stylesheet" href="./static/ggmc/css/roll_up_div.css" type="text/css">
@@ -27,11 +28,15 @@
 	<script src="./static/ggmc/js/map_button.js"></script>
 	<script src="./static/ggmc/js/checkbox.js"></script>
 	<script src="./static/ggmc/js/roll_up_div.js"></script>
+	<script src="./static/ggmc/js/selection_widget.js"></script>
 	<script src="./static/ggmc/js/map.js"></script>
 	
 	<script type="text/javascript">
+		
 		window.map=null;
 		window.app=null;
+		window.area_select=null;
+		
 		window.onresize=window.onorientationchange=function(e){
 			if(!window.app)return;
 			window.app.resize();

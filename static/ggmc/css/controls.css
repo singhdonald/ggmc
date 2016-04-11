@@ -11,21 +11,6 @@
 	color:white;
 	
 }
-.off_popout_panel{
-	position:absolute;
-	height:200px;
-	width: 0px;
-	left: 260px;
-	z-index: 990;
-	background-color:#FFAA00;
-	color:white;
-	-webkit-transition: width 0.75s ease;
-	transition: width 0.75s ease;
-	opacity:1.0;
-	text-align:center;
-	overflow:auto;
-	border-radius: 4px;
-}
 .popout_panel{
         position: absolute;
 

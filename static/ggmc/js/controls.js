@@ -128,7 +128,7 @@ var ControlPanel=function(){
 		
 		var opts={'parent_id':'control_panel','id':'Configuration','className':'roll_up_div','roll_up_class':'rollup','roll_up_name':'Configuration','roll_up_icon_src':null,};
 		var rollup=new RollUpDiv(opts);
-		
+/*		
 		var area_select=document.createElement("select");
 		area_select.id="area_select";
 		area_select.className="styled-select blue semi-square";
@@ -140,6 +140,18 @@ var ControlPanel=function(){
 			area_select.appendChild(opt);
 		}
 		area_select.addEventListener("change",window.app.change_areaCB,false);
+*/		
+		var opts={'id':'area_select','arrow_img':'./static/ggmc/img/arrow.png'};
+		window.area_select=new SelectionWidget(opts,INSTALLED["keys"]);
+		
+		// notify me when a new item is selected
+		window.area_select.subscribe(function(active){ 
+			console.log('new item selected'); 
+			window.app.change_areaCB();
+		});
+		
+		//document.body.appendChild(selection_widget.render());
+		
 		
 		//
 		var tourB=document.createElement("input");
@@ -172,7 +184,7 @@ var ControlPanel=function(){
 		switch_container.className="centered w100";
 		switch_container.appendChild(switchT);
 		
-		rollup.rollup.appendChild(area_select);
+		rollup.rollup.appendChild(window.area_select.render());
 		rollup.rollup.appendChild(make_vspace10());
 		rollup.rollup.appendChild(switch_container);
 		rollup.rollup.appendChild(make_vspace10());
