@@ -136,7 +136,7 @@ var GGMC=function(div_id,control_panel_id){
 			for(var kidx=0;kidx<keys.length;kidx++){
 				var key=keys[kidx];
 				if(me.BASE_LAYERS[key]['toggle']==1)
-					window.map.getLayers().insertAt(0, me.BASE_LAYERS[key]);
+					window.map.getLayers().insertAt(0, me.BASE_LAYERS[key]['layer']);
 			}
 		}
 		console.log("adding boundary layer");
