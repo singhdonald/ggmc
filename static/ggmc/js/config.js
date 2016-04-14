@@ -9,7 +9,8 @@ var INSTALLED={
 		"width":2,
 		"polygon_sources":[
 			{"filename":"pacs.geojson","color":"rgba(0,255,0,1)","fill":'rgba(0,255,0,0.25)','width':1,"layer_name":'Protected Areas'},
-			{"filename":"gy_rivers.geojson","color":"rgba(0,0,255,1)","fill":'rgba(0,0,255,1)','width':1, "layer_name":'Rivers'},
+			{"filename":"gy_rivers.geojson","color":"rgba(0,100,255,1)","fill":'rgba(0,0,255,1)','width':1, "layer_name":'Rivers'},
+//			{"filename":"gy_creeks.geojson","color":"rgba(100,200,155,1)","fill":'rgba(0,0,255,1)','width':1, "layer_name":'Creeks'},
 		],
 		"point_sources":[
 			{"filename":"gy_towns.geojson","color":"rgba(255,0,0,1)","fill":'rgba(255,255,255,1)','width':5,'radius':10, "layer_name":'Places'},
