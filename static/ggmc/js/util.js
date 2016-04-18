@@ -1,7 +1,7 @@
 var is_base_by_name=function(layer_name){
 	var is_base=false;
-	for(var kidx=0;kidx<window.app.BASE_LAYERS['keys'].length;kidx++){
-		var key=window.app.BASE_LAYERS['keys'][kidx];
+	for(var kidx=0;kidx<window.app.CATEGORIES['Base Layers']['keys'].length;kidx++){
+		var key=window.app.CATEGORIES['Base Layers']['keys'][kidx];
 		if(key==layer_name){is_base=true;}
 	}
 	console.log(layer_name+" is_base= "+is_base);

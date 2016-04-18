@@ -8,12 +8,12 @@ var INSTALLED={
 		"fill":"rgba(0,100,40,.1)",
 		"width":2,
 		"polygon_sources":[
-			{"filename":"pacs.geojson","color":"rgba(0,255,0,1)","fill":'rgba(0,255,0,0.25)','width':1,"layer_name":'Protected Areas'},
-			{"filename":"gy_rivers.geojson","color":"rgba(0,100,255,1)","fill":'rgba(0,0,255,1)','width':1, "layer_name":'Rivers'},
-//			{"filename":"gy_creeks.geojson","color":"rgba(100,200,155,1)","fill":'rgba(0,0,255,1)','width':1, "layer_name":'Creeks'},
+			{"filename":"pacs.geojson","color":"rgba(0,255,0,1)","fill":'rgba(0,255,0,0.25)','width':1,"category":"PAC","layer_name":'Protected Areas'},
+			{"filename":"gy_rivers.geojson","color":"rgba(0,100,255,1)","fill":'rgba(0,0,255,1)','width':1,"category":"PAC", "layer_name":'Rivers'},
+//			{"filename":"gy_creeks.geojson","color":"rgba(100,200,155,1)","fill":'rgba(0,0,255,1)','width':1,"category":"PAC", "layer_name":'Creeks'},
 		],
 		"point_sources":[
-			{"filename":"gy_towns.geojson","color":"rgba(255,0,0,1)","fill":'rgba(255,255,255,1)','width':5,'radius':10, "layer_name":'Places'},
+			{"filename":"gy_towns.geojson","color":"rgba(255,0,0,1)","fill":'rgba(255,255,255,1)','width':5,'radius':10,"category":"Places", "layer_name":'Towns'},
 		],
 		"line_sources":[
 //			{"filename":"test_segment.geojson","color":"rgba(155,255,0,1)",'width':5},
@@ -49,7 +49,7 @@ var INSTALLED={
         "fill":"rgba(0,100,0,0.1)",
         "width":0,
         "polygon_sources":[
-            {"filename":"world_borders.geojson","color":"rgba(0,255,0,1)","fill":'rgba(0,255,0,0.25)','width':1,"layer_name":'Countries'},
+            {"filename":"world_borders.geojson","color":"rgba(0,255,0,1)","fill":'rgba(0,255,0,0.25)','width':1,"category":"World","layer_name":'Countries'},
         ],
         "point_sources":[],
         "line_sources":[]
@@ -62,7 +62,7 @@ var INSTALLED={
         "fill":"rgba(0,100,0,0.1)",
         "width":0,
         "polygon_sources":[
-            {"filename":"gt_roads.geojson","color":"rgba(0,255,234,1)","fill":'rgba(0,255,0,0.25)','width':3,"layer_name":'Georgetown Roads'}
+            {"filename":"gt_roads.geojson","color":"rgba(0,255,234,1)","fill":'rgba(0,255,0,0.25)','width':3,"category":"Roads","layer_name":'Georgetown Roads'}
         ],
         "point_sources":[],
         "line_sources":[]

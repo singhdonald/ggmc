@@ -14,21 +14,21 @@ var RollUpDiv=function(opts){
 		}
 	}
 
-	me.head=document.createElement("div");
 	
-	var solid_id=opts['id'];//handles up to 10 spaces!
+	var solid_id=opts['category'];//handles up to 10 spaces!
 	for(var dummy=0;dummy<10;dummy++)
 		solid_id=solid_id.replace(" ","ZZZ");//can't be _ b/c splitting on _ already
-	me.head.id=solid_id;
-	
+
+	me.head=document.createElement("div");
 	me.head.className='roll_up_div';
+	me.head.id=solid_id;
 	
 	var t=document.createElement("table");
 	t.style.width="100%";
 	var tr=t.insertRow(-1);
 	var td;
 	td=tr.insertCell(-1);
-	td.className="roll_up_icon_cell";
+	td.className="roll_up_icon_cell";//unused dummy for symmetry
 	
 	td=tr.insertCell(-1);
 	td.align="center";
@@ -36,7 +36,7 @@ var RollUpDiv=function(opts){
 	me.label.className="roll_up_label";
 	me.label.innerHTML=opts['roll_up_name'];
 	td.appendChild(me.label);
-	
+/*	
 	if(opts['checkboxCB']){//BASE_LAYERS are laid out differently
 		td=tr.insertCell(-1);
 		td.className="roll_up_icon_cell";
@@ -48,7 +48,7 @@ var RollUpDiv=function(opts){
 		td.appendChild(roll_up_icon);
 	}
 	else{console.log("no checkboxCB");}
-	
+*/	
 	td=tr.insertCell(-1);
 	td.className="roll_up_icon_cell";
 	var roll_up_icon=new Image();
