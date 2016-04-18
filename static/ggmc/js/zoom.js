@@ -1,6 +1,6 @@
 var pan_zoom=function(location){
 		
-		console.log("pan_zoom: "+location);
+		if(DEBUG)console.log("pan_zoom: "+location);
 		
 		var this_delay=4*window.app.DELAY;
 		
@@ -37,16 +37,16 @@ var pan_zoom=function(location){
 		window.map.getView().setCenter(location);
 		
 		if(window.app.current_feature != null){
-			console.log("pan_zoom setting timeout for check_feature");
+			if(DEBUG)console.log("pan_zoom setting timeout for check_feature");
 			window.app.last_timeout=window.setTimeout(window.app.check_feature,this_delay);
 		}
 		else{
-			console.log("pan_zoom calling start_move directly");
+			if(DEBUG)console.log("pan_zoom calling start_move directly");
 			window.app.start_move(null);
 		}
 	}
 var pan_zoom_home=function(){
-	console.log("bounce_home");
+	if(DEBUG)console.log("bounce_home");
 	
 	var this_delay=4*window.app.DELAY;
 	
@@ -72,6 +72,6 @@ var pan_zoom_home=function(){
 	var location=ol.proj.transform([(bbox[0]+bbox[2])/2.,(bbox[1]+bbox[3])/2.],"EPSG:4326","EPSG:3857");;
 	window.map.getView().setCenter(location);
 	
-	console.log('pan_zoom_home setting timeout for start_move');
+	if(DEBUG)console.log('pan_zoom_home setting timeout for start_move');
 	window.app.last_timeout=window.setTimeout(window.app.start_move,this_delay);	
 }

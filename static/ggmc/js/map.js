@@ -6,11 +6,11 @@ var Map=function(div_id){
 
 	//MAP
 	me.playCB = function() {
-			console.log("mapB.CB");
+			if(DEBUG)console.log("mapB.CB");
 			//$(".control_panel").toggleClass("show");
 			
 			if(window.app.get_enabled_candidates().length==0){
-				console.log("resetting game from CB");
+				if(DEBUG)console.log("resetting game from CB");
 				window.app.change_areaCB();
 				document.getElementById("playB").innerHTML='<img src="./static/ggmc/img/flaticon/pause.png" class="icon"/>';
 				window.app.RUNNING=true;
@@ -25,7 +25,7 @@ var Map=function(div_id){
 				window.app.start_move(null);
 				document.getElementById("playB").innerHTML='<img src="./static/ggmc/img/flaticon/pause.png" class="icon"/>';
 			}
-			console.log("mapB.CB done");
+			if(DEBUG)console.log("mapB.CB done");
 		};
 
 	me.controlsCB = function() {
@@ -34,7 +34,7 @@ var Map=function(div_id){
 			$(".popout_panel").toggleClass("show");
 
 		$(".control_panel").toggleClass("show");
-		console.log("controlCB show off");
+		if(DEBUG)console.log("controlCB show off");
 		
 		
 	};
@@ -68,7 +68,7 @@ var Map=function(div_id){
 				var target_name=target_feature.get("NAME");
 				if(!target_name)target_name=target_feature.get("Name");
 				if(String.toLowerCase(target_name)==window.app.current){;}
-				console.log(target_name);
+				if(DEBUG)console.log(target_name);
 				window.app.check_feature(evt.pixel);
 			});
 		});
@@ -87,15 +87,15 @@ var Map=function(div_id){
 				if(!target_name)target_name=target_feature.get("Name");
 				
 				if(String.toLowerCase(target_name)==window.app.current){
-					//this skips printing boundary to console.log
+					//this skips printing boundary to if(DEBUG)console.log
 				}
 				else if(target_name==window.app.current){
-					//this skips printing boundary to console.log
+					//this skips printing boundary to if(DEBUG)console.log
 				}
 				else if(target_feature){
 					me.featureOverlay.addFeature(target_feature);
 					me.HILIGHTS.push(target_feature);
-					//console.log(target_name);
+					//if(DEBUG)console.log(target_name);
 				}
 			});
 		});

@@ -31,7 +31,7 @@ ControlPanel=function(){
 		
 		// notify me when a new item is selected
 		window.area_select.subscribe(function(active){ 
-			console.log('new item selected'); 
+			if(DEBUG)console.log('new item selected'); 
 			window.app.change_areaCB();
 		});
 		
@@ -93,9 +93,9 @@ ControlPanel=function(){
 		$("#tourB").bootstrapSwitch("offText","<img class='switch_icon' src='./static/ggmc/img/flaticon/search.png'/>");
 		$("#tourB").bootstrapSwitch("labelText","<b> Tour </b> ");
 		$("#tourB").on('switchChange.bootstrapSwitch', function(event, state) {
-			console.log(this); // DOM element
-			console.log(event); // jQuery event
-			console.log(state); // true | false
+			if(DEBUG)console.log(this); // DOM element
+			if(DEBUG)console.log(event); // jQuery event
+			if(DEBUG)console.log(state); // true | false
 			window.app.tour=state;
 		});
 		
@@ -108,14 +108,14 @@ ControlPanel=function(){
 		$("#baseB").bootstrapSwitch("offText","<img class='switch_icon' src='./static/ggmc/img/layers.png'/>");
 		$("#baseB").bootstrapSwitch("labelText","<b> Base </b> ");
 		$("#baseB").on('switchChange.bootstrapSwitch', function(event, state) {
-			console.log(this); // DOM element
-			console.log(event); // jQuery event
-			console.log(state); // true | false
+			if(DEBUG)console.log(this); // DOM element
+			if(DEBUG)console.log(event); // jQuery event
+			if(DEBUG)console.log(state); // true | false
 			
 			var hr0_bcr=document.getElementById("hr0").getBoundingClientRect();
 			var hr3_bcr=document.getElementById("hr3").getBoundingClientRect();
 			var h=hr3_bcr.top-hr0_bcr.bottom;
-			console.log("h="+h);
+			if(DEBUG)console.log("h="+h);
 			$(".base_cover_panel").css({"height":h,"top":hr0_bcr.bottom});
 			$(".base_cover_panel").toggleClass("show");
 			
@@ -129,7 +129,7 @@ ControlPanel=function(){
 				for(var kidx=0;kidx<keys.length;kidx++){
 					var key=keys[kidx];
 					if(window.app.CATEGORIES["Base Layers"][key]['toggle']==1){
-						console.log("adding "+key);
+						if(DEBUG)console.log("adding "+key);
 						window.map.getLayers().insertAt(0, window.app.CATEGORIES["Base Layers"][key]['layer']);
 					}
 				}
@@ -138,7 +138,7 @@ ControlPanel=function(){
 				for(var kidx=0;kidx<keys.length;kidx++){
 					var key=keys[kidx];
 					if(window.app.CATEGORIES["Base Layers"][key]['toggle']==1){
-						console.log("removing "+key);
+						if(DEBUG)console.log("removing "+key);
 						window.map.removeLayer(window.app.CATEGORIES["Base Layers"][key]['layer']);
 					}
 				}
@@ -149,7 +149,7 @@ ControlPanel=function(){
 	}
 	
 	me.make_layer_row=function(category,layer_name){
-		console.log("make_layer_row: "+category+"."+layer_name);
+		if(DEBUG)console.log("make_layer_row: "+category+"."+layer_name);
 		var rdiv=document.createElement("div");
 		var rtab=document.createElement("table");
 		rtab.className="layer_table";
@@ -167,7 +167,7 @@ ControlPanel=function(){
 		var crtab=rrtab.insertCell(-1);
 		crtab.className="icon_cell";
 		var idn=category.replace("_"," ")+"_"+layer_name+"_"+parseInt(1E9*Math.random());
-		console.log("idn="+idn);
+		if(DEBUG)console.log("idn="+idn);
 		var img=new Image();
 		img.id=idn;
 		img.className="icon";
@@ -197,7 +197,7 @@ ControlPanel=function(){
 		return rdiv;
 	}
 	me.category_block=function(category){
-		console.log("category_block: "+category);
+		if(DEBUG)console.log("category_block: "+category);
 		var opts={
 			'category':category,
 			'parent_id':'control_panel',
@@ -228,7 +228,7 @@ ControlPanel=function(){
 	}
 	
 	me.make_category_blocks=function(){
-		console.log("make_category_blocks");
+		if(DEBUG)console.log("make_category_blocks");
 		var keys=window.app.CATEGORIES['keys'];//keys doesn't contain BASE or BOUNDARY
 		for(var kidx=0;kidx<keys.length;kidx++){
 			key=keys[kidx];
@@ -240,7 +240,7 @@ ControlPanel=function(){
 		var control_panel=document.getElementById("control_panel");
 		var children=control_panel.childNodes;
 		for(var cidx=children.length-1;cidx>5;cidx--){//NEED:improve on this "9"
-			console.log("removing: "+children[cidx].id);
+			if(DEBUG)console.log("removing: "+children[cidx].id);
 			control_panel.removeChild(children[cidx]);
 		}
 		me.make_category_blocks();
@@ -248,7 +248,7 @@ ControlPanel=function(){
 	
 	me.layer_checkboxCB=function(e){
 		
-		console.log(e.target.id);
+		if(DEBUG)console.log(e.target.id);
 		
 		var img=e.target;
 		var category=e.target.id.split("_")[0];
@@ -274,32 +274,32 @@ ControlPanel=function(){
 		}
 	}
 	me.rangeCB=function(e){
-		console.log("rangeCB: "+e.target.id);
+		if(DEBUG)console.log("rangeCB: "+e.target.id);
 		
 		var split_id=e.target.id.split("_");
 		var category=split_id[0].replace("ZZZ"," ");
 		var layer_name=split_id[1].replace("ZZZ"," ");
 		var attribute_name=split_id[2];
 		
-		console.log(category+"."+layer_name+"."+attribute_name+" "+e.target.value);
+		if(DEBUG)console.log(category+"."+layer_name+"."+attribute_name+" "+e.target.value);
 		
 		range=document.getElementById(e.target.id);
 			
-			console.log(window.app.CATEGORIES[category][layer_name]['layer'].getKeys());
-			console.log("setting "+attribute_name+" to "+parseFloat(range.value)/100.);
+			if(DEBUG)console.log(window.app.CATEGORIES[category][layer_name]['layer'].getKeys());
+			if(DEBUG)console.log("setting "+attribute_name+" to "+parseFloat(range.value)/100.);
 			window.app.CATEGORIES[category][layer_name]['layer'].set(attribute_name,parseFloat(range.value)/100.);
 			cmd="window.app.CATEGORIES['"+category+"']['"+layer_name+"']['layer'].set"+attribute_name+"("+parseFloat(range.value)/100.+")";
-			console.log(cmd);
+			if(DEBUG)console.log(cmd);
 			var dummy=eval(cmd);
 
 	}
 	me.popoutCB = function(e) {
 		
-		console.log(e.target.id);
+		if(DEBUG)console.log(e.target.id);
 		
 		var category=e.target.id.split("_")[0];//.replace(" ","ZZZ");
 		var layer_name=e.target.id.split("_")[1];
-		console.log(category+"."+layer_name);
+		if(DEBUG)console.log(category+"."+layer_name);
 		
 		$(".popout_panel").css({"top":(e.clientY-100)+"px"});
 		$(".popout_panel").html("");
@@ -324,15 +324,9 @@ ControlPanel=function(){
 			w.setAttribute("min",0);
 			w.setAttribute("max",100);
 			
-				var val=window.app.CATEGORIES[category][layer_name]['layer'].getOpacity()*100;
-				console.log(val);
-				/*
-				var cmd="window.app.CATEGORIES[category][layer_name]['layer'].get"+attribute_names[aidx]+"()*100";
-				console.log(cmd);
-				val=eval(cmd);
-				console.log(val);
-				*/
-				w.setAttribute("value",val);
+			var val=window.app.CATEGORIES[category][layer_name]['layer'].getOpacity()*100;
+			if(DEBUG)console.log(val);
+			w.setAttribute("value",val);
 			
 			w.style.width="100px";
 			c=r.insertCell(-1);
@@ -348,7 +342,7 @@ ControlPanel=function(){
 	var hr0_bcr=document.getElementById("hr0").getBoundingClientRect();
 	var hr3_bcr=document.getElementById("hr3").getBoundingClientRect();
 	var h=hr3_bcr.top-hr0_bcr.bottom;
-	console.log("h="+h);
+	if(DEBUG)console.log("h="+h);
 	$(".base_cover_panel").css({"height":h,"top":hr0_bcr.bottom});
 			
 	return me;

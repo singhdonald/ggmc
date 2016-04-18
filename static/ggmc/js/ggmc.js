@@ -61,7 +61,6 @@ var GGMC=function(div_id,control_panel_id){
 	me.line_layers=null;
 	me.current_target_layer=null;
 	
-	me.debug=true;
 	me.DELAY=1500.;
 	me.RUNNING=false;
 
@@ -77,24 +76,24 @@ var GGMC=function(div_id,control_panel_id){
 		var keys=me.CATEGORIES['keys'];
 		for(var kidx=0;kidx<keys.length;kidx++){
 			var category=keys[kidx];
-			console.log("checking "+category);
+			if(DEBUG)console.log("checking "+category);
 			var layer_names=me.CATEGORIES[category]['keys'];
-			console.log("layer_names="+layer_names+" "+typeof(layer_names));
+			if(DEBUG)console.log("layer_names="+layer_names+" "+typeof(layer_names));
 			for(var lidx=0;lidx<layer_names.length;lidx++){
 				var layer_name=layer_names[lidx];
-				console.log("checking "+category+"."+layer_name);
+				if(DEBUG)console.log("checking "+category+"."+layer_name);
 				if(me.CATEGORIES[category][layer_name]['toggle']){
 					var feature_names=me.CATEGORIES[category][layer_name]['feature_names'];
 					for(var fidx=0;fidx<feature_names.length;fidx++){
 						var feature_name=feature_names[fidx];
-						console.log("checking "+category+"."+layer_name+"."+feature_name);
+						if(DEBUG)console.log("checking "+category+"."+layer_name+"."+feature_name);
 						if(me.CATEGORIES[category][layer_name]['features'][feature_name]['candidate']){
 							var pyld={
 								'category':category,
 								'layer_key':layer_name,
 								'feature_name':feature_name,
 							};
-							console.log("adding candidate: "+feature_name);
+							if(DEBUG)console.log("adding candidate: "+feature_name);
 							candidates.push(pyld);
 						}
 					}
@@ -106,21 +105,21 @@ var GGMC=function(div_id,control_panel_id){
 	}
 	
 	me.change_areaCB=function(){
-		console.log("change_areaCB");
+		if(DEBUG)console.log("change_areaCB");
 		//Get new selected area
 		
-		try{console.log("me.CATEGORIES['BOUNDARY']="+me.CATEGORIES['BOUNDARY']['layer']);}
-		catch(e){console.log(e);}
+		try{if(DEBUG)console.log("me.CATEGORIES['BOUNDARY']="+me.CATEGORIES['BOUNDARY']['layer']);}
+		catch(e){if(DEBUG)console.log(e);}
 		
 		var selection=window.area_select.get_selected("area_select");
 		//var selection="guyana";
 		
 		if(selection!=null){
 			me.current=selection;
-			console.log("selection="+selection);
+			if(DEBUG)console.log("selection="+selection);
 		}
 		else{
-			console.log("failed to obtain selection");
+			if(DEBUG)console.log("failed to obtain selection");
 			return;
 		}
 		
@@ -129,7 +128,7 @@ var GGMC=function(div_id,control_panel_id){
 			category=me.CATEGORIES['keys'][cidx];
 			for(var lidx=0;lidx<me.CATEGORIES[category]['keys'].length;lidx++){
 				var layer_name=me.CATEGORIES[category]['keys'][lidx];
-				console.log("removing layer: "+layer_name);
+				if(DEBUG)console.log("removing layer: "+layer_name);
 				window.map.removeLayer(me.CATEGORIES[category][layer_name]['layer']);
 				delete(me.CATEGORIES[category][layer_name]);
 			}
@@ -138,18 +137,18 @@ var GGMC=function(div_id,control_panel_id){
 		me.CATEGORIES['keys']=[];
 		
 		try{
-			console.log("Removing layer: BOUNDARY");
+			if(DEBUG)console.log("Removing layer: BOUNDARY");
 			window.map.removeLayer(me.CATEGORIES['BOUNDARY']['layer']);
 			delete(me.CATEGORIES['BOUNDARY']);
 		}
-		catch(e){/*console.log(e);*/}
+		catch(e){/*if(DEBUG)console.log(e);*/}
 		
 		//Refill layers structure
 		var rval=me.prepare_layers();
 		
 		//Re-add layers to map
 		if(me.BASE_ENABLED){
-			console.log("adding base layers");
+			if(DEBUG)console.log("adding base layers");
 			var keys=me.CATEGORIES['Base Layers']['keys'];
 			for(var kidx=0;kidx<keys.length;kidx++){
 				var key=keys[kidx];
@@ -157,17 +156,17 @@ var GGMC=function(div_id,control_panel_id){
 					window.map.getLayers().insertAt(0, me.CATEGORIES['Base Layers'][key]['layer']);
 			}
 		}
-		console.log("Adding BOUNDARY layer");
+		if(DEBUG)console.log("Adding BOUNDARY layer");
 		window.map.addLayer(me.CATEGORIES['BOUNDARY']['layer']);
 		
 		var keys=me.CATEGORIES['keys'];
 		for(var kidx=0;kidx<keys.length;kidx++){
 			var category=keys[kidx];
-			console.log('Adding '+me.CATEGORIES[category]['keys'].length);
+			if(DEBUG)console.log('Adding '+me.CATEGORIES[category]['keys'].length);
 			var layer_names=me.CATEGORIES[category]['keys'];
 			for(var lidx=0;lidx<layer_names.length;lidx++){
 				var layer_name=layer_names[lidx];
-				console.log("Adding layer: "+layer_name);
+				if(DEBUG)console.log("Adding layer: "+layer_name);
 				window.map.addLayer(me.CATEGORIES[category][layer_name]['layer']);
 			}
 		}
@@ -191,7 +190,7 @@ var GGMC=function(div_id,control_panel_id){
 					var feature_name=null;
 					feature_name=features[fidx].get("Name");
 					if(!feature_name)feature_name=features[fidx].get("NAME");
-					//console.log(feature_name);
+					//if(DEBUG)console.log(feature_name);
 					me.CATEGORIES[category][layer_name]['features'][feature_name]={
 						'feature':features[fidx],
 						'candidate':true,
@@ -205,7 +204,7 @@ var GGMC=function(div_id,control_panel_id){
 
 	me.prepare_layers=function(){
 		
-		console.log("me.prepare_layers: "+me.current);
+		if(DEBUG)console.log("me.prepare_layers: "+me.current);
 		
 		me.LAYERS={'keys':[],}
 		
@@ -249,7 +248,7 @@ var GGMC=function(div_id,control_panel_id){
 			};
 			
 			if(me.CATEGORIES['keys'].indexOf(category)<0){
-				console.log("new category: "+category);
+				if(DEBUG)console.log("new category: "+category);
 				me.CATEGORIES['keys'].push(category);
 				me.CATEGORIES[category]={'keys':[],};
 			}
@@ -306,7 +305,7 @@ var GGMC=function(div_id,control_panel_id){
 			};
 			
 			if(me.CATEGORIES['keys'].indexOf(category)<0){
-				console.log("new category: "+category);
+				if(DEBUG)console.log("new category: "+category);
 				me.CATEGORIES['keys'].push(category);
 				me.CATEGORIES[category]={'keys':[],};
 			}
@@ -354,7 +353,7 @@ var GGMC=function(div_id,control_panel_id){
 				'type':'Line',
 			};
 			if(me.CATEGORIES['keys'].indexOf(category)<0){
-				console.log("new category: "+category);
+				if(DEBUG)console.log("new category: "+category);
 				me.CATEGORIES['keys'].push(category);
 				me.CATEGORIES[category]={'keys':[],};
 			}
@@ -395,7 +394,7 @@ var GGMC=function(div_id,control_panel_id){
 			'type':'Polygon',
 		};
 		
-		console.log("prepare_layers done");
+		if(DEBUG)console.log("prepare_layers done");
 		return 1;
 		
 	}//END:me.prepare_layers
@@ -405,35 +404,35 @@ var GGMC=function(div_id,control_panel_id){
 		
 		if(me.RUNNING==false)return;
 		
-		console.log("start_move");
+		if(DEBUG)console.log("start_move");
 		
 		try{window.clearTimeout(me.last_timeout);}
-		catch(e){console.log(e);}
+		catch(e){if(DEBUG)console.log(e);}
 		
 		if(!feature){
 			
 			var candidates=me.get_enabled_candidates();
 			
 			if(candidates.length==0){
-				console.log("returning me.end_game()");
+				if(DEBUG)console.log("returning me.end_game()");
 				return me.end_game();
 			}
 			
-			console.log("me.start_move no feature passed so selecting");
+			if(DEBUG)console.log("me.start_move no feature passed so selecting");
 			
 			var ridx=parseInt(Math.random()*candidates.length);
-			console.log("cycling ridx="+ridx.toString()+"/"+candidates.length);
+			if(DEBUG)console.log("cycling ridx="+ridx.toString()+"/"+candidates.length);
 			
 			for(var dummy=0;dummy<ridx;dummy++){
-				//console.log(dummy+"/"+ridx);
+				//if(DEBUG)console.log(dummy+"/"+ridx);
 				candidates.push(candidates.shift());
 			}
-			console.log("shifting me.current_feature");
+			if(DEBUG)console.log("shifting me.current_feature");
 			me.current_feature=candidates.shift();//should check if getting what was intended
 			
 		}
 		else{
-			console.log("me.start_move with feature passed");
+			if(DEBUG)console.log("me.start_move with feature passed");
 		}
 		
 		var target_name=null;
@@ -442,15 +441,15 @@ var GGMC=function(div_id,control_panel_id){
 		var target_layer_name=me.current_feature['layer_key'];
 		
 		var xhtml="<center><h3>Next:</h3><h1>"+target_name+"</h1><h3>"+target_layer_name+"</h3></center>";
-		console.log("me.start_move:"+target_name+" "+target_layer_name);
+		if(DEBUG)console.log("me.start_move:"+target_name+" "+target_layer_name);
 		popup(xhtml);
 	}
 	
 	me.end_game=function(){
 		try{document.body.removeChild(me.popup);}
-		catch(e){console.log("me.end_game");}
+		catch(e){if(DEBUG)console.log("me.end_game");}
 		var xhtml='<center><h1>Congratulations!<br>You Finished!</h1></center>';
-		console.log(xhtml);
+		if(DEBUG)console.log(xhtml);
 		popup(xhtml);
 		//NEED:game stats
 		document.getElementById("playB").innerHTML='<img src="./static/ggmc/img/flaticon/play.png" class="icon"/>';
@@ -460,7 +459,7 @@ var GGMC=function(div_id,control_panel_id){
 		
 		if(!me.current_feature)return;
 		
-		console.log("me.check_feature clearing last_timeout");
+		if(DEBUG)console.log("me.check_feature clearing last_timeout");
 		window.clearTimeout(me.last_timeout);
 		
 		var feature;
@@ -481,7 +480,7 @@ var GGMC=function(div_id,control_panel_id){
 				var target_name=null;
 				target_name=feature.get("NAME");
 				if(!target_name)target_name=feature.get("Name");
-				console.log("returning: "+target_name);
+				if(DEBUG)console.log("returning: "+target_name);
 				features.push(feature);
 			});
 		}
@@ -495,11 +494,11 @@ var GGMC=function(div_id,control_panel_id){
 				var target_name=null;
 				target_name=me.current_feature['feature_name'];
 				target_layer=me.current_feature['layer_key'];
-				console.log(fidx.toString()+" "+target_layer+"."+target_name);
+				if(DEBUG)console.log(fidx.toString()+" "+target_layer+"."+target_name);
 				target_feature=me.CATEGORIES[category][target_layer]['features'][target_name]['feature'];
 				if(feature==target_feature){
 					
-					console.log("***** Correct! *****");
+					if(DEBUG)console.log("***** Correct! *****");
 					
 					if(me.LAYERS[target_layer]['type']=="Point"){
 						feature.setStyle(point_correct_style);
@@ -517,7 +516,7 @@ var GGMC=function(div_id,control_panel_id){
 					me.current_feature=null;
 					
 					if(me.tour){
-						console.log("check_feature setting timeout for pan_zoom_home");
+						if(DEBUG)console.log("check_feature setting timeout for pan_zoom_home");
 						me.last_timeout=window.setTimeout(pan_zoom_home,3*me.DELAY);
 					}
 					else{
@@ -529,16 +528,16 @@ var GGMC=function(div_id,control_panel_id){
 					var feature_name=null;
 					feature_name=feature.get("NAME");
 					if(!feature_name)feature_name=feature.get("Name");
-					console.log(feature_name+" != "+target_feature.toString());
+					if(DEBUG)console.log(feature_name+" != "+target_feature.toString());
 				}
 			
 			}
 			
-			console.log("starting move passing feature: "+target_name);
+			if(DEBUG)console.log("starting move passing feature: "+target_name);
 			me.start_move(feature);
 		}
 		else{
-			console.log("game over");
+			if(DEBUG)console.log("game over");
 		}
 	}
 	return me;
