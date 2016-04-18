@@ -66,10 +66,11 @@ var popdown=function(e){
 			if(window.app.tour && window.app.current_feature!=null){
 				
 				var f=window.app.current_feature;
+				var category=f['category'];
 				var layer_name=f['layer_key'];
 				var feature_name=f['feature_name'];
 				
-				var bbox=window.app.LAYERS[layer_name]['features'][feature_name]['feature'].getGeometry().getExtent();
+				var bbox=window.app.CATEGORIES[category][layer_name]['features'][feature_name]['feature'].getGeometry().getExtent();
 				
 				var center_of_feature=[(bbox[0]+bbox[2])/2.,(bbox[1]+bbox[3])/2.];
 				pan_zoom(center_of_feature);

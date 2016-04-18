@@ -18,41 +18,43 @@ var GGMC=function(div_id,control_panel_id){
 		'OpenStreetMap':new ol.source.MapQuest({layer:'osm'}),
 		'OpenStreetMap2':new ol.source.OSM(),
 	};
-	me.BASE_LAYERS={
-		'keys':['Satellite','OpenStreetMap','OpenStreetMap2'],
-		'Satellite':{
-			'type':'tile',
-			'api':'ol.layer.Tile',
-			'layer':new ol.layer.Tile({minResolution:500,preload:14,opacity:1.0,title:'Satellite',source:BASE_SOURCES['Satellite']}),
-			'source':BASE_SOURCES['Satellite'],
-			'feature_names':[],
-			'style':null,
-			'colors':{},
-			'toggle':true,
+	me.CATEGORIES={
+		'keys':[],
+		'Base Layers':{
+			'keys':['Satellite','OpenStreetMap','OpenStreetMap2'],
+			'Satellite':{
+				'type':'tile',
+				'api':'ol.layer.Tile',
+				'layer':new ol.layer.Tile({minResolution:500,preload:14,opacity:1.0,title:'Satellite',source:BASE_SOURCES['Satellite']}),
+				'source':BASE_SOURCES['Satellite'],
+				'feature_names':[],
+				'style':null,
+				'colors':{},
+				'toggle':true,
+			},
+			'OpenStreetMap':{
+				'type':'tile',
+				'api':'ol.layer.Tile',
+				'layer':new ol.layer.Tile({preload:14,opacity:1.0,title:'OpenStreetMap',source:BASE_SOURCES['OpenStreetMap']}),
+				'source':BASE_SOURCES['OpenStreetMap'],
+				'feature_names':[],
+				'style':null,
+				'colors':{},
+				'toggle':false,
+			},
+			'OpenStreetMap2':{
+				'type':'tile',
+				'api':'ol.layer.Tile',
+				'layer':new ol.layer.Tile({preload:14,opacity:1.0,title:'OpenStreetMap2',source:BASE_SOURCES['OpenStreetMap2']}),
+				'source':BASE_SOURCES['OpenStreetMap2'],
+				'feature_names':[],
+				'style':null,
+				'colors':{},
+				'toggle':false,
+			},
 		},
-		'OpenStreetMap':{
-			'type':'tile',
-			'api':'ol.layer.Tile',
-			'layer':new ol.layer.Tile({preload:14,opacity:1.0,title:'OpenStreetMap',source:BASE_SOURCES['OpenStreetMap']}),
-			'source':BASE_SOURCES['OpenStreetMap'],
-			'feature_names':[],
-			'style':null,
-			'colors':{},
-			'toggle':false,
-		},
-		'OpenStreetMap2':{
-			'type':'tile',
-			'api':'ol.layer.Tile',
-			'layer':new ol.layer.Tile({preload:14,opacity:1.0,title:'OpenStreetMap2',source:BASE_SOURCES['OpenStreetMap2']}),
-			'source':BASE_SOURCES['OpenStreetMap2'],
-			'feature_names':[],
-			'style':null,
-			'colors':{},
-			'toggle':false,
-		},
+		
 	};
-	
-	me.LAYERS={'keys':[],}
 	
 	me.polygon_layers=null;
 	me.point_layers=null;
@@ -72,25 +74,34 @@ var GGMC=function(div_id,control_panel_id){
 	
 	me.get_enabled_candidates=function(){
 		var candidates=[];
-		var keys=me.LAYERS['keys'];
+		var keys=me.CATEGORIES['keys'];
 		for(var kidx=0;kidx<keys.length;kidx++){
-			var key=keys[kidx];
-			var layer=me.LAYERS[key];
-			if(layer['toggle']){
-				var feature_names=layer['feature_names'];
-				for(var fidx=0;fidx<feature_names.length;fidx++){
-					var feature_name=feature_names[fidx];
-					console.log('feature_name='+feature_name);
-					if(me.LAYERS[key]['features'][feature_name]['candidate']){
-						var pyld={
-							'layer_key':key,
-							'feature_name':feature_name,
-						};
-						candidates.push(pyld);
+			var category=keys[kidx];
+			console.log("checking "+category);
+			var layer_names=me.CATEGORIES[category]['keys'];
+			console.log("layer_names="+layer_names+" "+typeof(layer_names));
+			for(var lidx=0;lidx<layer_names.length;lidx++){
+				var layer_name=layer_names[lidx];
+				console.log("checking "+category+"."+layer_name);
+				if(me.CATEGORIES[category][layer_name]['toggle']){
+					var feature_names=me.CATEGORIES[category][layer_name]['feature_names'];
+					for(var fidx=0;fidx<feature_names.length;fidx++){
+						var feature_name=feature_names[fidx];
+						console.log("checking "+category+"."+layer_name+"."+feature_name);
+						if(me.CATEGORIES[category][layer_name]['features'][feature_name]['candidate']){
+							var pyld={
+								'category':category,
+								'layer_key':layer_name,
+								'feature_name':feature_name,
+							};
+							console.log("adding candidate: "+feature_name);
+							candidates.push(pyld);
+						}
 					}
 				}
 			}
-		}
+		}	
+		
 		return candidates;
 	}
 	
@@ -98,7 +109,7 @@ var GGMC=function(div_id,control_panel_id){
 		console.log("change_areaCB");
 		//Get new selected area
 		
-		try{console.log("me.LAYERS['boundary']="+me.LAYERS['boundary']['layer']);}
+		try{console.log("me.CATEGORIES['BOUNDARY']="+me.CATEGORIES['BOUNDARY']['layer']);}
 		catch(e){console.log(e);}
 		
 		var selection=window.area_select.get_selected("area_select");
@@ -114,17 +125,24 @@ var GGMC=function(div_id,control_panel_id){
 		}
 		
 		//Remove all layers from map, reclaim memory
-		for(var lidx=0;lidx<me.LAYERS['keys'].length;lidx++){
-			console.log("removing layer: "+me.LAYERS['keys'][lidx]);
-			window.map.removeLayer(me.LAYERS[me.LAYERS['keys'][lidx]]['layer']);
-			delete(me.LAYERS[me.LAYERS['keys'][lidx]]);
+		for(var cidx=0;cidx<me.CATEGORIES['keys'].length;cidx++){
+			category=me.CATEGORIES['keys'][cidx];
+			for(var lidx=0;lidx<me.CATEGORIES[category]['keys'].length;lidx++){
+				var layer_name=me.CATEGORIES[category]['keys'][lidx];
+				console.log("removing layer: "+layer_name);
+				window.map.removeLayer(me.CATEGORIES[category][layer_name]['layer']);
+				delete(me.CATEGORIES[category][layer_name]);
+			}
+			delete(me.CATEGORIES[category]);
 		}
+		me.CATEGORIES['keys']=[];
+		
 		try{
-			console.log("removing layer: boundary");
-			window.map.removeLayer(me.LAYERS['boundary']['layer']);
-			delete(me.LAYERS['boundary']);
+			console.log("Removing layer: BOUNDARY");
+			window.map.removeLayer(me.CATEGORIES['BOUNDARY']['layer']);
+			delete(me.CATEGORIES['BOUNDARY']);
 		}
-		catch(e){console.log(e);}
+		catch(e){/*console.log(e);*/}
 		
 		//Refill layers structure
 		var rval=me.prepare_layers();
@@ -132,22 +150,26 @@ var GGMC=function(div_id,control_panel_id){
 		//Re-add layers to map
 		if(me.BASE_ENABLED){
 			console.log("adding base layers");
-			var keys=me.BASE_LAYERS['keys'];
+			var keys=me.CATEGORIES['Base Layers']['keys'];
 			for(var kidx=0;kidx<keys.length;kidx++){
 				var key=keys[kidx];
-				if(me.BASE_LAYERS[key]['toggle']==1)
-					window.map.getLayers().insertAt(0, me.BASE_LAYERS[key]['layer']);
+				if(me.CATEGORIES['Base Layers'][key]['toggle']==1)
+					window.map.getLayers().insertAt(0, me.CATEGORIES['Base Layers'][key]['layer']);
 			}
 		}
-		console.log("adding boundary layer");
-		window.map.addLayer(me.LAYERS['boundary']['layer']);
+		console.log("Adding BOUNDARY layer");
+		window.map.addLayer(me.CATEGORIES['BOUNDARY']['layer']);
 		
-		console.log('adding '+me.LAYERS['keys'].length);
-		var keys=me.LAYERS['keys'];
-		for(var lidx=0;lidx<keys.length;lidx++){
-			var key=keys[lidx];
-			console.log("adding layer: "+key);
-			window.map.addLayer(me.LAYERS[key]['layer']);
+		var keys=me.CATEGORIES['keys'];
+		for(var kidx=0;kidx<keys.length;kidx++){
+			var category=keys[kidx];
+			console.log('Adding '+me.CATEGORIES[category]['keys'].length);
+			var layer_names=me.CATEGORIES[category]['keys'];
+			for(var lidx=0;lidx<layer_names.length;lidx++){
+				var layer_name=layer_names[lidx];
+				console.log("Adding layer: "+layer_name);
+				window.map.addLayer(me.CATEGORIES[category][layer_name]['layer']);
+			}
 		}
 		
 		window.map.getView().setCenter(ol.proj.transform(INSTALLED[me.current]["center"], 'EPSG:4326', 'EPSG:3857'));
@@ -158,22 +180,24 @@ var GGMC=function(div_id,control_panel_id){
 		window.setTimeout(me.fill_all_features,2000,false);
 	}
 	me.fill_all_features=function(){
-	
-		var keys=me.LAYERS['keys'];
-		for(var lidx=0;lidx<keys.length;lidx++){
-			var key=keys[lidx];
-			var features=me.LAYERS[key]['source'].getFeatures();
-			console.log("features.length: "+features.length);
-			for(var fidx=0;fidx<features.length;fidx++){
-				var feature_name=null;
-				feature_name=features[fidx].get("Name");
-				if(!feature_name)feature_name=features[fidx].get("NAME");
-				console.log(feature_name);
-				me.LAYERS[key]['features'][feature_name]={
-					'feature':features[fidx],
-					'candidate':true,
+		var categories=me.CATEGORIES['keys'];
+		for(var cidx=0;cidx<categories.length;cidx++){
+			var category=categories[cidx];			
+			var layer_names=me.CATEGORIES[category]['keys'];
+			for(var lidx=0;lidx<layer_names.length;lidx++){
+				var layer_name=layer_names[lidx];
+				var features=me.CATEGORIES[category][layer_name]['source'].getFeatures();
+				for(var fidx=0;fidx<features.length;fidx++){
+					var feature_name=null;
+					feature_name=features[fidx].get("Name");
+					if(!feature_name)feature_name=features[fidx].get("NAME");
+					//console.log(feature_name);
+					me.CATEGORIES[category][layer_name]['features'][feature_name]={
+						'feature':features[fidx],
+						'candidate':true,
+					}
+					me.CATEGORIES[category][layer_name]['feature_names'].push(feature_name);	
 				}
-				me.LAYERS[key]['feature_names'].push(feature_name);
 			}
 		}
 		window.control_panel.rebuild();
@@ -205,13 +229,13 @@ var GGMC=function(div_id,control_panel_id){
 				}),
 			});
 			polygon_layer.set("type","Polygon");
-            
-            var layer_name=INSTALLED[me.current]["polygon_sources"][pidx]["layer_name"];
-            polygon_layer.set("layer_name",layer_name);
+			
+			var category=INSTALLED[me.current]["polygon_sources"][pidx]["category"];
+			var layer_name=INSTALLED[me.current]["polygon_sources"][pidx]["layer_name"];
+			polygon_layer.set("layer_name",layer_name);
 			
 			me.LAYERS['keys'].push(layer_name);
 			me.LAYERS[layer_name]={
-				'type':'polygon',
 				'api':'ol.layer.Vector',
 				'layer':polygon_layer,
 				'source':polygon_source,
@@ -223,6 +247,18 @@ var GGMC=function(div_id,control_panel_id){
 				'toggle':true,
 				'type':'Polygon',
 			};
+			
+			if(me.CATEGORIES['keys'].indexOf(category)<0){
+				console.log("new category: "+category);
+				me.CATEGORIES['keys'].push(category);
+				me.CATEGORIES[category]={'keys':[],};
+			}
+			me.CATEGORIES[category]['keys'].push(layer_name)
+			me.CATEGORIES[category][layer_name]={
+				'layer':polygon_layer,'source':polygon_source,feature_names:[],'features_off':[],
+				features:{},'style':null,'colors':{},'toggle':true,'type':'Polygon'
+			}
+			
 		}
 
 		me.point_layers=[];
@@ -250,13 +286,13 @@ var GGMC=function(div_id,control_panel_id){
 				}),
 			});
 			point_layer.set("type","Point");
-            
-            layer_name=INSTALLED[me.current]["point_sources"][pidx]["layer_name"];
+			
+			var category=INSTALLED[me.current]["point_sources"][pidx]["category"];
+			layer_name=INSTALLED[me.current]["point_sources"][pidx]["layer_name"];
 			point_layer.set("layer_name",layer_name);
 			
 			me.LAYERS['keys'].push(layer_name);
 			me.LAYERS[layer_name]={
-				'type':'point',
 				'api':'ol.layer.Vector',
 				'layer':point_layer,
 				'source':point_source,
@@ -268,11 +304,19 @@ var GGMC=function(div_id,control_panel_id){
 				'toggle':true,
 				'type':'Point',
 			};
-
 			
+			if(me.CATEGORIES['keys'].indexOf(category)<0){
+				console.log("new category: "+category);
+				me.CATEGORIES['keys'].push(category);
+				me.CATEGORIES[category]={'keys':[],};
+			}
+			me.CATEGORIES[category]['keys'].push(layer_name)
+			me.CATEGORIES[category][layer_name]={
+				'layer':point_layer,'source':point_source,feature_names:[],'features_off':[],
+				features:{},'style':null,'colors':{},'toggle':true,'type':'Point'
+			}
 		}
-
-
+		
 		me.line_layers=[];
 		for(var lidx=0;lidx<INSTALLED[me.current]["line_sources"].length;lidx++){
 			var src_url=INSTALLED[me.current]["path"] + INSTALLED[me.current]["line_sources"][lidx]["filename"];
@@ -291,13 +335,13 @@ var GGMC=function(div_id,control_panel_id){
 				})
 			});
 			line_layer.set("type","Line");
-            
-            layer_name=INSTALLED[me.current]["line_sources"][pidx]["layer_name"];
+			
+			var category=INSTALLED[me.current]["line_sources"][pidx]["category"];
+			layer_name=INSTALLED[me.current]["line_sources"][pidx]["layer_name"];
 			line_layer.set("layer_name",layer_name);
 			
 			me.LAYERS['keys'].push(layer_name);
 			me.LAYERS[layer_name]={
-				'type':'line',
 				'api':'ol.layer.Vector',
 				'layer':line_layer,
 				'source':line_source,
@@ -309,7 +353,16 @@ var GGMC=function(div_id,control_panel_id){
 				'toggle':true,
 				'type':'Line',
 			};
-			
+			if(me.CATEGORIES['keys'].indexOf(category)<0){
+				console.log("new category: "+category);
+				me.CATEGORIES['keys'].push(category);
+				me.CATEGORIES[category]={'keys':[],};
+			}
+			me.CATEGORIES[category]['keys'].push(layer_name)
+			me.CATEGORIES[category][layer_name]={
+				'layer':line_layer,'source':line_source,feature_names:[],'features_off':[],
+				features:{},'style':null,'colors':{},'toggle':true,'type':'Line'
+			}
 		}
 		
 		var boundary_source=new ol.source.Vector({
@@ -328,10 +381,8 @@ var GGMC=function(div_id,control_panel_id){
 				}),
 			}),
 		});
-
-
-		me.LAYERS['boundary']={
-			'type':'polygon',
+		
+		me.CATEGORIES['BOUNDARY']={
 			'api':'ol.layer.Vector',
 			'layer':boundary_layer,
 			'source':boundary_source,
@@ -343,21 +394,19 @@ var GGMC=function(div_id,control_panel_id){
 			'toggle':true,
 			'type':'Polygon',
 		};
-
+		
 		console.log("prepare_layers done");
 		return 1;
 		
 	}//END:me.prepare_layers
 	
-	
-	  	
 	//GAME ORCHESTRATION:
 	me.start_move=function(feature){
 		
 		if(me.RUNNING==false)return;
 		
 		console.log("start_move");
-
+		
 		try{window.clearTimeout(me.last_timeout);}
 		catch(e){console.log(e);}
 		
@@ -419,11 +468,12 @@ var GGMC=function(div_id,control_panel_id){
 		var found=false;
 		
 		if(!pixel && me.tour){
-			
+		
+			var category=me.current_feature['category'];
 			var layer_name=me.current_feature['layer_key'];
 			var feature_name=me.current_feature['feature_name'];
 			
-			features.push(me.LAYERS[layer_name]['features'][feature_name]['feature']);
+			features.push(me.CATEGORIES[category][layer_name]['features'][feature_name]['feature']);
 		}
 		else{
 			
@@ -441,11 +491,12 @@ var GGMC=function(div_id,control_panel_id){
 			for(var fidx=0;fidx<features.length;fidx++){
 			
 				feature=features[fidx];
+				var category=me.current_feature['category'];
 				var target_name=null;
 				target_name=me.current_feature['feature_name'];
 				target_layer=me.current_feature['layer_key'];
 				console.log(fidx.toString()+" "+target_layer+"."+target_name);
-				target_feature=me.LAYERS[target_layer]['features'][target_name]['feature'];
+				target_feature=me.CATEGORIES[category][target_layer]['features'][target_name]['feature'];
 				if(feature==target_feature){
 					
 					console.log("***** Correct! *****");
@@ -460,12 +511,10 @@ var GGMC=function(div_id,control_panel_id){
 					found=true;
 					
 					//toggle as candidate
-					me.LAYERS[me.current_feature['layer_key']]['features'][target_name]['candidate']=false;
+					me.CATEGORIES[category][me.current_feature['layer_key']]['features'][target_name]['candidate']=false;
 					
 					//delete(me.current_feature);
 					me.current_feature=null;
-					
-					
 					
 					if(me.tour){
 						console.log("check_feature setting timeout for pan_zoom_home");
