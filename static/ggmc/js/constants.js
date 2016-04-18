@@ -24,7 +24,7 @@ var point_correct_style=new ol.style.Style({
 var popup=function(xhtml){
 	while(window.app.popup.childNodes.length>0){
 		try{window.app.popup.removeChild(window.app.popup.childNodes[0]);}
-		catch(e){console.log(e);}
+		catch(e){if(DEBUG)console.log(e);}
 	}
 	window.app.popup.innerHTML="";
 			
@@ -51,7 +51,7 @@ var popup=function(xhtml){
 }
 var popdown=function(e){
 	
-	console.log("popdown");
+	if(DEBUG)console.log("popdown");
 	try{window.clearTimeout(window.app.last_timeout);}
 	catch(e){}
 	
@@ -91,7 +91,7 @@ var splash_screen=function(){
 	splash_div.style.width=(300)+"px";
 	splash_div.style.height=(200)+"px";
 	splash_div.style.opacity=0.0;
-	console.log("hi canica was here");
+	if(DEBUG)console.log("hi canica was here");
 	document.body.appendChild(splash_div);
 	
 	$("#splash_div").animate(

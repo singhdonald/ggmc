@@ -4,13 +4,13 @@ var RollUpDiv=function(opts){
 	var CB=opts['checkboxCB'];
 	var callCB=function(e){
 		try{
-			console.log("callCB");
-			console.log(opts['checkboxCB']);
+			if(DEBUG)console.log("callCB");
+			if(DEBUG)console.log(opts['checkboxCB']);
 			CB(e);
 		}
 		catch(e){
-			console.log("Failed to call checkboxCB");
-			console.log(e);
+			if(DEBUG)console.log("Failed to call checkboxCB");
+			if(DEBUG)console.log(e);
 		}
 	}
 
@@ -47,7 +47,7 @@ var RollUpDiv=function(opts){
 		roll_up_icon.addEventListener("click",callCB,false);
 		td.appendChild(roll_up_icon);
 	}
-	else{console.log("no checkboxCB");}
+	else{if(DEBUG)console.log("no checkboxCB");}
 */	
 	td=tr.insertCell(-1);
 	td.className="roll_up_icon_cell";

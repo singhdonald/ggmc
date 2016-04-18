@@ -9,15 +9,15 @@ var MapButton=function(opt_options){
 	button.innerHTML = opt_options['innerHTML'];//'<img src="./static/ggmc/img/flaticon/play.png" class="icon"/>'
 	button.title=opt_options['title'];
 	
-	var CB=opt_options['CB'];//function(e){console.log(this);};
+	var CB=opt_options['CB'];//function(e){if(DEBUG)console.log(this);};
 	var callCB=function(e){
 		try{
-			console.log("CB");
+			if(DEBUG)console.log("CB");
 			CB(e);
 		}
 		catch(e){
-			console.log("Failed to call CB");
-			console.log(e);
+			if(DEBUG)console.log("Failed to call CB");
+			if(DEBUG)console.log(e);
 		}
 	}
 	

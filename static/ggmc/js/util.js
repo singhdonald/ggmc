@@ -4,7 +4,7 @@ var is_base_by_name=function(layer_name){
 		var key=window.app.CATEGORIES['Base Layers']['keys'][kidx];
 		if(key==layer_name){is_base=true;}
 	}
-	console.log(layer_name+" is_base= "+is_base);
+	if(DEBUG)console.log(layer_name+" is_base= "+is_base);
 	return is_base;
 }
 var make_hr=function(idn){
@@ -67,7 +67,7 @@ var compute_resolution=function(bbox,is3857,W,H){
 		p1=ol.proj.transform([xmin,ymin],"EPSG:4326","EPSG:3857");
 	}
 	
-	console.log(p1+", "+p2);
+	if(DEBUG)console.log(p1+", "+p2);
 	
 	var dx=p2[0]-p1[0];
 	var dy=p2[1]-p1[1];
@@ -99,6 +99,6 @@ var compute_resolution=function(bbox,is3857,W,H){
 			res=dx/W;
 		}
 	}
-	console.log("res="+res);
+	if(DEBUG)console.log("res="+res);
 	return res;
 }
