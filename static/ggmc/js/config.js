@@ -1,5 +1,18 @@
 var INSTALLED={
-	"keys":["guyana","gt_roads","world","iceland","greenland"],
+	"keys":["caribbean","guyana","gt_roads","world","iceland","greenland"],
+	"caribbean":{
+		"path":"./static/ggmc/data/caribbean/",
+		"bbox":[-90.,-2.,-53.,30.],
+		"center":[-71.5,14.5],
+		"color":"rgba(255,255,0,0)",
+		"fill":"rgba(0,100,40,0)",
+		"width":2,
+		"polygon_sources":[
+			{"filename":"caribbean.geojson","color":"rgba(0,255,0,1)","fill":'rgba(0,255,0,0.15)','width':1,"category":"Caribbean","layer_name":'Nations'},
+		],
+		"point_sources":[],
+		"line_sources":[]
+	},
 	"guyana":{
 		"path":"./static/ggmc/data/guyana/",
 		"bbox":[-61.5,1.1,-56.3,8.7],
