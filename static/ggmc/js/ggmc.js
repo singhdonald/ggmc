@@ -233,20 +233,6 @@ var GGMC=function(div_id,control_panel_id){
 			var layer_name=INSTALLED[me.current]["polygon_sources"][pidx]["layer_name"];
 			polygon_layer.set("layer_name",layer_name);
 			
-			me.LAYERS['keys'].push(layer_name);
-			me.LAYERS[layer_name]={
-				'api':'ol.layer.Vector',
-				'layer':polygon_layer,
-				'source':polygon_source,
-				'feature_names':[],//just string names
-				'features':{},
-				'features_off':[],//actual feature objs removed from the source
-				'style':null,
-				'colors':{},
-				'toggle':true,
-				'type':'Polygon',
-			};
-			
 			if(me.CATEGORIES['keys'].indexOf(category)<0){
 				if(DEBUG)console.log("new category: "+category);
 				me.CATEGORIES['keys'].push(category);
@@ -290,20 +276,6 @@ var GGMC=function(div_id,control_panel_id){
 			layer_name=INSTALLED[me.current]["point_sources"][pidx]["layer_name"];
 			point_layer.set("layer_name",layer_name);
 			
-			me.LAYERS['keys'].push(layer_name);
-			me.LAYERS[layer_name]={
-				'api':'ol.layer.Vector',
-				'layer':point_layer,
-				'source':point_source,
-				'feature_names':[],
-				'features_off':[],
-				'features':{},
-				'style':null,
-				'colors':{},
-				'toggle':true,
-				'type':'Point',
-			};
-			
 			if(me.CATEGORIES['keys'].indexOf(category)<0){
 				if(DEBUG)console.log("new category: "+category);
 				me.CATEGORIES['keys'].push(category);
@@ -339,19 +311,6 @@ var GGMC=function(div_id,control_panel_id){
 			layer_name=INSTALLED[me.current]["line_sources"][pidx]["layer_name"];
 			line_layer.set("layer_name",layer_name);
 			
-			me.LAYERS['keys'].push(layer_name);
-			me.LAYERS[layer_name]={
-				'api':'ol.layer.Vector',
-				'layer':line_layer,
-				'source':line_source,
-				'feature_names':[],
-				'features_off':[],
-				'features':{},
-				'style':null,
-				'colors':{},
-				'toggle':true,
-				'type':'Line',
-			};
 			if(me.CATEGORIES['keys'].indexOf(category)<0){
 				if(DEBUG)console.log("new category: "+category);
 				me.CATEGORIES['keys'].push(category);
@@ -500,7 +459,7 @@ var GGMC=function(div_id,control_panel_id){
 					
 					if(DEBUG)console.log("***** Correct! *****");
 					
-					if(me.LAYERS[target_layer]['type']=="Point"){
+					if(me.CATEGORIES[category][target_layer]['type']=="Point"){
 						feature.setStyle(point_correct_style);
 					}
 					else{
