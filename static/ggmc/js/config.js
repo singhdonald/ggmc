@@ -1,6 +1,6 @@
 var INSTALLED={
-	"keys":["caribbean","guyana","gt_roads","world","iceland","greenland"],
-	"caribbean":{
+	"keys":["Caribbean","Guyana","G/Town Roads","World","Iceland","Greenland"],
+	"Caribbean":{
 		"path":"./static/ggmc/data/caribbean/",
 		"bbox":[-90.,-2.,-53.,30.],
 		"center":[-71.5,14.5],
@@ -13,7 +13,7 @@ var INSTALLED={
 		"point_sources":[],
 		"line_sources":[]
 	},
-	"guyana":{
+	"Guyana":{
 		"path":"./static/ggmc/data/guyana/",
 		"bbox":[-61.5,1.1,-56.3,8.7],
 		"center":[-58.9,4.9],
@@ -32,7 +32,7 @@ var INSTALLED={
 //			{"filename":"test_segment.geojson","color":"rgba(155,255,0,1)",'width':5},
 		]
 	},
-	"iceland":{
+	"Iceland":{
 		"path":"./static/ggmc/data/iceland/",
 		"bbox":[-24.542, 63.39,-13.499,66.536],
 		"center":[(-24.542+-13.499)/2.,65.],
@@ -43,7 +43,7 @@ var INSTALLED={
 		"point_sources":[],
 		"line_sources":[]
 	},
-	"greenland":{
+	"Greenland":{
 		"path":"./static/ggmc/data/greenland/",
 		"bbox":[-73.054, 59.79,-12.155,83.624],
 		"center":[(-73.054-12.155)/2.,76.],
@@ -54,7 +54,7 @@ var INSTALLED={
 		"point_sources":[],
 		"line_sources":[]
 	},
-	"world":{
+	"World":{
 		"path":"./static/ggmc/data/world/",
 		"bbox":[-160,-60,100,60],
         "center":[0,20],
@@ -67,7 +67,7 @@ var INSTALLED={
         "point_sources":[],
         "line_sources":[]
     },		
-    "gt_roads":{
+    "G/Town Roads":{
         "path":"./static/ggmc/data/georgetown/",
         "bbox":[-58.104,6.762, -58.169,6.832],
 		"center":[-58.13836,6.79834],

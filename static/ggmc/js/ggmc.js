@@ -145,17 +145,20 @@ var GGMC=function(div_id,control_panel_id){
 		
 		//Refill layers structure
 		var rval=me.prepare_layers();
-		
+/*
 		//Re-add layers to map
 		if(me.BASE_ENABLED){
 			if(DEBUG)console.log("adding base layers");
 			var keys=me.CATEGORIES['Base Layers']['keys'];
 			for(var kidx=0;kidx<keys.length;kidx++){
 				var key=keys[kidx];
-				if(me.CATEGORIES['Base Layers'][key]['toggle']==1)
+				if(me.CATEGORIES['Base Layers'][key]['toggle']==1){
+					if(DEBUG)console.log("adding "+key);
 					window.map.getLayers().insertAt(0, me.CATEGORIES['Base Layers'][key]['layer']);
+				}
 			}
 		}
+*/
 		if(DEBUG)console.log("Adding BOUNDARY layer");
 		window.map.addLayer(me.CATEGORIES['BOUNDARY']['layer']);
 		
