@@ -241,11 +241,11 @@ var GGMC=function(div_id,control_panel_id){
 				me.CATEGORIES['keys'].push(category);
 				me.CATEGORIES[category]={'keys':[],};
 			}
-			me.CATEGORIES[category]['keys'].push(layer_name)
+			me.CATEGORIES[category]['keys'].push(layer_name);
 			me.CATEGORIES[category][layer_name]={
 				'layer':polygon_layer,'source':polygon_source,feature_names:[],'features_off':[],
 				features:{},'style':null,'colors':{},'toggle':true,'type':'Polygon'
-			}
+			};
 			
 		}
 
