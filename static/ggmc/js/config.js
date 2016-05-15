@@ -1,6 +1,6 @@
 var INSTALLED={
-	"keys":["caribbean","guyana","gt_roads","world","iceland","greenland"],
-	"caribbean":{
+	"keys":["G/Town Roads","Caribbean","Guyana","World","Iceland","Greenland"],
+	"Caribbean":{
 		"path":"./static/ggmc/data/caribbean/",
 		"bbox":[-90.,-2.,-53.,30.],
 		"center":[-71.5,14.5],
@@ -11,9 +11,10 @@ var INSTALLED={
 			{"filename":"caribbean.geojson","color":"rgba(0,255,0,1)","fill":'rgba(0,255,0,0.15)','width':1,"category":"Caribbean","layer_name":'Nations'},
 		],
 		"point_sources":[],
-		"line_sources":[]
+		"line_sources":[],
+		"gpx_sources":[]
 	},
-	"guyana":{
+	"Guyana":{
 		"path":"./static/ggmc/data/guyana/",
 		"bbox":[-61.5,1.1,-56.3,8.7],
 		"center":[-58.9,4.9],
@@ -30,9 +31,10 @@ var INSTALLED={
 		],
 		"line_sources":[
 //			{"filename":"test_segment.geojson","color":"rgba(155,255,0,1)",'width':5},
-		]
+		],
+		"gpx_sources":[]
 	},
-	"iceland":{
+	"Iceland":{
 		"path":"./static/ggmc/data/iceland/",
 		"bbox":[-24.542, 63.39,-13.499,66.536],
 		"center":[(-24.542+-13.499)/2.,65.],
@@ -41,9 +43,10 @@ var INSTALLED={
 		"width":2,
 		"polygon_sources":[],
 		"point_sources":[],
-		"line_sources":[]
+		"line_sources":[],
+		"gpx_sources":[]
 	},
-	"greenland":{
+	"Greenland":{
 		"path":"./static/ggmc/data/greenland/",
 		"bbox":[-73.054, 59.79,-12.155,83.624],
 		"center":[(-73.054-12.155)/2.,76.],
@@ -52,9 +55,10 @@ var INSTALLED={
 		"width":2,
 		"polygon_sources":[],
 		"point_sources":[],
-		"line_sources":[]
+		"line_sources":[],
+		"gpx_sources":[]
 	},
-	"world":{
+	"World":{
 		"path":"./static/ggmc/data/world/",
 		"bbox":[-160,-60,100,60],
         "center":[0,20],
@@ -65,9 +69,10 @@ var INSTALLED={
             {"filename":"world_borders.geojson","color":"rgba(0,255,0,1)","fill":'rgba(0,255,0,0.25)','width':1,"category":"World","layer_name":'Countries'},
         ],
         "point_sources":[],
-        "line_sources":[]
+        "line_sources":[],
+		"gpx_sources":[]
     },		
-    "gt_roads":{
+    "G/Town Roads":{
         "path":"./static/ggmc/data/georgetown/",
         "bbox":[-58.104,6.762, -58.169,6.832],
 		"center":[-58.13836,6.79834],
@@ -78,7 +83,11 @@ var INSTALLED={
             {"filename":"gt_roads.geojson","color":"rgba(0,255,234,1)","fill":'rgba(0,255,0,0.25)','width':3,"category":"Roads","layer_name":'Georgetown Roads'}
         ],
         "point_sources":[],
-        "line_sources":[]
+        "line_sources":[],
+		"gpx_sources":[
+            {"filename":"gtown-44.gpx","color":"rgba(255,0,0,1)","fill":'rgba(0,255,0,0.25)','width':3,"category":"Busmaps","layer_name":"Bus 44"},
+            {"filename":"gtown-45.gpx","color":"rgba(155,110,0,1)","fill":'rgba(0,255,0,0.25)','width':3,"category":"Busmaps","layer_name":"Bus 45"},
+		]
     }
 	
 }
