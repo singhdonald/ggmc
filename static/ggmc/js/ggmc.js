@@ -310,8 +310,8 @@ var GGMC=function(div_id,control_panel_id){
 			});
 			line_layer.set("type","Line");
 			
-			var category=INSTALLED[me.current]["line_sources"][pidx]["category"];
-			layer_name=INSTALLED[me.current]["line_sources"][pidx]["layer_name"];
+			var category=INSTALLED[me.current]["line_sources"][lidx]["category"];
+			layer_name=INSTALLED[me.current]["line_sources"][lidx]["layer_name"];
 			line_layer.set("layer_name",layer_name);
 			
 			if(me.CATEGORIES['keys'].indexOf(category)<0){
@@ -326,6 +326,43 @@ var GGMC=function(div_id,control_panel_id){
 			}
 		}
 		
+		
+		me.gpx_layers=[];
+		for(var lidx=0;lidx<INSTALLED[me.current]["gpx_sources"].length;lidx++){
+			var src_url=INSTALLED[me.current]["path"] + INSTALLED[me.current]["gpx_sources"][lidx]["filename"];
+			var gpx_source=new ol.source.Vector({
+				url: src_url,
+				format: new ol.format.GPX()
+			});
+			
+			var gpx_layer= new ol.layer.Vector({
+				source: gpx_source,
+					style: new ol.style.Style({
+					stroke: new ol.style.Stroke({
+						color: make_random_color(),
+						width: 3
+					})
+				}),
+			});
+			gpx_layer.set("type","gpx");
+			
+			var category=INSTALLED[me.current]["gpx_sources"][lidx]["category"];
+			layer_name=INSTALLED[me.current]["gpx_sources"][lidx]["layer_name"];
+			gpx_layer.set("layer_name",layer_name);
+			console.log("layer_name="+layer_name);
+			
+			if(me.CATEGORIES['keys'].indexOf(category)<0){
+				if(DEBUG)console.log("new category: "+category);
+				me.CATEGORIES['keys'].push(category);
+				me.CATEGORIES[category]={'keys':[],};
+			}
+			me.CATEGORIES[category]['keys'].push(layer_name)
+			me.CATEGORIES[category][layer_name]={
+				'layer':gpx_layer,'source':gpx_source,feature_names:[],'features_off':[],
+				features:{},'style':null,'colors':{},'toggle':true,'type':'gpx'
+			}
+		}
+
 		var boundary_source=new ol.source.Vector({
 			url: INSTALLED [me.current]["path"] + 'boundary.geojson',
 			format: new ol.format.GeoJSON()

@@ -1,5 +1,5 @@
 var INSTALLED={
-	"keys":["Caribbean","Guyana","G/Town Roads","World","Iceland","Greenland"],
+	"keys":["G/Town Roads","Caribbean","Guyana","World","Iceland","Greenland"],
 	"Caribbean":{
 		"path":"./static/ggmc/data/caribbean/",
 		"bbox":[-90.,-2.,-53.,30.],
@@ -11,7 +11,8 @@ var INSTALLED={
 			{"filename":"caribbean.geojson","color":"rgba(0,255,0,1)","fill":'rgba(0,255,0,0.15)','width':1,"category":"Caribbean","layer_name":'Nations'},
 		],
 		"point_sources":[],
-		"line_sources":[]
+		"line_sources":[],
+		"gpx_sources":[]
 	},
 	"Guyana":{
 		"path":"./static/ggmc/data/guyana/",
@@ -30,7 +31,8 @@ var INSTALLED={
 		],
 		"line_sources":[
 //			{"filename":"test_segment.geojson","color":"rgba(155,255,0,1)",'width':5},
-		]
+		],
+		"gpx_sources":[]
 	},
 	"Iceland":{
 		"path":"./static/ggmc/data/iceland/",
@@ -41,7 +43,8 @@ var INSTALLED={
 		"width":2,
 		"polygon_sources":[],
 		"point_sources":[],
-		"line_sources":[]
+		"line_sources":[],
+		"gpx_sources":[]
 	},
 	"Greenland":{
 		"path":"./static/ggmc/data/greenland/",
@@ -52,7 +55,8 @@ var INSTALLED={
 		"width":2,
 		"polygon_sources":[],
 		"point_sources":[],
-		"line_sources":[]
+		"line_sources":[],
+		"gpx_sources":[]
 	},
 	"World":{
 		"path":"./static/ggmc/data/world/",
@@ -65,7 +69,8 @@ var INSTALLED={
             {"filename":"world_borders.geojson","color":"rgba(0,255,0,1)","fill":'rgba(0,255,0,0.25)','width':1,"category":"World","layer_name":'Countries'},
         ],
         "point_sources":[],
-        "line_sources":[]
+        "line_sources":[],
+		"gpx_sources":[]
     },		
     "G/Town Roads":{
         "path":"./static/ggmc/data/georgetown/",
@@ -78,7 +83,11 @@ var INSTALLED={
             {"filename":"gt_roads.geojson","color":"rgba(0,255,234,1)","fill":'rgba(0,255,0,0.25)','width':3,"category":"Roads","layer_name":'Georgetown Roads'}
         ],
         "point_sources":[],
-        "line_sources":[]
+        "line_sources":[],
+		"gpx_sources":[
+            {"filename":"gtown-44.gpx","color":"rgba(255,0,0,1)","fill":'rgba(0,255,0,0.25)','width':3,"category":"Busmaps","layer_name":"Bus 44"},
+            {"filename":"gtown-45.gpx","color":"rgba(155,110,0,1)","fill":'rgba(0,255,0,0.25)','width':3,"category":"Busmaps","layer_name":"Bus 45"},
+		]
     }
 	
 }
